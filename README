@@ -1,0 +1,20 @@
+django-cities - Place models and data for Django apps
+=====================================================
+
+This project includes country, city, and section models and is
+prepopulated with data from GeoNames. The GeoNames import script
+is also included if you'd like to re-import the data yourself.
+
+Includes 248 counties, 98245 cities and 743 sections (boroughs and districts)
+
+Examples:
+=========
+Finding all London boroughs:
+
+>>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
+>>> boroughs = Section.objects.filter(city=london)
+
+5 Nearest cities to London:
+
+>>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
+>>> nearest = City.objects.distance(london.location).exclude(id=london.id).orderby('distance')[:5]
