@@ -8,12 +8,14 @@ the way in which it gets cleaned up.
 
 Includes 234 counties, 2,610 regions, 97,949 cities and 606 districts
 
+For more information and examples see http://www.coderholic.com/django-cities-countries-regions-cities-and-districts-for-django/
+
 Examples:
 =========
 Finding all London boroughs:
 
 >>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
->>> boroughs = Districts.objects.filter(city=london)
+>>> boroughs = District.objects.filter(city=london)
 
 Nearest city to a given lat,lon:
 
@@ -23,4 +25,4 @@ Nearest city to a given lat,lon:
 5 Nearest cities to London:
 
 >>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
->>> nearest = City.objects.distance(london.location).exclude(id=london.id).orderby('distance')[:5]
+>>> nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
