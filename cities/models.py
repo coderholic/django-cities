@@ -76,6 +76,3 @@ class District(models.Model):
 		list = self.city.hierarchy
 		list.append(self)
 		return list
-
-class SearchableAdmin(admin.ModelAdmin):
-	search_fields = ['name']
