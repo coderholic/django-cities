@@ -1,6 +1,5 @@
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
-from django.contrib import admin
 
 class Country(models.Model):
 	name = models.CharField(max_length = 200)
