@@ -1,4 +1,5 @@
 from django.contrib import admin
+from models import * #@UnusedWildImport
 
 class SearchableAdmin(admin.ModelAdmin):
 	search_fields = ['name']
