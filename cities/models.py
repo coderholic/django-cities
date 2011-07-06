@@ -17,6 +17,9 @@ class Country(models.Model):
 	def hierarchy(self):
 		return [self]
 
+	class Meta:
+		ordering = ['name']
+
 class Region(models.Model):
 	name = models.CharField(max_length = 200)
 	slug = models.CharField(max_length = 200, db_index=True)
