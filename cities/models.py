@@ -1,6 +1,5 @@
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
-from django.contrib import admin
 
 class Country(models.Model):
 	name = models.CharField(max_length = 200)
@@ -17,6 +16,9 @@ class Country(models.Model):
 	@property
 	def hierarchy(self):
 		return [self]
+
+	class Meta:
+		ordering = ['name']
 
 class Region(models.Model):
 	name = models.CharField(max_length = 200)
@@ -77,11 +79,3 @@ class District(models.Model):
 		list = self.city.hierarchy
 		list.append(self)
 		return list
-
-class SearchableAdmin(admin.ModelAdmin):
-	search_fields = ['name']
-
-admin.site.register(Country, SearchableAdmin)
-admin.site.register(Region, SearchableAdmin)
-admin.site.register(City, SearchableAdmin)
-admin.site.register(District, SearchableAdmin)
