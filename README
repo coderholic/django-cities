@@ -26,3 +26,28 @@ Nearest city to a given lat,lon:
 
 >>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
 >>> nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
+
+Important Notice:
+
+The old dump file contained wrong locations (longtitude and latitude upside down, to be precise). The latest dump file fixed this error. Before updating to the latest dump, please read the following changes made to the current release:
+
+1. The dump file is renamed from initial_data.json to geonames_dump.json. This means data won't be loaded into databases automatically when running syncdb command. To load the dump, you have to run "manage.py loaddata geonames_dump" explicitly, which is actually a good feature since the original name can cause this dump file to be loaded every time you run syncdb command. There are not just only a few records in it, you know...
+
+2. The dump file has the correct locations now. Distances will be calculated correctly.
+
+3. A command called load_geonames is added. This command allows you to only load countries you feel needed in your application. Originally, the whole dump is loaded into the database, which might be too overwhelming for you or your database. Now, say you only want data for United States and Canada, run "manage.py load_geonames US CA", dada... only districts, cities, regions and countries of these two countries are loaded into the database. Later you decide to add China to the country list, you run "manage.py load_geonames CN". Now you have data for three countries.
+
+In short, after installing django-cities, add django-cities to your installed app in settings.py. Then you have two choices:
+
+1. To import the whole dump, run command:
+
+manage.py loaddata geonames_dump
+
+2. Choose certain countries to import, run command:
+
+manage.py load_geonames [country_code_list]
+
+country_code_list is a list of country codes separated by spaces.
+
+If you've installed django-cities and imported data before, the first command will fix all the location errors and the second one will fix the location errors of selected countries.
+

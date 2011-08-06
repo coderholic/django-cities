@@ -38,7 +38,9 @@ class Region(models.Model):
 
 class CityManager(models.GeoManager):
 	def nearest_to(self, lat, lon):
-		p = Point(float(lat), float(lon))
+		#Wrong x y order
+		#p = Point(float(lat), float(lon))
+		p = Point(float(lon), float(lat))
 		return self.nearest_to_point(p)
 
 	def nearest_to_point(self, point):
