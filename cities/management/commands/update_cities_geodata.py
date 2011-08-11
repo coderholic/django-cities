@@ -1,7 +1,7 @@
 """
 GeoNames city data import script. Requires the following files:
 - http://download.geonames.org/export/dump/countryInfo.txt
-- http://download.geonames.org/export/dump/admin1Codes.txt
+- http://download.geonames.org/export/dump/admin1CodesASCII.txt
 - http://download.geonames.org/export/dump/cities1000.zip
 
 Part of django-cities by Ben Dowling
@@ -75,9 +75,9 @@ def import_countries():
 def import_regions():
     temp = tempfile.TemporaryFile()
 
-    logger.info("Downloading admin1codes.txt")
+    logger.info("Downloading admin1codesASCII.txt")
 
-    url = "http://download.geonames.org/export/dump/admin1Codes.txt"
+    url = "http://download.geonames.org/export/dump/admin1CodesASCII.txt"
     temp.write(urllib.urlopen(url).read())
     temp.seek(0)
 
