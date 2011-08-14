@@ -4,14 +4,10 @@ Created on 2011-07-31
 @author: George
 '''
 from django.core.management.base import BaseCommand
-from optparse import make_option
 import os
 from django.core.management.commands.loaddata import Command as LoadCommand
 import sys
-try:
-    import json
-except:
-    import simplejson as json
+from django.utils import simplejson
 
 def extract(country_codes):
     country_codes = [country_code.upper() for country_code in country_codes]
@@ -19,7 +15,7 @@ def extract(country_codes):
     region_ids = []
     city_ids = []
     fixtures_dir = '%s/../../fixtures' % os.path.dirname(__file__)
-    src_data = json.load(open('%s/geonames_dump.json' % fixtures_dir), 'cp1252')
+    src_data = simplejson.load(open('%s/geonames_dump.json' % fixtures_dir), 'cp1252')
     dest_data = []
     for model in src_data:
         model_type = model['model']
@@ -37,7 +33,7 @@ def extract(country_codes):
                 dest_data.append(model)
         elif model_type == 'cities.district':
             if model['fields']['city'] in city_ids: dest_data.append(model)
-    json.dump(dest_data, open('%s/extracted_data.json' % fixtures_dir, 'w'), encoding='cp1252')
+    simplejson.dump(dest_data, open('%s/extracted_data.json' % fixtures_dir, 'w'), encoding='cp1252')
 
 class Command(BaseCommand):
 
