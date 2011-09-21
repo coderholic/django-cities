@@ -1,0 +1,2 @@
+include README LICENCE
+recursive-include cities *.py *.json
