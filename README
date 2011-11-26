@@ -1,25 +1,24 @@
 django-cities - Place models and data for Django apps
 =====================================================
 
-This project includes country, region, city, and district models and is
-prepopulated with data from GeoNames. The GeoNames import script
-is also included if you'd like to re-import the data yourself, or change
-the way in which it gets cleaned up.
+This add-on provides models and commands to import country / region / city / district data into your database.
+The data is pulled from GeoNames and contains localized names, codes, geo-coords, and population.
 
-Includes 234 counties, 2,610 regions, 97,949 cities and 606 districts
+Your database must support spatial queries, see GeoDjango for setup.
 
-For more information and examples see http://www.coderholic.com/django-cities-countries-regions-cities-and-districts-for-django/
+For more information see: http://www.coderholic.com/django-cities-countries-regions-cities-and-districts-for-django/
 
-Examples:
+
+Examples
 =========
 Finding all London boroughs:
 
 >>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
 >>> boroughs = District.objects.filter(city=london)
 
-Nearest city to a given lat,lon:
+Nearest city to a given geo-coord (longitude, latitude):
 
->>> City.objects.nearest_to(51, 1)
+>>> City.objects.distance(Point(1, 51)).order_by('distance')[0]
 <City: Dymchurch, Kent, United Kingdom>
 
 5 Nearest cities to London:
@@ -27,27 +26,55 @@ Nearest city to a given lat,lon:
 >>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
 >>> nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
 
-Important Notice:
+Get all countries in Japanese preferring official names if available, fallback on ASCII names:
 
-The old dump file contained wrong locations (longtitude and latitude upside down, to be precise). The latest dump file fixed this error. Before updating to the latest dump, please read the following changes made to the current release:
+>>> [country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
 
-1. The dump file is renamed from initial_data.json to geonames_dump.json. This means data won't be loaded into databases automatically when running syncdb command. To load the dump, you have to run "manage.py loaddata geonames_dump" explicitly, which is actually a good feature since the original name can cause this dump file to be loaded every time you run syncdb command. There are not just only a few records in it, you know...
+Use alternate names model to get Vancouver in Japanese:
 
-2. The dump file has the correct locations now. Distances will be calculated correctly.
+>>> geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
 
-3. A command called load_geonames is added. This command allows you to only load countries you feel needed in your application. Originally, the whole dump is loaded into the database, which might be too overwhelming for you or your database. Now, say you only want data for United States and Canada, run "manage.py load_geonames US CA", dada... only districts, cities, regions and countries of these two countries are loaded into the database. Later you decide to add China to the country list, you run "manage.py load_geonames CN". Now you have data for three countries.
+Gather names of Tokyo from all LANGUAGES, including names from undetermined language data ('und'):
 
-In short, after installing django-cities, add django-cities to your installed app in settings.py. Then you have two choices:
+>>> [name for locale in settings.CITIES_LOCALES
+        for name in geo_alt_names[City][locale].objects.filter(geo__name='Tokyo')]
 
-1. To import the whole dump, run command:
 
-manage.py loaddata geonames_dump
+Install
+=========
+- Run: python setup.py install
+- Add/Merge the following into your settings.py:
 
-2. Choose certain countries to import, run command:
+INSTALLED_APPS = (
+    'cities',
+)
 
-manage.py load_geonames [country_code_list]
+LOGGING = {
+    'handlers': {
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'cities': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}
 
-country_code_list is a list of country codes separated by spaces.
+CITIES_LOCALES = ['und']
+if 'LANGUAGES' in locals(): CITIES_LOCALES += [lang[0] for lang in LANGUAGES]
 
-If you've installed django-cities and imported data before, the first command will fix all the location errors and the second one will fix the location errors of selected countries.
 
+- Sync your database with the new models: 'manage.py syncdb'
+- Populate or update your database by running: 'manage.py cities'
+
+
+Notes
+=========
+The localized models / tables are created dynamically from CITIES_LOCALES.
+Some datasets are very large (> 100 MB) and take time to download / import, and there's no progress display.
+Data will only be downloaded / imported if it is newer than your data, and only matching rows will be overwritten.
+The cities manage command has options, see --help.  Verbosity is controlled through LOGGING.

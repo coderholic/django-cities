@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name='cities',
+setup(name='django-cities',
       version='0.1',
       description='Django Cities',
       author='Ben Dowling',
