@@ -1,16 +1,22 @@
-django-cities - Place models and data for Django apps
-=====================================================
+ django-cities - Place models and data for Django apps
+=======================================================
 
-This add-on provides models and commands to import country / region / city / district data into your database.
-The data is pulled from GeoNames and contains localized names, codes, geo-coords, and population.
+This add-on provides models and commands to import country/region/city data into your database.
+The data is pulled from GeoNames and contains:
+    - localized names
+    - geographical codes
+    - postal codes
+    - geo-coords
+    - population
 
 Your database must support spatial queries, see GeoDjango for setup.
 
-For more information see: http://www.coderholic.com/django-cities-countries-regions-cities-and-districts-for-django/
+For more information see:
+http://www.coderholic.com/django-cities-countries-regions-cities-and-districts-for-django/
 
 
-Examples
-=========
+ Examples
+=======================
 Finding all London boroughs:
 
 >>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
@@ -34,17 +40,27 @@ Use alternate names model to get Vancouver in Japanese:
 
 >>> geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
 
-Gather names of Tokyo from all LANGUAGES, including names from undetermined language data ('und'):
+Gather names of Tokyo from all CITIES_LOCALES:
 
->>> [name for locale in settings.CITIES_LOCALES
+>>> [name for locale in cities.conf.settings.locales
         for name in geo_alt_names[City][locale].objects.filter(geo__name='Tokyo')]
 
+Get all postal codes for Ontario, Canada (only first 3 letters available due to copyright restrictions):
 
-Install
-=========
+>>> postal_codes['CA'].objects.filter(region_0_name='Ontario')
+
+Get region objects for US postal code:
+
+>>> Region.objects.filter(postal_codes_US__code='90210')
+[<Region: Los Angeles County, California, United States>]
+
+
+ Install
+=======================
 - Run: python setup.py install
 - Add/Merge the following into your settings.py:
 
+-----------------------------------------------------------
 INSTALLED_APPS = (
     'cities',
 )
@@ -64,17 +80,29 @@ LOGGING = {
     }
 }
 
-CITIES_LOCALES = ['und']
-if 'LANGUAGES' in locals(): CITIES_LOCALES += [lang[0] for lang in LANGUAGES]
+# Localized names will be imported for all locale codes below.
+# 'und' is undetermined language data (most alternate names are missing a lang tag).
+# Ref: download.geonames.org/export/dump/iso-languagecodes.txt
+CITIES_LOCALES = ['en', 'und']  # + ['LANGUAGES'] # Uncomment to also include languages from your settings
 
+# Postal codes will be imported for all country codes below.
+# See cities.conf for a full list of country codes.
+# Ref: download.geonames.org/export/dump/countryInfo.txt
+CITIES_POSTAL_CODES = ['US','CA']
+
+# List of plugins to process data during import
+CITIES_PLUGINS = [
+    'cities.plugin.postal_code_ca.Plugin',  # Canada postal codes need region codes remapped to match geonames
+]
+-----------------------------------------------------------
 
 - Sync your database with the new models: 'manage.py syncdb'
-- Populate or update your database by running: 'manage.py cities'
+- Populate or update your database: 'manage.py cities'
 
 
-Notes
-=========
-The localized models / tables are created dynamically from CITIES_LOCALES.
+ Notes
+=======================
+The localized names and postal code models/db-tables are created dynamically based on your settings.
 Some datasets are very large (> 100 MB) and take time to download / import, and there's no progress display.
 Data will only be downloaded / imported if it is newer than your data, and only matching rows will be overwritten.
 The cities manage command has options, see --help.  Verbosity is controlled through LOGGING.
