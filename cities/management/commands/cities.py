@@ -50,7 +50,7 @@ class Command(BaseCommand):
         for plugin in settings.plugins[hook]:
             try:
                 func = getattr(plugin,hook)
-                func(*args, **kwargs)
+                func(self, *args, **kwargs)
             except HookException as e:
                 error = str(e)
                 if error: self.logger.error(error)
