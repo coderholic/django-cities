@@ -2,7 +2,11 @@ from importlib import import_module
 from collections import defaultdict
 from django.conf import settings as django_settings
     
-__all__ = ['url_bases','urls','country_codes','city_types','district_types','HookException','settings']
+__all__ = [
+    'url_bases','urls',
+    'country_codes','city_types','district_types',
+    'import_opts','import_opts_all','HookException','settings'
+]
 
 url_bases = {
     'geonames': {
@@ -40,6 +44,28 @@ country_codes = [
 # See http://www.geonames.org/export/codes.html
 city_types = ['PPL','PPLA','PPLC','PPLA2','PPLA3','PPLA4']
 district_types = ['PPLX']
+
+# Command-line import options
+import_opts = [
+    'all',
+    'country',
+    'region',
+    'region_0',
+    'region_1',
+    'city',
+    'district',
+    'alt_name',
+    'postal_code',
+]
+
+import_opts_all = [
+    'country',
+    'region',
+    'city',
+    'district',
+    'alt_name',
+    'postal_code',
+]
 
 # Raise inside a hook (with an error message) to skip the current line of data.
 class HookException(Exception): pass
