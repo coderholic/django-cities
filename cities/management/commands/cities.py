@@ -34,17 +34,34 @@ class Command(BaseCommand):
     
     option_list = BaseCommand.option_list + (
         make_option('--force', action='store_true', default=False,
-            help='Import even if files are up-to-date.'),
+            help='Import even if files are up-to-date.'
+        ),
+        make_option('--import', metavar="DATA_TYPES", default='all',
+            help =  'Selectively import data. Comma separated list of data types: '
+                    + str(import_opts).replace("'",'')
+        ),
+        make_option('--flush', metavar="DATA_TYPES", default='',
+            help =  "Selectively flush data. Comma separated list of data types."
+        ),
     )
     
     def handle(self, *args, **options):
         self.options = options
-        self.import_countries()
-        self.import_regions_0()
-        self.import_regions_1()
-        self.import_cities()
-        self.import_geo_alt_name()
-        self.import_postal_codes()
+        
+        self.force = self.options['force']
+        
+        self.flushes = [e for e in self.options['flush'].split(',') if e]
+        if 'all' in self.flushes: self.flushes = import_opts_all
+        for flush in self.flushes:
+            func = getattr(self, "flush_" + flush)
+            func()
+            
+        self.imports = [e for e in self.options['import'].split(',') if e]
+        if 'all' in self.imports: self.imports = import_opts_all
+        if self.flushes: self.imports = []
+        for import_ in self.imports:
+            func = getattr(self, "import_" + import_)
+            func()
         
     def call_hook(self, hook, *args, **kwargs):
         for plugin in settings.plugins[hook]:
@@ -99,10 +116,10 @@ class Command(BaseCommand):
             raise Exception("File not found and download failed: " + filename)
             
         return namedtuple('_', 'file, uptodate')(file, uptodate)
-        
-    def import_countries(self):
+    
+    def import_country(self):
         file, uptodate = self.download('countryInfo.txt')[:2]
-        if uptodate and not self.options['force']: return
+        if uptodate and not self.force: return
         
         self.logger.info("Importing country data")
         for line in file:
@@ -126,6 +143,10 @@ class Command(BaseCommand):
 
         file.close()
 
+    def import_region(self):
+        self.import_region_0()
+        self.import_region_1()
+        
     def import_region_common(self, region, level, items):
         region.id = int(items[3])
         region.name = items[2]
@@ -160,9 +181,9 @@ class Command(BaseCommand):
         for obj in Country.objects.all():
             self.country_index[obj.code] = obj
             
-    def import_regions_0(self):
+    def import_region_0(self):
         file, uptodate = self.download('admin1CodesASCII.txt')[:2]
-        if uptodate and not self.options['force']: return
+        if uptodate and not self.force: return
                 
         self.build_country_index()
                 
@@ -196,9 +217,9 @@ class Command(BaseCommand):
             self.region_index[obj.code] = obj
         self.region_index_level = level
             
-    def import_regions_1(self):
+    def import_region_1(self):
         file, uptodate = self.download('admin2Codes.txt')[:2]
-        if uptodate and not self.options['force']: return
+        if uptodate and not self.force: return
         
         self.build_country_index()
         self.build_region_index(0)
@@ -251,9 +272,9 @@ class Command(BaseCommand):
         
         return city
         
-    def import_cities(self):
+    def import_city(self):
         file, uptodate = self.download('cities5000.zip')[:2]
-        if uptodate and not self.options['force']: return
+        if uptodate and not self.force: return
         
         zip = zipfile.ZipFile(file)
         data = zip.read('cities5000.txt').split('\n')
@@ -278,8 +299,6 @@ class Command(BaseCommand):
             if not self.call_hook('city_post', city, items): continue
             city.save()
             self.logger.debug("Added city: {}".format(city))
-
-        self.import_districts(data)
     
     def build_hierarchy(self):
         if hasattr(self, 'hierarchy'): return
@@ -299,7 +318,17 @@ class Command(BaseCommand):
             child_id = int(items[1])
             self.hierarchy[child_id] = parent_id
             
-    def import_districts(self, city_data):
+    def import_district(self):
+        file, uptodate = self.download('cities5000.zip')[:2]
+        if uptodate and not self.force: return
+        
+        zip = zipfile.ZipFile(file)
+        data = zip.read('cities5000.txt').split('\n')
+        zip.close()
+        file.close()
+        
+        self.build_country_index()
+        self.build_region_index()
         self.build_hierarchy()
             
         self.logger.info("Building city index")
@@ -308,7 +337,7 @@ class Command(BaseCommand):
             city_index[obj.id] = obj
             
         self.logger.info("Importing district data")
-        for line in city_data:
+        for line in data:
             if len(line) < 1 or line[0] == '#': continue
             items = [e.strip() for e in line.split('\t')]
             if not self.call_hook('district_pre', items): continue
@@ -329,9 +358,9 @@ class Command(BaseCommand):
             district.save()
             self.logger.debug("Added district: {}".format(district))
             
-    def import_geo_alt_name(self):
+    def import_alt_name(self):
         file, uptodate = self.download('alternateNames.zip')[:2]
-        if uptodate and not self.options['force']: return
+        if uptodate and not self.force: return
         
         zip = zipfile.ZipFile(file)
         data = zip.read('alternateNames.txt').split('\n')
@@ -375,9 +404,9 @@ class Command(BaseCommand):
             alt.save()
             self.logger.debug("Added alt name: {}, {} ({})".format(locale, alt, alt.geo))
             
-    def import_postal_codes(self):
+    def import_postal_code(self):
         file, uptodate = self.download('allCountries.zip')[:2]
-        if uptodate and not self.options['force']: return
+        if uptodate and not self.force: return
         
         zip = zipfile.ZipFile(file)
         data = zip.read('allCountries.txt').split('\n')
@@ -441,3 +470,36 @@ class Command(BaseCommand):
             if not self.call_hook('postal_code_post', pc, items): continue
             pc.save()
             self.logger.debug("Added postal code: {}, {}".format(pc.country, pc))
+            
+    def flush_country(self):
+        self.logger.info("Flushing country data")
+        Country.objects.all().delete()
+        
+    def flush_region(self):
+        self.flush_region_0()
+        self.flush_region_1()
+        
+    def flush_region_0(self):
+        self.logger.info("Flushing region 0 data")
+        Region.objects.filter(level=0).delete()
+        
+    def flush_region_1(self):
+        self.logger.info("Flushing region 1 data")
+        Region.objects.filter(level=1).delete()
+        
+    def flush_city(self):
+        self.logger.info("Flushing city data")
+        City.objects.all().delete()
+    
+    def flush_district(self):
+        self.logger.info("Flushing district data")
+        District.objects.all().delete()
+    
+    def flush_alt_name(self):
+        self.logger.info("Flushing alternate name data")
+        [geo_alt_name.objects.all().delete() for locales in geo_alt_names.values() for geo_alt_name in locales.values()]
+        
+    def flush_postal_code(self):
+        self.logger.info("Flushing postal code data")
+        [postal_code.objects.all().delete() for postal_code in postal_codes.values()]
+    
