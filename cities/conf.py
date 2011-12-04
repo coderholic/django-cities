@@ -3,8 +3,7 @@ from collections import defaultdict
 from django.conf import settings as django_settings
     
 __all__ = [
-    'url_bases','urls',
-    'country_codes','city_types','district_types',
+    'city_types','district_types',
     'import_opts','import_opts_all','HookException','settings'
 ]
 
@@ -15,14 +14,35 @@ url_bases = {
     },
 }
 
-urls = {
-    'countryInfo.txt':      [url_bases['geonames']['dump']+'{filename}', ],
-    'admin1CodesASCII.txt': [url_bases['geonames']['dump']+'{filename}', ],
-    'admin2Codes.txt':      [url_bases['geonames']['dump']+'{filename}', ],
-    'cities5000.zip':       [url_bases['geonames']['dump']+'{filename}', ],
-    'hierarchy.zip':        [url_bases['geonames']['dump']+'{filename}', ],
-    'alternateNames.zip':   [url_bases['geonames']['dump']+'{filename}', ],
-    'allCountries.zip':     [url_bases['geonames']['zip']+'{filename}', ],
+files = {
+    'country':      {
+        'filename': 'countryInfo.txt',
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+    },
+    'region_0':     {
+        'filename': 'admin1CodesASCII.txt',
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+    },
+    'region_1':     {
+        'filename': 'admin2Codes.txt',
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+    },
+    'city':         {
+        'filename': 'cities5000.zip',
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+    },
+    'hierarchy':    {
+        'filename': 'hierarchy.zip',
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+    },
+    'alt_name':     {
+        'filename': 'alternateNames.zip',
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+    },
+    'postal_code':  {
+        'filename': 'allCountries.zip',
+        'urls':     [url_bases['geonames']['zip']+'{filename}', ]
+    }
 }
 
 country_codes = [
@@ -83,6 +103,9 @@ plugin_hooks = [
 def create_settings():
     res = type('',(),{})
     
+    res.files = files.copy()
+    res.files.update(django_settings.CITIES_FILES)
+    
     locales = django_settings.CITIES_LOCALES[:]
     try:
         locales.remove('LANGUAGES')
@@ -91,7 +114,7 @@ def create_settings():
     res.locales = set([e.lower() for e in locales])
     
     res.postal_codes = set([e.upper() for e in django_settings.CITIES_POSTAL_CODES])
-        
+    
     return res
 
 def create_plugins():
