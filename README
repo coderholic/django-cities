@@ -80,10 +80,18 @@ LOGGING = {
     }
 }
 
+CITIES_FILES = {
+    # Uncomment below to import all cities with population > 1000 (default is > 5000)
+    #'city': {
+    #   'filename': 'cities1000.zip',
+    #   'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+    #},
+}
+
 # Localized names will be imported for all locale codes below.
 # 'und' is undetermined language data (most alternate names are missing a lang tag).
 # Ref: download.geonames.org/export/dump/iso-languagecodes.txt
-CITIES_LOCALES = ['en', 'und']  # + ['LANGUAGES'] # Uncomment to also include languages from your settings
+CITIES_LOCALES = ['en', 'und']  # + ['LANGUAGES']   # Uncomment to also include languages from your settings
 
 # Postal codes will be imported for all country codes below.
 # See cities.conf for a full list of country codes.
