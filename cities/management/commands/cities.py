@@ -24,8 +24,11 @@ from optparse import make_option
 from django.core.management.base import BaseCommand
 from django.utils.encoding import force_unicode
 from django.template.defaultfilters import slugify
+from django.db import connection
+from django.contrib.gis.gdal.envelope import Envelope
 from ...conf import *
 from ...models import *
+from ...util import geo_distance
 
 class Command(BaseCommand):
     app_dir = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../..')
@@ -353,15 +356,33 @@ class Command(BaseCommand):
             if not district: continue
             
             # Find city
-            try: district.city = city_index[self.hierarchy[district.id]]
+            city = None
+            try: city = city_index[self.hierarchy[district.id]]
             except:
                 self.logger.warning("District: {}: Cannot find city in hierarchy, using nearest".format(district.name))
-                district.city = City.objects.filter(population__gt=100000).distance(district.location).order_by('distance')[0]
+                city_pop_min = 100000
+                if connection.ops.mysql:
+                    # mysql doesn't have distance function, get nearest city within 2 degrees
+                    search_deg = 2
+                    min_dist = float('inf')
+                    bounds = Envelope(  district.location.x-search_deg, district.location.y-search_deg,
+                                        district.location.x+search_deg, district.location.y+search_deg)
+                    for e in City.objects.filter(population__gt=city_pop_min).filter(location__intersects=bounds.wkt):
+                        dist = geo_distance(district.location, e.location)
+                        if dist < min_dist:
+                            min_dist = dist
+                            city = e
+                else:
+                    city = City.objects.filter(population__gt=city_pop_min).distance(district.location).order_by('distance')[0]
+            if not city:
+                self.logger.warning("District: {}: Cannot find city -- skipping".format(district.name))
+                continue
+            district.city = city
             
             if not self.call_hook('district_post', district, items): continue
             district.save()
             self.logger.debug("Added district: {}".format(district))
-            
+        
     def import_alt_name(self):
         uptodate = self.download('alt_name')
         if uptodate and not self.force: return
