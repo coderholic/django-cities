@@ -179,7 +179,7 @@ class Command(BaseCommand):
         country_code = region.code.split('.')[0]
         try: region.country = self.country_index[country_code]
         except:
-            self.logger.warning("Region {}: {}: Cannot find country: {} -- skipping".format(level+1, region.name, country_code))
+            self.logger.warning("Region {}: {}: Cannot find country: {} -- skipping".format(level, region.name, country_code))
             return None
         
         # Find parent region, search highest level first
@@ -189,7 +189,7 @@ class Command(BaseCommand):
                 region.region_parent = self.region_index[region_parent_code]
                 break
             except:
-                self.logger.warning("Region {}: {}: Cannot find region {}: {}".format(sublevel+2, region.name, sublevel+1, region_parent_code))
+                self.logger.warning("Region {}: {}: Cannot find region {}: {}".format(level, region.name, sublevel, region_parent_code))
             
         return region
     
@@ -208,7 +208,7 @@ class Command(BaseCommand):
         
         self.build_country_index()
                 
-        self.logger.info("Importing region 1 data")
+        self.logger.info("Importing region 0 data")
         for line in data:
             if len(line) < 1 or line[0] == '#': continue
             items = [e.strip() for e in line.split('\t')]
@@ -219,7 +219,7 @@ class Command(BaseCommand):
             
             if not self.call_hook('region_post', 0, region, items): continue
             region.save()
-            self.logger.debug("Added region 1: {}, {}".format(region.code, region))
+            self.logger.debug("Added region 0: {}, {}".format(region.code, region))
         
     def build_region_index(self, level=None):
         if hasattr(self, 'region_index') and self.region_index_level == level: return
@@ -228,7 +228,7 @@ class Command(BaseCommand):
             self.logger.info("Building region index")
             qset = Region.objects.all()
         else:
-            self.logger.info("Building region {} index".format(level+1))
+            self.logger.info("Building region {} index".format(level))
             qset = Region.objects.filter(level=level)
             
         self.region_index = {}
@@ -244,7 +244,7 @@ class Command(BaseCommand):
         self.build_country_index()
         self.build_region_index(0)
                 
-        self.logger.info("Importing region 2 data")
+        self.logger.info("Importing region 1 data")
         for line in data:
             if len(line) < 1 or line[0] == '#': continue
             items = [e.strip() for e in line.split('\t')]
@@ -255,7 +255,7 @@ class Command(BaseCommand):
             
             if not self.call_hook('region_post', 1, region, items): continue
             region.save()
-            self.logger.debug("Added region 2: {}, {}".format(region.code, region))
+            self.logger.debug("Added region 1: {}, {}".format(region.code, region))
         
     def import_city_common(self, city, items):
         class_ = city.__class__
@@ -285,7 +285,8 @@ class Command(BaseCommand):
                 region = self.region_index[code]
                 break
             except:
-                self.logger.warning("{}: {}: Cannot find region {}: {}".format(class_.__name__, city.name, level+1, code))
+                self.logger.log(logging.DEBUG if level else logging.WARNING, # Escalate if all levels failed
+                                "{}: {}: Cannot find region {}: {}".format(class_.__name__, city.name, level, code))
         if class_ is City: city.region = region
         
         return city
@@ -469,8 +470,12 @@ class Command(BaseCommand):
             pc.region_0_name = items[3]
             pc.region_1_name = items[5]
             pc.region_2_name = items[7]
-            pc.location = Point(float(items[10]), float(items[9]))
             
+            try: pc.location = Point(float(items[10]), float(items[9]))
+            except:
+                self.logger.warning("Postal code: {}, {}: Invalid location ({}, {})".format(pc.country, pc.code, items[10], items[9]))
+                pc.location = Point(0,0)
+                
             # Find region, search highest level first
             region = None
             item_offset = 4
@@ -481,7 +486,8 @@ class Command(BaseCommand):
                     region = self.region_index[code]
                     break
                 except:
-                    self.logger.debug("Postal code: {}: Cannot find region {}: {}".format(pc.code, level+1, code))
+                    self.logger.log(logging.DEBUG if level else logging.WARNING, # Escalate if all levels failed
+                                    "Postal code: {}, {}: Cannot find region {}: {}".format(pc.country, pc.code, level, code))
             pc.region = region
         
             if not self.call_hook('postal_code_post', pc, items): continue
