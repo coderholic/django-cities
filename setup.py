@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name='django-cities',
-    version='0.18',
+    version='0.181',
     description='Place models and data for Django apps',
     author='Dan Carter (original by Ben Dowling)',
     author_email='carterd@gmail.com',
