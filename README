@@ -54,6 +54,10 @@ Get region objects for US postal code:
 >>> Region.objects.filter(postal_codes_US__code='90210')
 [<Region: Los Angeles County, California, United States>]
 
+Get a list of cities in the state of Texas:
+
+>>> City.objects.filter(country__name="United States", region__region_parent__name="Texas")
+
 
  Install
 =======================
