@@ -100,7 +100,7 @@ CITIES_LOCALES = ['en', 'und']  # + ['LANGUAGES']   # Uncomment to also include 
 # Postal codes will be imported for all ISO 3166-1 alpha-2 country codes below.
 # See cities.conf for a full list of country codes.
 # Ref: download.geonames.org/export/dump/countryInfo.txt
-CITIES_POSTAL_CODES = ['US','CA']
+CITIES_POSTAL_CODES = ['US', 'CA']
 
 # List of plugins to process data during import
 CITIES_PLUGINS = [
