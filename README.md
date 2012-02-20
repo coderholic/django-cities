@@ -1,66 +1,83 @@
- django-cities - Place models and data for Django apps
-=======================================================
+ django-cities -- *Place models and data for Django apps*
+=========================================================
 
 This add-on provides models and commands to import country/region/city data into your database.
-The data is pulled from GeoNames and contains:
-    - localized names
-    - geographical codes
-    - postal codes
-    - geo-coords
-    - population
+The data is pulled from [GeoNames](http://www.geonames.org/) and contains:
 
-Your database must support spatial queries, see GeoDjango for setup.
+  - localized names
+  - geographical codes
+  - postal codes
+  - geo-coords
+  - population
 
-For more information see:
-http://www.coderholic.com/django-cities-countries-regions-cities-and-districts-for-django/
+Your database must support spatial queries, see [GeoDjango]
+(https://docs.djangoproject.com/en/dev/ref/contrib/gis/) for setup.
+
+For more information see [this blog post]
+(http://www.coderholic.com/django-cities-countries-regions-cities-and-districts-for-django/).
 
 
  Examples
-=======================
+--------------------------
 Finding all London boroughs:
 
->>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
->>> boroughs = District.objects.filter(city=london)
+```python
+    london = City.objects.filter(country__name='United Kingdom').get(name='London')
+    boroughs = District.objects.filter(city=london)
+```
 
 Nearest city to a given geo-coord (longitude, latitude):
 
->>> City.objects.distance(Point(1, 51)).order_by('distance')[0]
-<City: Dymchurch, Kent, United Kingdom>
+```python
+    City.objects.distance(Point(1, 51)).order_by('distance')[0]
+    <City: Dymchurch, Kent, United Kingdom>
+```
 
 5 Nearest cities to London:
 
->>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
->>> nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
+```python
+    london = City.objects.filter(country__name='United Kingdom').get(name='London')
+    nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
+```
 
 Get all countries in Japanese preferring official names if available, fallback on ASCII names:
 
->>> [country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
+```python
+    [country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
+```
 
 Use alternate names model to get Vancouver in Japanese:
 
->>> geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
+```python
+    geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
+```
 
 Gather names of Tokyo from all CITIES_LOCALES:
 
->>> [name for locale in cities.conf.settings.locales
+```python
+    [name for locale in cities.conf.settings.locales
         for name in geo_alt_names[City][locale].objects.filter(geo__name='Tokyo')]
-
+```
 Get all postal codes for Ontario, Canada (only first 3 letters available due to copyright restrictions):
 
->>> postal_codes['CA'].objects.filter(region_0_name='Ontario')
+```python
+    postal_codes['CA'].objects.filter(region_0_name='Ontario')
+```
 
 Get region objects for US postal code:
 
->>> Region.objects.filter(postal_codes_US__code='90210')
-[<Region: Los Angeles County, California, United States>]
-
+```python
+    Region.objects.filter(postal_codes_US__code='90210')
+    [<Region: Los Angeles County, California, United States>]
+```
 
  Install
-=======================
-- Run: python setup.py install
-- Add/Merge the following into your settings.py:
+--------------------------
+- Run: `python setup.py install`
+- Add/Merge the following into your *settings.py*:
 
 -----------------------------------------------------------
+```python
 INSTALLED_APPS = (
     'cities',
 )
@@ -102,14 +119,15 @@ CITIES_POSTAL_CODES = ['US','CA']
 CITIES_PLUGINS = [
     'cities.plugin.postal_code_ca.Plugin',  # Canada postal codes need region codes remapped to match geonames
 ]
+```
 -----------------------------------------------------------
 
-- Sync your database with the new models: 'manage.py syncdb'
-- Populate or update your database: 'manage.py cities'
+- Sync your database with the new models: `manage.py syncdb`
+- Populate or update your database: `manage.py cities`
 
 
  Notes
-=======================
+--------------------------
 The localized names and postal code models/db-tables are created dynamically based on your settings.
 Some datasets are very large (> 100 MB) and take time to download / import, and there's no progress display.
 Data will only be downloaded / imported if it is newer than your data, and only matching rows will be overwritten.
