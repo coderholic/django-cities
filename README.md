@@ -71,6 +71,12 @@ Get region objects for US postal code:
     [<Region: Los Angeles County, California, United States>]
 ```
 
+Get a list of cities in the state of Texas:
+
+```python
+    City.objects.filter(country__name="United States", region__region_parent__name="Texas")
+```
+
  Install
 --------------------------
 - Run: `python setup.py install`
