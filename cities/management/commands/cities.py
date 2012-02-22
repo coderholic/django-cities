@@ -433,12 +433,6 @@ class Command(BaseCommand):
         
         self.build_country_index()
         self.build_region_index()
-        
-        self.logger.info("Building postal code index")
-        postal_code_index = defaultdict(dict)
-        for country in postal_codes:
-            for obj in postal_codes[country].objects.all():
-                postal_code_index[country][obj.code] = obj
                 
         self.logger.info("Importing postal codes")
         for line in data:
@@ -459,11 +453,6 @@ class Command(BaseCommand):
             
             pc_type = postal_codes[country_code]
             pc = pc_type()
-            
-            # Replace matching postal code in db if any
-            try: pc.id = postal_code_index[country_code][code].id
-            except: pass
-            
             pc.country = country
             pc.code = code
             pc.name = items[2]
