@@ -9,18 +9,18 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name='django-cities',
+    name='django-cities-light',
     version='0.19',
-    description='Place models and data for Django apps',
-    author='Dan Carter (original by Ben Dowling)',
-    author_email='carterd@gmail.com',
-    url='https://github.com/Kometes/django-cities',
+    description='Just a country and city model',
+    author='James Pic (original by Dan Carter (original by Ben Dowling))',
+    author_email='jamespic@gmail.com@gmail.com',
+    url='https://github.com/jpic/django-cities-light',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.md'),
     license = "MIT",
-    keywords = "django cities countries regions postal codes geonames",
+    keywords = "django cities countries postal codes",
     classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Web Environment",

@@ -3,7 +3,7 @@ from collections import defaultdict
 from django.conf import settings as django_settings
     
 __all__ = [
-    'city_types','district_types',
+    'city_types',
     'import_opts','import_opts_all','HookException','settings'
 ]
 
@@ -19,20 +19,8 @@ files = {
         'filename': 'countryInfo.txt',
         'urls':     [url_bases['geonames']['dump']+'{filename}', ]
     },
-    'region_0':     {
-        'filename': 'admin1CodesASCII.txt',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
-    },
-    'region_1':     {
-        'filename': 'admin2Codes.txt',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
-    },
     'city':         {
         'filename': 'cities5000.zip',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
-    },
-    'hierarchy':    {
-        'filename': 'hierarchy.zip',
         'urls':     [url_bases['geonames']['dump']+'{filename}', ]
     },
     'alt_name':     {
@@ -63,26 +51,19 @@ country_codes = [
 
 # See http://www.geonames.org/export/codes.html
 city_types = ['PPL','PPLA','PPLC','PPLA2','PPLA3','PPLA4']
-district_types = ['PPLX']
 
 # Command-line import options
 import_opts = [
     'all',
     'country',
-    'region',
-    'region_0',
-    'region_1',
     'city',
-    'district',
     'alt_name',
     'postal_code',
 ]
 
 import_opts_all = [
     'country',
-    'region',
     'city',
-    'district',
     'alt_name',
     'postal_code',
 ]
@@ -93,9 +74,7 @@ class HookException(Exception): pass
 # Hook functions that a plugin class may define
 plugin_hooks = [
     'country_pre',      'country_post',
-    'region_pre',       'region_post',
     'city_pre',         'city_post',
-    'district_pre',     'district_post',
     'alt_name_pre',     'alt_name_post',
     'postal_code_pre',  'postal_code_post',
 ]
