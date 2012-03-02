@@ -133,15 +133,9 @@ It is possible to force the import of files which weren't downloaded using the
             if not country or country.code2 != items[0]:
                 country = Country.objects.get(code2=items[0])
 
-            if not previous_city or force_unicode(items[3]) != previous_city.name:
-                try:
-                    city = City.objects.get(name=items[3], country=country)
-                except City.DoesNotExist:
-                    city = City(name=items[3], country=country)
-
-                city.name = items[3]
-                city.save()
-
+            if not previous_city or force_unicode(items[2]) != previous_city.name:
+                city, created = City.objects.get_or_create(name=items[2], 
+                    country=country)
             else:
                 city = previous_city
 
