@@ -120,13 +120,19 @@ class Command(BaseCommand):
 
                 city.name = items[3]
                 city.save()
+
             else:
                 city = previous_city
 
             if not SKIP_POSTAL_CODE:
                 if not previous_postal_code or items[1] != previous_postal_code:
-                    postal_code, created = PostalCode.objects.get_or_create(code=items[1], 
-                        city=city)
+                    postal_code, created = PostalCode.objects.get_or_create(
+                        code=items[1], city=city)
+
+                    if created or postal_code.name != force_unicode(items[2]):
+                        postal_code.name = items[2]
+                        postal_code.save()
+                    
                     previous_postal_code = postal_code.code
 
             previous_city = city
