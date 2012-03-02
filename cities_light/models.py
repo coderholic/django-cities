@@ -1,7 +1,6 @@
 import unicodedata
 
-#not sure why he needed force_unicode, leaving it here as a reminder
-#from django.utils.encoding import force_unicode
+from django.utils.encoding import force_unicode
 from django.db.models import signals
 from django.db import models
 from django.template import defaultfilters
@@ -21,7 +20,7 @@ CONTINENT_CHOICES = (
 
 def ascii_name_and_slug(sender, instance=None, **kwargs):
     if isinstance(instance.name, str):
-        instance.name = unicode(instance.name)
+        instance.name = force_unicode(instance.name)
 
     instance.name_ascii = unicodedata.normalize('NFKD', instance.name
         ).encode('ascii', 'ignore')
