@@ -145,7 +145,7 @@ It is possible to force the import of files which weren't downloaded using the
             else:
                 city = previous_city
 
-            if not SKIP_POSTAL_CODE:
+            if ENABLE_POSTAL_CODE:
                 if not previous_postal_code or items[1] != previous_postal_code:
                     postal_code, created = PostalCode.objects.get_or_create(
                         code=items[1], city=city)

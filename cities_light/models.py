@@ -8,6 +8,8 @@ from django.utils.translation import ugettext as _
 
 import autoslug
 
+from settings import *
+
 __all__ = ['Country','City', 'PostalCode', 'CONTINENT_CHOICES']
 
 CONTINENT_CHOICES = (
@@ -58,6 +60,9 @@ class City(models.Model):
         unique_together = (('country', 'name'),)
         verbose_name_plural = _(u'cities')
         ordering = ['name']
+
+        if not ENABLE_CITY:
+            abstract = True
         
     def __unicode__(self):
         return self.name
@@ -75,6 +80,9 @@ class PostalCode(models.Model):
     class Meta:
         ordering = ['city', 'code']
         unique_together = (('city', 'code'),)
+
+        if not ENABLE_POSTAL_CODE:
+            abstract = True
 
     def __unicode__(self):
         return self.code
