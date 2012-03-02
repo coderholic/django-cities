@@ -2,7 +2,21 @@
 
 from django.utils import unittest
 
+from .forms import CountryForm, CityForm
 from .models import Country, City
+
+class FormTestCase(unittest.TestCase):
+    def testCountryFormNameAndContinentAlone(self):
+        form = CountryForm({'name': 'France', 'continent': 'EU'})
+        self.assertTrue(form.is_valid())
+        form.save()
+
+    def testCityFormNameAndCountryAlone(self):
+        country = Country(name='France')
+        country.save()
+        form = CityForm({'name': 'Paris', 'country': country.pk})
+        self.assertTrue(form.is_valid())
+        form.save()
 
 class SaveTestCase(unittest.TestCase):
     def testCountryAsciiAndSlug(self):
@@ -13,7 +27,6 @@ class SaveTestCase(unittest.TestCase):
         self.assertEqual(country.slug, u'ao-eu')
 
     def testCityAsciiAndSlug(self):
-        Country(name=u'foo').save()
         city = City(name=u'áó éú', country_id=1)
         city.save()
 

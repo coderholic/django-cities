@@ -26,9 +26,9 @@ class Country(models.Model):
     name_ascii = models.CharField(max_length=200, db_index=True, 
         verbose_name="ascii name", blank=True)
     slug = models.CharField(max_length=200, blank=True)
-    code2 = models.CharField(max_length=2, db_index=True)
+    code2 = models.CharField(max_length=2, db_index=True, null=True, blank=True)
     continent = models.CharField(max_length=2)
-    tld = models.CharField(max_length=5)
+    tld = models.CharField(max_length=5, null=True, blank=True)
     
     class Meta:
         ordering = ['name']
