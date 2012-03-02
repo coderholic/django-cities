@@ -6,9 +6,6 @@ from django.db.models import signals
 from django.db import models
 from django.template import defaultfilters
 
-from conf import settings
-from util import create_model, un_camel
-    
 __all__ = ['Country','City']
 
 def ascii_name_and_slug(sender, instance=None, **kwargs):
