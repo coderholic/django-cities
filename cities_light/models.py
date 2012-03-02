@@ -12,6 +12,9 @@ from util import create_model, un_camel
 __all__ = ['Country','City']
 
 def ascii_name_and_slug(sender, instance=None, **kwargs):
+    if isinstance(instance.name, str):
+        instance.name = unicode(instance.name)
+
     instance.name_ascii = unicodedata.normalize('NFKD', instance.name
         ).encode('ascii', 'ignore')
 
