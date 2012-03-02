@@ -6,6 +6,8 @@ from django.db import models
 from django.template import defaultfilters
 from django.utils.translation import ugettext as _
 
+import autoslug
+
 __all__ = ['Country','City', 'PostalCode', 'CONTINENT_CHOICES']
 
 CONTINENT_CHOICES = (
@@ -18,21 +20,18 @@ CONTINENT_CHOICES = (
     ('AS', _(u'Asia')),
 )
 
-def ascii_name_and_slug(sender, instance=None, **kwargs):
+def set_name_ascii(sender, instance=None, **kwargs):
     if isinstance(instance.name, str):
         instance.name = force_unicode(instance.name)
 
     instance.name_ascii = unicodedata.normalize('NFKD', instance.name
         ).encode('ascii', 'ignore')
 
-    instance.slug = defaultfilters.slugify(instance.name_ascii)
-
 class Country(models.Model):
-    name = models.CharField(max_length=200, db_index=True, 
-        verbose_name="standard name")
-    name_ascii = models.CharField(max_length=200, db_index=True, 
-        verbose_name="ascii name", blank=True)
-    slug = models.CharField(max_length=200, blank=True)
+    name = models.CharField(max_length=200, unique=True)
+    name_ascii = models.CharField(max_length=200, db_index=True)
+    slug = autoslug.AutoSlugField(populate_from='name_ascii')
+
     code2 = models.CharField(max_length=2, blank=True, unique=True)
     code3 = models.CharField(max_length=3, blank=True, unique=True)
     continent = models.CharField(max_length=2, db_index=True, choices=CONTINENT_CHOICES)
@@ -40,35 +39,43 @@ class Country(models.Model):
     tld = models.CharField(max_length=5, blank=True, db_index=True)
     
     class Meta:
+        verbose_name_plural = _(u'countries')
         ordering = ['name']
-        verbose_name_plural = "countries"
 
     def __unicode__(self):
         return self.name
-signals.pre_save.connect(ascii_name_and_slug, sender=Country)
+signals.pre_save.connect(set_name_ascii, sender=Country)
 
 class City(models.Model):
-    name = models.CharField(max_length=200, db_index=True, 
-        verbose_name="standard name")
-    name_ascii = models.CharField(max_length=200, db_index=True, 
-        verbose_name="ascii name", blank=True)
-    slug = models.CharField(max_length=200, blank=True)
+    name = models.CharField(max_length=200, unique=True)
+    name_ascii = models.CharField(max_length=200, db_index=True)
+    slug = autoslug.AutoSlugField(populate_from='name_ascii', 
+        unique_with=('country__name',))
+    
     country = models.ForeignKey(Country)
 
     class Meta:
-        verbose_name_plural = "cities"
+        unique_together = (('country', 'name'),)
+        verbose_name_plural = _(u'cities')
+        ordering = ['name']
         
     def __unicode__(self):
         return self.name
-signals.pre_save.connect(ascii_name_and_slug, sender=City)
+signals.pre_save.connect(set_name_ascii, sender=City)
 
 class PostalCode(models.Model):
-    code = models.CharField(max_length=25, db_index=True)
     name = models.CharField(max_length=200)
-    city = models.ForeignKey('City')
+    name_ascii = models.CharField(max_length=200, db_index=True)
+    slug = autoslug.AutoSlugField(populate_from='name_ascii', 
+        unique_with=('city__name', 'city__country__name',))
 
+    code = models.CharField(max_length=25, db_index=True)
+    city = models.ForeignKey('City')
+    
     class Meta:
+        ordering = ['city', 'code']
         unique_together = (('city', 'code'),)
 
     def __unicode__(self):
         return self.code
+signals.pre_save.connect(set_name_ascii, sender=PostalCode)
