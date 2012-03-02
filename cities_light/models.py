@@ -1,19 +1,31 @@
+import unicodedata
+
 #not sure why he needed force_unicode, leaving it here as a reminder
 #from django.utils.encoding import force_unicode
+from django.db.models import signals
 from django.db import models
+from django.template import defaultfilters
+
 from conf import settings
 from util import create_model, un_camel
     
 __all__ = ['Country','City']
 
+def ascii_name_and_slug(sender, instance=None, **kwargs):
+    instance.name_ascii = unicodedata.normalize('NFKD', instance.name
+        ).encode('ascii', 'ignore')
+
+    instance.slug = defaultfilters.slugify(instance.name_ascii)
+
 class Country(models.Model):
-    name = models.CharField(max_length=200, db_index=True, verbose_name="ascii name")
-    slug = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True, 
+        verbose_name="standard name")
+    name_ascii = models.CharField(max_length=200, db_index=True, 
+        verbose_name="ascii name", blank=True)
+    slug = models.CharField(max_length=200, blank=True)
     code = models.CharField(max_length=2, db_index=True)
-    population = models.IntegerField()
     continent = models.CharField(max_length=2)
     tld = models.CharField(max_length=5)
-    objects = models.GeoManager()
     
     class Meta:
         ordering = ['name']
@@ -21,13 +33,15 @@ class Country(models.Model):
 
     def __unicode__(self):
         return self.name
+signals.pre_save.connect(ascii_name_and_slug, sender=Country)
 
 class City(models.Model):
-    name = models.CharField(max_length=200, db_index=True, verbose_name="ascii name")
-    name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
-    slug = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True, 
+        verbose_name="standard name")
+    name_ascii = models.CharField(max_length=200, db_index=True, 
+        verbose_name="ascii name", blank=True)
+    slug = models.CharField(max_length=200, blank=True)
     country = models.ForeignKey(Country)
-    population = models.IntegerField()
     postal_code = models.CharField(max_length=7, null=True, blank=True)
 
     class Meta:
@@ -35,3 +49,4 @@ class City(models.Model):
         
     def __unicode__(self):
         return self.name
+signals.pre_save.connect(ascii_name_and_slug, sender=City) 
