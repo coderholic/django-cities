@@ -6,7 +6,7 @@ from django.db import models
 from django.template import defaultfilters
 from django.utils.translation import ugettext as _
 
-__all__ = ['Country','City', 'CONTINENT_CHOICES']
+__all__ = ['Country','City', 'PostalCode', 'CONTINENT_CHOICES']
 
 CONTINENT_CHOICES = (
     ('OC', _(u'Oceania')),
@@ -54,11 +54,21 @@ class City(models.Model):
         verbose_name="ascii name", blank=True)
     slug = models.CharField(max_length=200, blank=True)
     country = models.ForeignKey(Country)
-    postal_code = models.CharField(max_length=7, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "cities"
         
     def __unicode__(self):
         return self.name
-signals.pre_save.connect(ascii_name_and_slug, sender=City) 
+signals.pre_save.connect(ascii_name_and_slug, sender=City)
+
+class PostalCode(models.Model):
+    code = models.CharField(max_length=25, db_index=True)
+    name = models.CharField(max_length=200)
+    city = models.ForeignKey('City')
+
+    class Meta:
+        unique_together = (('city', 'code'),)
+
+    def __unicode__(self):
+        return self.code
