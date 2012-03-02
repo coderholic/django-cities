@@ -14,8 +14,29 @@ from ...models import *
 from ...settings import *
 
 class Command(BaseCommand):
-    app_dir = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../..')
-    data_dir = os.path.join(app_dir, 'data')
+    args = '''
+[--force-all] [--force-import-all \\]
+                              [--force-import allCountries.txt FR.zip ...] \\
+                              [--force allCountries.txt FR.zip ...]
+    '''.strip()
+    help = '''
+Download all files in CITIES_LIGHT_COUNTRY_SOURCES if they were updated or if 
+--force-all option was used.
+Import country data if they were downloaded or if --force-import-all was used.
+
+Same goes for CITIES_LIGHT_CITY_SOURCES.
+
+It is possible to force the download of some files which have not been updated
+on the server:
+
+    manage.py --force FR.zip countryInfo.txt
+
+It is possible to force the import of files which weren't downloaded using the 
+--force-import option:
+
+    manage.py --force-import FR.zip countryInfo.txt
+    '''.strip()
+
     logger = logging.getLogger('cities_light')
 
     option_list = BaseCommand.option_list + (
