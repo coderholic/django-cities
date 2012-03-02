@@ -39,7 +39,7 @@ class CityAdmin(admin.ModelAdmin):
 if ENABLE_CITY:
     admin.site.register(City, CityAdmin)
 
-class PostalCodeAdmin(admin.ModelAdmin):
+class ZipAdmin(admin.ModelAdmin):
     list_display = (
         'code',
         'name',
@@ -59,4 +59,4 @@ class PostalCodeAdmin(admin.ModelAdmin):
         'city__country',
     )
 if ENABLE_POSTAL_CODE:
-    admin.site.register(PostalCode, PostalCodeAdmin)
+    admin.site.register(Zip, ZipAdmin)

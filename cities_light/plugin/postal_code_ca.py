@@ -17,7 +17,7 @@ code_map = {
 }
 
 class Plugin:
-    def postal_code_pre(self, parser, items):
+    def zip_pre(self, parser, items):
         country_code = items[0]
         if country_code != 'CA': return
         items[4] = code_map[items[4]]

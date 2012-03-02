@@ -29,5 +29,5 @@ ENABLE_CITY = ENABLE_POSTAL_CODE or getattr(settings, 'CITIES_LIGHT_ENABLE_CITY'
 
 SOURCES = list(COUNTRY_SOURCES) + list(CITY_SOURCES)
 
-WORK_DIR = getattr(settings, 'CITIES_LIGHT_WORK_DIR',
+DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
     os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'var')))

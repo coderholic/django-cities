@@ -55,13 +55,13 @@ It is possible to force the import of files which weren't downloaded using the
     )
 
     def handle(self, *args, **options):
-        if not os.path.exists(WORK_DIR):
-            self.logger.info('Creating %s' % WORK_DIR)
-            os.mkdir(WORK_DIR)
+        if not os.path.exists(DATA_DIR):
+            self.logger.info('Creating %s' % DATA_DIR)
+            os.mkdir(DATA_DIR)
 
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
-            destination_file_path = os.path.join(WORK_DIR, destination_file_name)
+            destination_file_path = os.path.join(DATA_DIR, destination_file_name)
             
             force = options['force_all'] or destination_file_name in options['force']
             downloaded = self.download(url, destination_file_path, force)
@@ -69,7 +69,7 @@ It is possible to force the import of files which weren't downloaded using the
             if destination_file_name.split('.')[-1] == 'zip':
                 destination_file_name = destination_file_name.replace('zip', 'txt')
                 self.extract(destination_file_path, destination_file_name)
-                destination_file_path = os.path.join(WORK_DIR, destination_file_name)
+                destination_file_path = os.path.join(DATA_DIR, destination_file_name)
 
             force_import = options['force_import_all'] or \
                 destination_file_name in options['force_import']
@@ -105,7 +105,7 @@ It is possible to force the import of files which weren't downloaded using the
         return True
 
     def extract(self, zip_path, file_name):
-        destination = os.path.join(WORK_DIR, file_name)
+        destination = os.path.join(DATA_DIR, file_name)
         
         self.logger.info('Extracting %s from %s into %s' % (file_name, zip_path, destination))
 
@@ -127,7 +127,7 @@ It is possible to force the import of files which weren't downloaded using the
             country.save()
 
     def city_import(self, file_path):
-        country = previous_city = previous_postal_code = False
+        country = previous_city = previous_zip = False
 
         for items in self.parse(file_path):
             if not country or country.code2 != items[0]:
@@ -146,15 +146,15 @@ It is possible to force the import of files which weren't downloaded using the
                 city = previous_city
 
             if ENABLE_POSTAL_CODE:
-                if not previous_postal_code or items[1] != previous_postal_code:
-                    postal_code, created = PostalCode.objects.get_or_create(
+                if not previous_zip or items[1] != previous_zip:
+                    zip, created = Zip.objects.get_or_create(
                         code=items[1], city=city)
 
-                    if created or postal_code.name != force_unicode(items[2]):
-                        postal_code.name = items[2]
-                        postal_code.save()
+                    if created or zip.name != force_unicode(items[2]):
+                        zip.name = items[2]
+                        zip.save()
                     
-                    previous_postal_code = postal_code.code
+                    previous_zip = zip.code
 
             previous_city = city
 

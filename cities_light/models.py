@@ -10,7 +10,7 @@ import autoslug
 
 from settings import *
 
-__all__ = ['Country','City', 'PostalCode', 'CONTINENT_CHOICES']
+__all__ = ['Country','City', 'Zip', 'CONTINENT_CHOICES']
 
 CONTINENT_CHOICES = (
     ('OC', _(u'Oceania')),
@@ -68,7 +68,7 @@ class City(models.Model):
         return self.name
 signals.pre_save.connect(set_name_ascii, sender=City)
 
-class PostalCode(models.Model):
+class Zip(models.Model):
     name = models.CharField(max_length=200)
     name_ascii = models.CharField(max_length=200, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii', 
@@ -86,4 +86,4 @@ class PostalCode(models.Model):
 
     def __unicode__(self):
         return self.code
-signals.pre_save.connect(set_name_ascii, sender=PostalCode)
+signals.pre_save.connect(set_name_ascii, sender=Zip)
