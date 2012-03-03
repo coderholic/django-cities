@@ -159,5 +159,13 @@ It is possible to force the import of files which weren't downloaded using the
             except InvalidItems:
                 continue
             
-            city, created = City.objects.get_or_create(name=items[1], 
-                geoname_id=items[0], country=self._get_country(items[8]))
+            kwargs = dict(name=items[1], country=self._get_country(items[8]))
+
+            try:
+                city = City.objects.get(**kwargs)
+            except City.DoesNotExist:
+                city = City(**kwargs)
+
+            if not city.geoname_id: # city may have been added manually
+                city.geoname_id = items[0]
+                city.save()
