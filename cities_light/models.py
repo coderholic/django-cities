@@ -10,7 +10,7 @@ import autoslug
 
 from settings import *
 
-__all__ = ['Country','City', 'Zip', 'CONTINENT_CHOICES']
+__all__ = ['Country','City', 'CONTINENT_CHOICES']
 
 CONTINENT_CHOICES = (
     ('OC', _(u'Oceania')),
