@@ -81,7 +81,7 @@ class Zip(models.Model):
         ordering = ['city', 'code']
         unique_together = (('city', 'code'),)
 
-        if not ENABLE_POSTAL_CODE:
+        if not ENABLE_ZIP:
             abstract = True
 
     def __unicode__(self):

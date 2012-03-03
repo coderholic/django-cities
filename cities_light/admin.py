@@ -58,5 +58,5 @@ class ZipAdmin(admin.ModelAdmin):
         'city__country__continent',
         'city__country',
     )
-if ENABLE_POSTAL_CODE:
+if ENABLE_ZIP:
     admin.site.register(Zip, ZipAdmin)

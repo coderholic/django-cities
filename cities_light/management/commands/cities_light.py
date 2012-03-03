@@ -139,7 +139,7 @@ It is possible to force the import of files which weren't downloaded using the
             else:
                 city = previous_city
 
-            if ENABLE_POSTAL_CODE:
+            if ENABLE_ZIP:
                 if not previous_zip or items[1] != previous_zip:
                     zip, created = Zip.objects.get_or_create(
                         code=items[1], city=city)
