@@ -28,11 +28,8 @@ Or the development version:
 
 Add `cities_light` to your `INSTALLED_APPS`.
 
-There are 3 levels of usage:
-
-- countries,
-- cities (implies with countries)
-- zips / postal codes (implies with cities and countries)
+This app lets you use only countries, or countries+cities, or
+countries+cities+postal codes.
 
 By default, countries and cities are enabled. To disable cities, add setting:
 
