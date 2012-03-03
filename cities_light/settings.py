@@ -24,10 +24,20 @@ CITY_SOURCES = getattr(settings, 'CITIES_LIGHT_CITY_SOURCES', [])
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
 
-ENABLE_POSTAL_CODE = getattr(settings, 'CITIES_LIGHT_ENABLE_POSTAL_CODES', False)
-ENABLE_CITY = ENABLE_POSTAL_CODE or getattr(settings, 'CITIES_LIGHT_ENABLE_CITY', True)
+ENABLE_ZIP = getattr(settings, 'CITIES_LIGHT_ENABLE_ZIPS', False)
+ENABLE_CITY = ENABLE_ZIP or getattr(settings, 'CITIES_LIGHT_ENABLE_CITY', True)
 
 SOURCES = list(COUNTRY_SOURCES) + list(CITY_SOURCES)
 
 DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
     os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'var')))
+
+if hasattr(settings, 'AJAX_LOOKUP_CHANNELS'):
+    settings.AJAX_LOOKUP_CHANNELS['cities_light.Country'] = (
+        'cities_light.lookups', 'CountryLookup'),
+    if ENABLE_CITY:
+        settings.AJAX_LOOKUP_CHANNELS['cities_light.City'] = (
+            'cities_light.lookups', 'CityLookup'),
+    if ENABLE_ZIP:
+        settings.AJAX_LOOKUP_CHANNELS['cities_light.Zip'] = (
+            'cities_light.lookups', 'ZipLookup'),
