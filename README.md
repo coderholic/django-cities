@@ -1,140 +1,109 @@
- django-cities -- *Place models and data for Django apps*
+django-cities-light -- *Simple django-cities alternative*
 =========================================================
 
-This add-on provides models and commands to import country/region/city data into your database.
+This add-on provides models and commands to import country/city data into your database.
 The data is pulled from [GeoNames](http://www.geonames.org/) and contains:
 
-  - localized names
-  - geographical codes
-  - postal codes
-  - geo-coords
-  - population
+ o- country names
+  - optionnal city names
+  - optionnal postal codes
 
-Your database must support spatial queries, see [GeoDjango]
-(https://docs.djangoproject.com/en/dev/ref/contrib/gis/) for setup.
+Spatial query support is not required by this application.
 
-For more information see [this blog post]
-(http://www.coderholic.com/django-cities-countries-regions-cities-and-districts-for-django/).
+This application is very simple and is useful if you want to make a simple
+address book for example. If you intend to build a fully featured spatial
+database, you should use
+[django-cities](https://github.com/coderholic/django-cities).
 
+Installation
+------------
 
- Examples
---------------------------
-Finding all London boroughs:
+Install django-cities-light:
 
-```python
-    london = City.objects.filter(country__name='United Kingdom').get(name='London')
-    boroughs = District.objects.filter(city=london)
-```
+    pip install django-cities-light
 
-Nearest city to a given geo-coord (longitude, latitude):
+Or the development version:
 
-```python
-    City.objects.distance(Point(1, 51)).order_by('distance')[0]
-    <City: Dymchurch, Kent, United Kingdom>
-```
+    pip install -e git+git@github.com:yourlabs/django-cities-light.git#egg=cities_light
 
-5 Nearest cities to London:
+Add `cities_light` to your `INSTALLED_APPS`.
 
-```python
-    london = City.objects.filter(country__name='United Kingdom').get(name='London')
-    nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
-```
+There are 3 levels of usage:
 
-Get all countries in Japanese preferring official names if available, fallback on ASCII names:
+- countries,
+- cities (implies with countries)
+- zips / postal codes (implies with cities and countries)
 
-```python
-    [country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
-```
+By default, countries and cities are enabled. To disable cities, add setting:
 
-Use alternate names model to get Vancouver in Japanese:
+    CITIES_LIGHT_ENABLE_CITY=False
 
-```python
-    geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
-```
+Otherwise, you should configure `CITIES_LIGHT_CITY_SOURCES` to match the data
+you want to import. For example, to import France and Russian cities:
 
-Gather names of Tokyo from all CITIES_LOCALES:
+    CITIES_LIGHT_CITY_SOURCES = (
+        'http://download.geonames.org/export/zip/FR.zip',
+        'http://download.geonames.org/export/zip/RU.zip',
+    )
 
-```python
-    [name for locale in cities.conf.settings.locales
-        for name in geo_alt_names[City][locale].objects.filter(geo__name='Tokyo')]
-```
-Get all postal codes for Ontario, Canada (only first 3 letters available due to copyright restrictions):
+Or to import cities from all countries, which is going to take significantly
+more time:
 
-```python
-    postal_codes['CA'].objects.filter(region_0_name='Ontario')
-```
+    CITIES_LIGHT_CITY_SOURCES = (
+        'http://download.geonames.org/export/zip/allCountries.zip',
+    )
 
-Get region objects for US postal code:
+If you want to enable postal codes, then add this setting:
 
-```python
-    Region.objects.filter(postal_codes_US__code='90210')
-    [<Region: Los Angeles County, California, United States>]
-```
+    CITIES_LIGHT_ENABLE_ZIP=True
 
-Get a list of cities in the state of Texas:
+Now, run syncdb, it will only create tables for models that are not disabled:
 
-```python
-    City.objects.filter(country__name="United States", region__region_parent__name="Texas")
-```
+    ./manage.py syncdb
 
- Install
---------------------------
-- Run: `python setup.py install`
-- Add/Merge the following into your *settings.py*:
+Data update
+-----------
 
------------------------------------------------------------
-```python
-INSTALLED_APPS = (
-    'cities',
-)
+Finnaly, populate your database with command:
 
-LOGGING = {
-    'handlers': {
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
+    ./manage.py cities_light
+
+This command is well documented, consult the help with:
+    
+    ./manage.py help cities_light
+
+This command is made to be compatible with background usage like from cron, to
+keep the database fresh. So it doesn't do direct output. To get output from
+this command, simply configure a handler and formatter for `cities_light`
+logger. For example:
+
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'simple': {
+                'format': '%(levelname)s %(message)s'
+            },
         },
-    },
-    'loggers': {
-        'cities': {
-            'handlers': ['console'],
-            'level': 'INFO',
+        'handlers': {
+            'console':{
+                'level':'DEBUG',
+                'class':'logging.StreamHandler',
+                'formatter': 'simple'
+            },
+        },
+        'loggers': {
+            'cities_light': {
+                'handlers':['console'],
+                'propagate': True,
+                'level':'DEBUG',
+            },
+            # also use this one to see SQL queries
+            'django': {
+                'handlers':['console'],
+                'propagate': True,
+                'level':'DEBUG',
+            },
         }
     }
-}
 
-CITIES_FILES = {
-    # Uncomment below to import all cities with population > 1000 (default is > 5000)
-    #'city': {
-    #   'filename': 'cities1000.zip',
-    #   'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
-    #},
-}
-
-# Localized names will be imported for all locale codes below.
-# 'und' is undetermined language data (most alternate names are missing a lang tag).
-# Ref: download.geonames.org/export/dump/iso-languagecodes.txt
-CITIES_LOCALES = ['en', 'und']  # + ['LANGUAGES']   # Uncomment to also include languages from your settings
-
-# Postal codes will be imported for all country codes below.
-# See cities.conf for a full list of country codes.
-# Ref: download.geonames.org/export/dump/countryInfo.txt
-CITIES_POSTAL_CODES = ['US','CA']
-
-# List of plugins to process data during import
-CITIES_PLUGINS = [
-    'cities.plugin.postal_code_ca.Plugin',  # Canada postal codes need region codes remapped to match geonames
-]
-```
------------------------------------------------------------
-
-- Sync your database with the new models: `manage.py syncdb`
-- Populate or update your database: `manage.py cities`
-
-
- Notes
---------------------------
-The localized names and postal code models/db-tables are created dynamically based on your settings.
-Some datasets are very large (> 100 MB) and take time to download / import, and there's no progress display.
-Data will only be downloaded / imported if it is newer than your data, and only matching rows will be overwritten.
-The cities manage command has options, see --help.  Verbosity is controlled through LOGGING.
