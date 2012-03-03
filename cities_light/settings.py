@@ -30,7 +30,7 @@ ENABLE_CITY = ENABLE_ZIP or getattr(settings, 'CITIES_LIGHT_ENABLE_CITY', True)
 SOURCES = list(COUNTRY_SOURCES) + list(CITY_SOURCES)
 
 DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
-    os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'var')))
+    os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')))
 
 if hasattr(settings, 'AJAX_LOOKUP_CHANNELS'):
     settings.AJAX_LOOKUP_CHANNELS['cities_light.Country'] = (
