@@ -34,10 +34,9 @@ class Country(models.Model):
     name_ascii = models.CharField(max_length=200, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii')
 
-    code2 = models.CharField(max_length=2, blank=True, unique=True)
-    code3 = models.CharField(max_length=3, blank=True, unique=True)
+    code2 = models.CharField(max_length=2, blank=True, db_index=True)
+    code3 = models.CharField(max_length=3, blank=True, db_index=True)
     continent = models.CharField(max_length=2, db_index=True, choices=CONTINENT_CHOICES)
-    # can't put it unique because of dupe .gp http://en.wikipedia.org/wiki/.bl
     tld = models.CharField(max_length=5, blank=True, db_index=True)
     
     class Meta:
@@ -49,7 +48,7 @@ class Country(models.Model):
 signals.pre_save.connect(set_name_ascii, sender=Country)
 
 class City(models.Model):
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200, db_index=True)
     name_ascii = models.CharField(max_length=200, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii', 
         unique_with=('country__name',))

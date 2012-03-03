@@ -7,7 +7,7 @@ from .models import Country, City
 
 class FormTestCase(unittest.TestCase):
     def testCountryFormNameAndContinentAlone(self):
-        form = CountryForm({'name': 'France', 'continent': 'EU'})
+        form = CountryForm({'name': 'Spain', 'continent': 'EU'})
         self.assertTrue(form.is_valid())
         form.save()
 
