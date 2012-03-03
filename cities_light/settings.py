@@ -24,7 +24,7 @@ CITY_SOURCES = getattr(settings, 'CITIES_LIGHT_CITY_SOURCES', [])
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
 
-ENABLE_ZIP = getattr(settings, 'CITIES_LIGHT_ENABLE_ZIPS', False)
+ENABLE_ZIP = getattr(settings, 'CITIES_LIGHT_ENABLE_ZIP', False)
 ENABLE_CITY = ENABLE_ZIP or getattr(settings, 'CITIES_LIGHT_ENABLE_CITY', True)
 
 SOURCES = list(COUNTRY_SOURCES) + list(CITY_SOURCES)
