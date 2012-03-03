@@ -22,8 +22,8 @@ setup(
     license = 'MIT',
     keywords = 'django cities countries postal codes',
     requires=[
-        'django-autoslug',
-    ]
+        'django_autoslug',
+    ],
     classifiers = [
     'Development Status :: 3 - Alpha',
     'Environment :: Web Environment',
