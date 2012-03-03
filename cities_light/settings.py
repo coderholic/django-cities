@@ -2,6 +2,8 @@ import os.path
 
 from django.conf import settings
 
+__all__ = ['COUNTRY_SOURCES', 'CITY_SOURCES', 'ENABLE_CITY', 'SOURCES', 'DATA_DIR']
+
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
 CITY_SOURCES = getattr(settings, 'CITIES_LIGHT_CITY_SOURCES', 
