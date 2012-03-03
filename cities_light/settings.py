@@ -33,11 +33,11 @@ DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
     os.path.normpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')))
 
 if hasattr(settings, 'AJAX_LOOKUP_CHANNELS'):
-    settings.AJAX_LOOKUP_CHANNELS['cities_light.Country'] = (
-        'cities_light.lookups', 'CountryLookup'),
+    settings.AJAX_LOOKUP_CHANNELS['cities_light_country'] = (
+        'cities_light.lookups', 'CountryLookup')
     if ENABLE_CITY:
-        settings.AJAX_LOOKUP_CHANNELS['cities_light.City'] = (
-            'cities_light.lookups', 'CityLookup'),
+        settings.AJAX_LOOKUP_CHANNELS['cities_light_city'] = (
+            'cities_light.lookups', 'CityLookup')
     if ENABLE_ZIP:
-        settings.AJAX_LOOKUP_CHANNELS['cities_light.Zip'] = (
-            'cities_light.lookups', 'ZipLookup'),
+        settings.AJAX_LOOKUP_CHANNELS['cities_light_zip'] = (
+            'cities_light.lookups', 'ZipLookup')
