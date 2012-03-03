@@ -149,7 +149,7 @@ It is possible to force the import of files which weren't downloaded using the
             country.name = items[4]
             country.code3 = items[1]
             country.continent = items[8]
-            country.tld = items[9][1:] # strip the leading
+            country.tld = items[9][1:] # strip the leading dot
             country.save()
 
     def city_import(self, file_path):
