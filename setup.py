@@ -11,7 +11,7 @@ def read(fname):
 setup(
     name='django-cities-light',
     version='0.19',
-    description='Just a country and city model',
+    description='Simple alternative to django-cities',
     author='James Pic (original by Dan Carter (original by Ben Dowling))',
     author_email='jamespic@gmail.com@gmail.com',
     url='https://github.com/jpic/django-cities-light',
@@ -19,22 +19,22 @@ setup(
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.md'),
-    license = "MIT",
-    keywords = "django cities countries postal codes",
+    license = 'MIT',
+    keywords = 'django cities countries postal codes',
     requires=[
         'django-autoslug',
     ]
     classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Environment :: Web Environment",
-    "Framework :: Django",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 2",
-    "Topic :: Internet :: WWW/HTTP",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+    'Development Status :: 3 - Alpha',
+    'Environment :: Web Environment',
+    'Framework :: Django',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 2',
+    'Topic :: Internet :: WWW/HTTP',
+    'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 )
 
