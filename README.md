@@ -6,7 +6,6 @@ The data is pulled from [GeoNames](http://www.geonames.org/) and contains:
 
   - country names
   - optionnal city names
-  - optionnal postal codes
 
 Spatial query support is not required by this application.
 
@@ -28,31 +27,9 @@ Or the development version:
 
 Add `cities_light` to your `INSTALLED_APPS`.
 
-This app lets you use only countries, or countries+cities, or
-countries+cities+postal codes.
-
-By default, countries and cities are enabled. To disable cities, add setting:
+The City model is optionnal. If you want to disable it, add setting:
 
     CITIES_LIGHT_ENABLE_CITY=False
-
-Otherwise, you should configure `CITIES_LIGHT_CITY_SOURCES` to match the data
-you want to import. For example, to import France and Russian cities:
-
-    CITIES_LIGHT_CITY_SOURCES = (
-        'http://download.geonames.org/export/zip/FR.zip',
-        'http://download.geonames.org/export/zip/RU.zip',
-    )
-
-Or to import cities from all countries, which is going to take significantly
-more time:
-
-    CITIES_LIGHT_CITY_SOURCES = (
-        'http://download.geonames.org/export/zip/allCountries.zip',
-    )
-
-If you want to enable postal codes, then add this setting:
-
-    CITIES_LIGHT_ENABLE_ZIP=True
 
 Now, run syncdb, it will only create tables for models that are not disabled:
 
@@ -68,6 +45,9 @@ Finnaly, populate your database with command:
 This command is well documented, consult the help with:
     
     ./manage.py help cities_light
+
+Configure logging
+-----------------
 
 This command is made to be compatible with background usage like from cron, to
 keep the database fresh. So it doesn't do direct output. To get output from

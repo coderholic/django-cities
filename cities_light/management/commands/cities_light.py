@@ -112,7 +112,31 @@ It is possible to force the import of files which weren't downloaded using the
         with zipfile.ZipFile(zip_path) as zip_file:
             with open(destination, 'wb') as destination_file:
                 destination_file.write(zip_file.read(file_name))
-    
+
+    def parse(self, file_path):
+        file = open(file_path, 'r')
+        line = True
+
+        while line:
+            line = file.readline().strip()
+            
+            if len(line) < 1 or line[0] == '#':
+                continue
+
+            yield [e.strip() for e in line.split('\t')]
+
+    def _get_country(self, code2):
+        '''
+        Simple lazy identity map for code2->country
+        '''
+        if not hasattr(self, '_country_codes'):
+            self._country_codes = {}
+
+        if code2 not in self._country_codes.keys():
+            self._country_codes[code2] = Country.objects.get(code2=code2)
+        
+        return self._country_codes[code2]
+
     def country_import(self, file_path):
         for items in self.parse(file_path):
             try:
@@ -127,39 +151,6 @@ It is possible to force the import of files which weren't downloaded using the
             country.save()
 
     def city_import(self, file_path):
-        country = previous_city = previous_zip = False
-
         for items in self.parse(file_path):
-            if not country or country.code2 != items[0]:
-                country = Country.objects.get(code2=items[0])
-
-            if not previous_city or force_unicode(items[2]) != previous_city.name:
-                city, created = City.objects.get_or_create(name=items[2], 
-                    country=country)
-            else:
-                city = previous_city
-
-            if ENABLE_ZIP:
-                if not previous_zip or items[1] != previous_zip:
-                    zip, created = Zip.objects.get_or_create(
-                        code=items[1], city=city)
-
-                    if created or zip.name != force_unicode(items[2]):
-                        zip.name = items[2]
-                        zip.save()
-                    
-                    previous_zip = zip.code
-
-            previous_city = city
-
-    def parse(self, file_path):
-        file = open(file_path, 'r')
-        line = True
-
-        while line:
-            line = file.readline().strip()
-            
-            if len(line) < 1 or line[0] == '#':
-                continue
-
-            yield [e.strip() for e in line.split('\t')]
+            city, created = City.objects.get_or_create(name=items[1], 
+                geoname_id=items[0], country=self._get_country(items[8]))

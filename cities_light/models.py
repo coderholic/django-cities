@@ -34,10 +34,11 @@ class Country(models.Model):
     name_ascii = models.CharField(max_length=200, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii')
 
-    code2 = models.CharField(max_length=2, blank=True, db_index=True)
-    code3 = models.CharField(max_length=3, blank=True, db_index=True)
+    code2 = models.CharField(max_length=2, null=True, blank=True, unique=True)
+    code3 = models.CharField(max_length=3, null=True, blank=True, unique=True)
     continent = models.CharField(max_length=2, db_index=True, choices=CONTINENT_CHOICES)
     tld = models.CharField(max_length=5, blank=True, db_index=True)
+    geoname_id = models.IntegerField(null=True, blank=True)
     
     class Meta:
         verbose_name_plural = _(u'countries')
@@ -53,6 +54,7 @@ class City(models.Model):
     slug = autoslug.AutoSlugField(populate_from='name_ascii', 
         unique_with=('country__name',))
     
+    geoname_id = models.IntegerField(null=True, blank=True)
     country = models.ForeignKey(Country)
 
     class Meta:
@@ -66,23 +68,3 @@ class City(models.Model):
     def __unicode__(self):
         return self.name
 signals.pre_save.connect(set_name_ascii, sender=City)
-
-class Zip(models.Model):
-    name = models.CharField(max_length=200)
-    name_ascii = models.CharField(max_length=200, db_index=True)
-    slug = autoslug.AutoSlugField(populate_from='name_ascii', 
-        unique_with=('city__name', 'city__country__name',))
-
-    code = models.CharField(max_length=25, db_index=True)
-    city = models.ForeignKey('City')
-    
-    class Meta:
-        ordering = ['city', 'code']
-        unique_together = (('city', 'code'),)
-
-        if not ENABLE_ZIP:
-            abstract = True
-
-    def __unicode__(self):
-        return self.code
-signals.pre_save.connect(set_name_ascii, sender=Zip)

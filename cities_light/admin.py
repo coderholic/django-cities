@@ -38,25 +38,3 @@ class CityAdmin(admin.ModelAdmin):
     )
 if ENABLE_CITY:
     admin.site.register(City, CityAdmin)
-
-class ZipAdmin(admin.ModelAdmin):
-    list_display = (
-        'code',
-        'name',
-        'city__name',
-        'city__country__name',
-        'city__country__continent',
-    )
-    search_fields = (
-        'name',
-        'name_ascii',
-        'code',
-        'city__name',
-        'city__name_ascii',
-    )
-    list_filter = (
-        'city__country__continent',
-        'city__country',
-    )
-if ENABLE_ZIP:
-    admin.site.register(Zip, ZipAdmin)

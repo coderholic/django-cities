@@ -28,20 +28,9 @@ class CityLookup(StandardLookupChannel):
     def get_query(self, q, request):
         return City.objects.filter(
             Q(name__icontains=q) |
-            Q(ascii_name__icontains=q) |
-            Q(zip__name__icontains=q)
+            Q(ascii_name__icontains=q)
         ).select_related('country').distinct()
     
     def get_result(self, obj):
         """ The text result of autocompleting the entered query """
         return u'%s (%s)' % (obj.name, obj.country.name)
-
-class ZipLookup(StandardLookupChannel):
-    model = Zip
-
-    def get_query(self, q, request):
-        return Zip.objects.filter(
-            Q(city__name__icontains=q) |
-            Q(city__ascii_name__icontains=q) |
-            Q(zip__name__icontains=q)
-        ).select_related('city__country')
