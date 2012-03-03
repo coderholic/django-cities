@@ -1,7 +1,8 @@
 django-cities-light -- *Simple django-cities alternative*
 =========================================================
 
-This add-on provides models and commands to import country/city data into your database.
+This add-on provides models and commands to import country/city data into your
+database.
 The data is pulled from [GeoNames](http://www.geonames.org/) and contains:
 
   - country names
@@ -27,7 +28,9 @@ Or the development version:
 
 Add `cities_light` to your `INSTALLED_APPS`.
 
-The City model is optionnal. If you want to disable it, add setting:
+You may not need the city model and database table. A project like
+betspire.com doesn't need it for instance. So the City model will be made
+'abstract' if this setting is set as such:
 
     CITIES_LIGHT_ENABLE_CITY=False
 
@@ -100,3 +103,18 @@ logger. For example:
         }
     }
 
+Ajax autocomplete
+-----------------
+
+If `ajax_selects` from
+[django-ajax-selects](https://github.com/crucialfelix/django-ajax-selects), you
+should have two new channels usable right away:
+
+  - `cities_light_country`
+  - `cities_light_city`
+
+Next features
+-------------
+
+  - django-modeltranslation support and alternateNames.txt
+  - country flags support
