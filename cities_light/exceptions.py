@@ -1,0 +1,2 @@
+class InvalidItems(Exception):
+    pass

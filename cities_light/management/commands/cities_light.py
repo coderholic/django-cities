@@ -10,6 +10,8 @@ from django.db import models
 from django.core.management.base import BaseCommand
 from django.utils.encoding import force_unicode
 
+from ...exceptions import *
+from ...signals import *
 from ...models import *
 from ...settings import *
 
@@ -152,5 +154,10 @@ It is possible to force the import of files which weren't downloaded using the
 
     def city_import(self, file_path):
         for items in self.parse(file_path):
+            try:
+                city_items_pre_import.send(sender=self, items=items)
+            except InvalidItems:
+                continue
+            
             city, created = City.objects.get_or_create(name=items[1], 
                 geoname_id=items[0], country=self._get_country(items[8]))
