@@ -1,2 +1,2 @@
 include README.md LICENSE
-recursive-include cities *.py
+recursive-include cities_light *.py
