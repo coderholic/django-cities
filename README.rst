@@ -20,7 +20,7 @@ database, you should use
 Installation
 ------------
 
-Install django-cities-light (currently not working)::
+Install django-cities-light::
 
     pip install django-cities-light
 
