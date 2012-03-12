@@ -3,7 +3,8 @@ django-cities-light -- *Simple django-cities alternative*
 
 This add-on provides models and commands to import country/city data into your
 database.
-The data is pulled from `GeoNames<http://www.geonames.org/>`_ and contains:
+The data is pulled from `GeoNames
+<http://www.geonames.org/>`_ and contains:
 
   - country names
   - optionnal city names
@@ -13,7 +14,8 @@ Spatial query support is not required by this application.
 This application is very simple and is useful if you want to make a simple
 address book for example. If you intend to build a fully featured spatial
 database, you should use
-`django-cities<https://github.com/coderholic/django-cities>`_.
+`django-cities
+<https://github.com/coderholic/django-cities>`_.
 
 Installation
 ------------
@@ -107,7 +109,8 @@ Ajax autocomplete
 -----------------
 
 If `ajax_selects` from
-`django-ajax-selects<https://github.com/crucialfelix/django-ajax-selects>`_, you
+`django-ajax-selects
+<https://github.com/crucialfelix/django-ajax-selects>`_, you
 should have two new channels usable right away:
 
   - `cities_light_country`
