@@ -18,11 +18,11 @@ database, you should use
 Installation
 ------------
 
-Install django-cities-light (currently not working):
+Install django-cities-light (currently not working)::
 
     pip install django-cities-light
 
-Or the development version:
+Or the development version::
 
     pip install -e git+git@github.com:yourlabs/django-cities-light.git#egg=cities_light
 
@@ -30,22 +30,22 @@ Add `cities_light` to your `INSTALLED_APPS`.
 
 You may not need the city model and database table. A project like
 betspire.com doesn't need it for instance. So the City model will be made
-'abstract' if this setting is set as such:
+'abstract' if this setting is set as such::
 
     CITIES_LIGHT_ENABLE_CITY=False
 
-Now, run syncdb, it will only create tables for models that are not disabled:
+Now, run syncdb, it will only create tables for models that are not disabled::
 
     ./manage.py syncdb
 
 Data update
 -----------
 
-Finnaly, populate your database with command:
+Finnaly, populate your database with command::
 
     ./manage.py cities_light
 
-This command is well documented, consult the help with:
+This command is well documented, consult the help with::
     
     ./manage.py help cities_light
 
@@ -53,7 +53,7 @@ Filtering data import
 ---------------------
 
 An example is worth 1000 words: if you want to import only cities from France,
-USA and Belgium you could do as such:
+USA and Belgium you could do as such::
 
     import cities_light
 
@@ -71,7 +71,7 @@ Configure logging
 This command is made to be compatible with background usage like from cron, to
 keep the database fresh. So it doesn't do direct output. To get output from
 this command, simply configure a handler and formatter for `cities_light`
-logger. For example:
+logger. For example::
 
     LOGGING = {
         'version': 1,
