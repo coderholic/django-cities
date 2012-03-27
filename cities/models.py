@@ -188,7 +188,7 @@ def create_postal_codes():
             fields = {
                 'country': models.ForeignKey(Country,
                     related_name = 'postal_codes_' + country),
-                'code': models.CharField(max_length=20, db_index=True),
+                'code': models.CharField(max_length=20, primary_key=True),
                 'name': models.CharField(max_length=200, db_index=True),
                 'region_0_name': models.CharField(max_length=100, db_index=True, verbose_name="region 0 name (state)"),
                 'region_1_name': models.CharField(max_length=100, db_index=True, verbose_name="region 1 name (county)"),

@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name='django-cities',
-    version='0.181',
+    version='0.19',
     description='Place models and data for Django apps',
     author='Ben Dowling',
     author_email='ben.m.dowling@gmail.com',
@@ -14,7 +14,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    long_description=read('README'),
+    long_description=read('README.md'),
     license = "MIT",
     keywords = "django cities countries regions postal codes geonames",
     classifiers = [
