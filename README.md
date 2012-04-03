@@ -111,15 +111,15 @@ CITIES_FILES = {
     #},
 }
 
-# Localized names will be imported for all locale codes below.
+# Localized names will be imported for all ISO 639-1 locale codes below.
 # 'und' is undetermined language data (most alternate names are missing a lang tag).
 # Ref: download.geonames.org/export/dump/iso-languagecodes.txt
 CITIES_LOCALES = ['en', 'und']  # + ['LANGUAGES']   # Uncomment to also include languages from your settings
 
-# Postal codes will be imported for all country codes below.
+# Postal codes will be imported for all ISO 3166-1 alpha-2 country codes below.
 # See cities.conf for a full list of country codes.
 # Ref: download.geonames.org/export/dump/countryInfo.txt
-CITIES_POSTAL_CODES = ['US','CA']
+CITIES_POSTAL_CODES = ['US', 'CA']
 
 # List of plugins to process data during import
 CITIES_PLUGINS = [
