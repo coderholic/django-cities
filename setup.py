@@ -11,10 +11,10 @@ def read(fname):
 setup(
     name='django-cities',
     version='0.2',
-    description='Place models and data for Django apps',
-    author='Dan Carter (original by Ben Dowling)',
-    author_email='carterd@gmail.com',
-    url='https://github.com/Kometes/django-cities',
+    description='Place models and worldwide place data for Django'
+    author='Ben Dowling',
+    author_email='ben.m.dowling@gmail.com',
+    url='https://github.com/coderholic/django-cities',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
