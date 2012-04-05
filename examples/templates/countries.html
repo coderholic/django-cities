@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Countries</h2>
+    <ul>
+        {% for country in object_list %}
+        <li><a href="/{{ country.slug }}">{{ country.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

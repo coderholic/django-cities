@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if place %}
+    <a href="/">Places</a> &raquo;
+    {% endif %}
+    {% for object in place.hierarchy %}
+        {% if not forloop.last %}
+        <a href="/{{ object.get_absolute_url }}">{{ object.name }}</a> &raquo;
+        {% else %}
+        {{ object.name }}
+        {% endif %}
+    {% endfor %}
+    <ul>
+        {% for object in object_list %}
+        <li><a href="/{{ object.get_absolute_url }}">{{ object.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
