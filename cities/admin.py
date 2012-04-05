@@ -7,26 +7,31 @@ class CountryAdmin(admin.ModelAdmin):
     
 admin.site.register(Country, CountryAdmin)
 
-class RegionAdmin(admin.ModelAdmin):
+class RegionBaseAdmin(admin.ModelAdmin):
     ordering = ['name_std']
-    list_display = ['name_std', 'parent', 'code', 'level']
+    list_display = ['name_std', 'parent', 'code']
     search_fields = ['name', 'name_std', 'code']
-    raw_id_fields = ['region_parent']
     
+class RegionAdmin(RegionBaseAdmin): pass
+
 admin.site.register(Region, RegionAdmin)
 
-class CityAdmin(admin.ModelAdmin):
+class SubregionAdmin(RegionBaseAdmin):
+    raw_id_fields = ['region']
+    
+admin.site.register(Subregion, SubregionAdmin)
+
+class CityBaseAdmin(admin.ModelAdmin):
     ordering = ['name_std']
     list_display = ['name_std', 'parent', 'population']
     search_fields = ['name', 'name_std']
-    raw_id_fields = ['region']
+    
+class CityAdmin(CityBaseAdmin):
+    raw_id_fields = Region.levels
     
 admin.site.register(City, CityAdmin)
 
-class DistrictAdmin(admin.ModelAdmin):
-    ordering = ['name_std']
-    list_display = ['name_std', 'parent', 'population']
-    search_fields = ['name', 'name_std']
+class DistrictAdmin(CityBaseAdmin):
     raw_id_fields = ['city']
     
 admin.site.register(District, DistrictAdmin)
@@ -42,8 +47,8 @@ class GeoAltNameAdmin(admin.ModelAdmin):
 
 class PostalCodeAdmin(admin.ModelAdmin):
     ordering = ['code']
-    list_display = ['code', 'name', 'region_0_name', 'region_1_name', 'region_2_name']
-    search_fields = ['code', 'name', 'region_0_name', 'region_1_name', 'region_2_name']
-    raw_id_fields = ['region']
+    list_display = ['code', 'name', 'region_name', 'subregion_name', 'district_name']
+    search_fields = ['code', 'name', 'region_name', 'subregion_name', 'district_name']
+    raw_id_fields = Region.levels
     
 [admin.site.register(postal_code, PostalCodeAdmin) for postal_code in postal_codes.values()]

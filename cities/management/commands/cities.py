@@ -4,7 +4,8 @@ Requires the following files:
 
 http://download.geonames.org/export/dump/
 - Countries:            countryInfo.txt
-- Regions:              admin1CodesASCII.txt, admin2Codes.txt
+- Regions:              admin1CodesASCII.txt
+- Subregions:           admin2Codes.txt
 - Cities:               cities5000.zip
 - Districts:            hierarchy.zip
 - Localization:         alternateNames.zip
@@ -20,6 +21,7 @@ import logging
 import zipfile
 import time
 from collections import namedtuple, defaultdict
+from itertools import chain
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from django.utils.encoding import force_unicode
@@ -138,15 +140,19 @@ class Command(BaseCommand):
         file.close()
         return data
         
+    def parse(self, data):
+        for line in data:
+            if len(line) < 1 or line[0] == '#': continue
+            items = [e.strip() for e in line.split('\t')]
+            yield items
+            
     def import_country(self):
         uptodate = self.download('country')
         if uptodate and not self.force: return
         data = self.get_data('country')
         
         self.logger.info("Importing country data")
-        for line in data:
-            if len(line) < 1 or line[0] == '#': continue
-            items = [e.strip() for e in line.split('\t')]
+        for items in self.parse(data):
             if not self.call_hook('country_pre', items): continue
             
             country = Country()
@@ -162,34 +168,21 @@ class Command(BaseCommand):
             if not self.call_hook('country_post', country, items): continue 
             country.save()
             self.logger.debug("Added country: {}, {}".format(country.code, country))
-
-    def import_region(self):
-        self.import_region_0()
-        self.import_region_1()
         
-    def import_region_common(self, region, level, items):
+    def import_region_common(self, region, items):
+        class_ = region.__class__
         region.id = int(items[3])
         region.name = items[2]
         region.name_std = items[1]
         region.slug = slugify(region.name)
         region.code = items[0]
-        region.level = level
         
         # Find country
         country_code = region.code.split('.')[0]
         try: region.country = self.country_index[country_code]
         except:
-            self.logger.warning("Region {}: {}: Cannot find country: {} -- skipping".format(level, region.name, country_code))
+            self.logger.warning("{}: {}: Cannot find country: {} -- skipping".format(class_.__name__, region.name, country_code))
             return None
-        
-        # Find parent region, search highest level first
-        for sublevel in reversed(range(level)):
-            region_parent_code = '.'.join(region.code.split('.')[:sublevel+2])
-            try:
-                region.region_parent = self.region_index[region_parent_code]
-                break
-            except:
-                self.logger.warning("Region {}: {}: Cannot find region {}: {}".format(level, region.name, sublevel, region_parent_code))
             
         return region
     
@@ -201,61 +194,60 @@ class Command(BaseCommand):
         for obj in Country.objects.all():
             self.country_index[obj.code] = obj
             
-    def import_region_0(self):
-        uptodate = self.download('region_0')
+    def import_region(self):
+        uptodate = self.download('region')
         if uptodate and not self.force: return
-        data = self.get_data('region_0')
+        data = self.get_data('region')
         
         self.build_country_index()
                 
-        self.logger.info("Importing region 0 data")
-        for line in data:
-            if len(line) < 1 or line[0] == '#': continue
-            items = [e.strip() for e in line.split('\t')]
-            if not self.call_hook('region_pre', 0, items): continue
+        self.logger.info("Importing region data")
+        for items in self.parse(data):
+            if not self.call_hook('region_pre', items): continue
             
-            region = self.import_region_common(Region(), 0, items)
+            region = self.import_region_common(Region(), items)
             if not region: continue
             
-            if not self.call_hook('region_post', 0, region, items): continue
+            if not self.call_hook('region_post', region, items): continue
             region.save()
-            self.logger.debug("Added region 0: {}, {}".format(region.code, region))
+            self.logger.debug("Added region: {}, {}".format(region.code, region))
         
-    def build_region_index(self, level=None):
-        if hasattr(self, 'region_index') and self.region_index_level == level: return
+    def build_region_index(self):
+        if hasattr(self, 'region_index'): return
         
-        if level is None:
-            self.logger.info("Building region index")
-            qset = Region.objects.all()
-        else:
-            self.logger.info("Building region {} index".format(level))
-            qset = Region.objects.filter(level=level)
-            
+        self.logger.info("Building region index")
         self.region_index = {}
-        for obj in qset:
+        for obj in chain(Region.objects.all(), Subregion.objects.all()):
             self.region_index[obj.code] = obj
-        self.region_index_level = level
             
-    def import_region_1(self):
-        uptodate = self.download('region_1')
+    def import_subregion(self):
+        uptodate = self.download('subregion')
         if uptodate and not self.force: return
-        data = self.get_data('region_1')
+        data = self.get_data('subregion')
         
         self.build_country_index()
-        self.build_region_index(0)
+        self.build_region_index()
                 
-        self.logger.info("Importing region 1 data")
-        for line in data:
-            if len(line) < 1 or line[0] == '#': continue
-            items = [e.strip() for e in line.split('\t')]
-            if not self.call_hook('region_pre', 1, items): continue
+        self.logger.info("Importing subregion data")
+        for items in self.parse(data):
+            if not self.call_hook('subregion_pre', items): continue
             
-            region = self.import_region_common(Region(), 1, items)
-            if not region: continue  
+            subregion = self.import_region_common(Subregion(), items)
+            if not subregion: continue
             
-            if not self.call_hook('region_post', 1, region, items): continue
-            region.save()
-            self.logger.debug("Added region 1: {}, {}".format(region.code, region))
+            # Find region
+            level = Region.levels.index("subregion") - 1
+            region_code = '.'.join(subregion.code.split('.')[:level+2])
+            try: subregion.region = self.region_index[region_code]
+            except:
+                self.logger.warning("Subregion: {}: Cannot find region: {}".format(subregion.name, region_code))
+                continue
+                
+            if not self.call_hook('subregion_post', subregion, items): continue
+            subregion.save()
+            self.logger.debug("Added subregion: {}, {}".format(subregion.code, subregion))
+            
+        del self.region_index
         
     def import_city_common(self, city, items):
         class_ = city.__class__
@@ -276,18 +268,18 @@ class Command(BaseCommand):
         if class_ is City: city.country = country
         
         # Find region, search highest level first
-        region = None
         item_offset = 10
-        for level in reversed(range(2)):
+        for level, level_name in reversed(list(enumerate(Region.levels))):
             if not items[item_offset+level]: continue
             try:
                 code = '.'.join([country_code] + [items[item_offset+i] for i in range(level+1)])
                 region = self.region_index[code]
-                break
+                if class_ is City:
+                    setattr(city, level_name, region)
             except:
-                self.logger.log(logging.DEBUG if level else logging.WARNING, # Escalate if all levels failed
-                                "{}: {}: Cannot find region {}: {}".format(class_.__name__, city.name, level, code))
-        if class_ is City: city.region = region
+                self.logger.log(logging.DEBUG if level else logging.WARNING, # Escalate if level 0 failed
+                                "{}: {}: Cannot find {}: {}".format(class_.__name__, city.name, level_name, code))
+        
         
         return city
             
@@ -300,9 +292,7 @@ class Command(BaseCommand):
         self.build_region_index()
 
         self.logger.info("Importing city data")
-        for line in data:
-            if len(line) < 1 or line[0] == '#': continue
-            items = [e.strip() for e in line.split('\t')]
+        for items in self.parse(data):
             if not self.call_hook('city_pre', items): continue
             
             type = items[7]
@@ -323,9 +313,7 @@ class Command(BaseCommand):
         
         self.logger.info("Building hierarchy index")
         self.hierarchy = {}
-        for line in data:
-            if len(line) < 1 or line[0] == '#': continue
-            items = [e.strip() for e in line.split('\t')]
+        for items in self.parse(data):
             parent_id = int(items[0])
             child_id = int(items[1])
             self.hierarchy[child_id] = parent_id
@@ -345,9 +333,7 @@ class Command(BaseCommand):
             city_index[obj.id] = obj
             
         self.logger.info("Importing district data")
-        for line in data:
-            if len(line) < 1 or line[0] == '#': continue
-            items = [e.strip() for e in line.split('\t')]
+        for items in self.parse(data):
             if not self.call_hook('district_pre', items): continue
             
             type = items[7]
@@ -399,9 +385,7 @@ class Command(BaseCommand):
                 }
         
         self.logger.info("Importing alternate name data")
-        for line in data:
-            if len(line) < 1 or line[0] == '#': continue
-            items = [e.strip() for e in line.split('\t')] 
+        for items in self.parse(data):
             if not self.call_hook('alt_name_pre', items): continue
             
             # Only get names for languages in use
@@ -435,9 +419,7 @@ class Command(BaseCommand):
         self.build_region_index()
                 
         self.logger.info("Importing postal codes")
-        for line in data:
-            if len(line) < 1 or line[0] == '#': continue
-            items = [e.strip() for e in line.split('\t')]
+        for items in self.parse(data):
             if not self.call_hook('postal_code_pre', items): continue
             
             country_code = items[0]
@@ -456,9 +438,9 @@ class Command(BaseCommand):
             pc.country = country
             pc.code = code
             pc.name = items[2]
-            pc.region_0_name = items[3]
-            pc.region_1_name = items[5]
-            pc.region_2_name = items[7]
+            pc.region_name = items[3]
+            pc.subregion_name = items[5]
+            pc.district_name = items[7]
             
             try: pc.location = Point(float(items[10]), float(items[9]))
             except:
@@ -466,18 +448,16 @@ class Command(BaseCommand):
                 pc.location = Point(0,0)
                 
             # Find region, search highest level first
-            region = None
             item_offset = 4
-            for level in reversed(range(2)):
+            for level, level_name in reversed(list(enumerate(Region.levels))):
                 if not items[item_offset+level*2]: continue
                 try:
                     code = '.'.join([country_code] + [items[item_offset+i*2] for i in range(level+1)])
                     region = self.region_index[code]
-                    break
+                    setattr(pc, level_name, region)
                 except:
-                    self.logger.log(logging.DEBUG if level else logging.WARNING, # Escalate if all levels failed
-                                    "Postal code: {}, {}: Cannot find region {}: {}".format(pc.country, pc.code, level, code))
-            pc.region = region
+                    self.logger.log(logging.DEBUG if level else logging.WARNING, # Escalate if level 0 failed
+                                    "Postal code: {}, {}: Cannot find {}: {}".format(pc.country, pc.code, level_name, code))
         
             if not self.call_hook('postal_code_post', pc, items): continue
             pc.save()
@@ -488,16 +468,12 @@ class Command(BaseCommand):
         Country.objects.all().delete()
         
     def flush_region(self):
-        self.flush_region_0()
-        self.flush_region_1()
+        self.logger.info("Flushing region data")
+        Region.objects.all().delete()
         
-    def flush_region_0(self):
-        self.logger.info("Flushing region 0 data")
-        Region.objects.filter(level=0).delete()
-        
-    def flush_region_1(self):
-        self.logger.info("Flushing region 1 data")
-        Region.objects.filter(level=1).delete()
+    def flush_subregion(self):
+        self.logger.info("Flushing subregion data")
+        Subregion.objects.all().delete()
         
     def flush_city(self):
         self.logger.info("Flushing city data")

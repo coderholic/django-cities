@@ -19,11 +19,11 @@ files = {
         'filename': 'countryInfo.txt',
         'urls':     [url_bases['geonames']['dump']+'{filename}', ]
     },
-    'region_0':     {
+    'region':       {
         'filename': 'admin1CodesASCII.txt',
         'urls':     [url_bases['geonames']['dump']+'{filename}', ]
     },
-    'region_1':     {
+    'subregion':    {
         'filename': 'admin2Codes.txt',
         'urls':     [url_bases['geonames']['dump']+'{filename}', ]
     },
@@ -70,8 +70,7 @@ import_opts = [
     'all',
     'country',
     'region',
-    'region_0',
-    'region_1',
+    'subregion',
     'city',
     'district',
     'alt_name',
@@ -81,6 +80,7 @@ import_opts = [
 import_opts_all = [
     'country',
     'region',
+    'subregion',
     'city',
     'district',
     'alt_name',
@@ -94,6 +94,7 @@ class HookException(Exception): pass
 plugin_hooks = [
     'country_pre',      'country_post',
     'region_pre',       'region_post',
+    'subregion_pre',    'subregion_post',
     'city_pre',         'city_post',
     'district_pre',     'district_post',
     'alt_name_pre',     'alt_name_post',
