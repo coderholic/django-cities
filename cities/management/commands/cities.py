@@ -70,14 +70,15 @@ class Command(BaseCommand):
             func()
         
     def call_hook(self, hook, *args, **kwargs):
-        for plugin in settings.plugins[hook]:
-            try:
-                func = getattr(plugin,hook)
-                func(self, *args, **kwargs)
-            except HookException as e:
-                error = str(e)
-                if error: self.logger.error(error)
-                return False
+        if hasattr(settings, 'plugins'):
+            for plugin in settings.plugins[hook]:
+                try:
+                    func = getattr(plugin,hook)
+                    func(self, *args, **kwargs)
+                except HookException as e:
+                    error = str(e)
+                    if error: self.logger.error(error)
+                    return False
         return True
         
     def download(self, filekey):
