@@ -34,22 +34,23 @@ Then run ```./manage.py syncdb``` to create the required database tables, and ``
 There are various optional configuration options you can set in your ```settings.py```:
 
 ```python
+# Override the default source files and URLs
 CITIES_FILES = {
-    # Uncomment below to import all cities with population > 1000 (default is > 5000)
-    #'city': {
-    #   'filename': 'cities1000.zip',
-    #   'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
-    #},
+    'city': {
+       'filename': 'cities1000.zip',
+       'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+    },
 }
 
 # Localized names will be imported for all ISO 639-1 locale codes below.
 # 'und' is undetermined language data (most alternate names are missing a lang tag).
-# Ref: download.geonames.org/export/dump/iso-languagecodes.txt
-CITIES_LOCALES = ['en', 'und']  # + ['LANGUAGES']   # Uncomment to also include languages from your settings
+# See download.geonames.org/export/dump/iso-languagecodes.txt
+# 'LANGUAGES' will match your language settings
+CITIES_LOCALES = ['en', 'und', 'LANGUAGES']
 
 # Postal codes will be imported for all ISO 3166-1 alpha-2 country codes below.
 # See cities.conf for a full list of country codes.
-# Ref: download.geonames.org/export/dump/countryInfo.txt
+# See download.geonames.org/export/dump/countryInfo.txt
 CITIES_POSTAL_CODES = ['US', 'CA']
 
 # List of plugins to process data during import
@@ -73,25 +74,20 @@ This repostitory contains an example project which lets you browse the place hie
 <Country: Libya>
 
 # 5 Nearest cities to London
-
 >>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
 >>> nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
 
 # All cities in a state or county
-
 >>> City.objects.filter(country__name="United States", region__name="Texas")
 >>> City.objects.filter(country__name="United States", subregion__name="Orange County")
 
 # Get all countries in Japanese preferring official names if available, fallback on ASCII names:
-
-[country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
+>>> [country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
 
 # Use alternate names model to get Vancouver in Japanese
-
-geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
+>>> geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
 
 # Get region objects for US postal code:
-
 >>> Region.objects.filter(postal_codes_US__code='90210')
 [<Region: California, United States>]
 
