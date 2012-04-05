@@ -25,6 +25,7 @@ INSTALLED_APPS = (
     ...
     'cities',
 )
+```
 
 Then run ```./manage.py syncdb``` to create the required database tables, and ```./manage.py cities --import=all``` to import all of the place data. **NOTE:** This can take a long time.
 
@@ -61,7 +62,6 @@ CITIES_PLUGINS = [
 
 This repostitory contains an example project which lets you browse the place hierarchy. See the ```example``` directory. Below are some small snippets to show you the kind of things that are possible:
 
-Finding all London boroughs:
 
 ```python
 # Find the 5 most populated countries in the World
@@ -72,34 +72,31 @@ Finding all London boroughs:
 >>> Country.objects.get(tld='ly')
 <Country: Libya>
 
-
 # 5 Nearest cities to London
 
-    london = City.objects.filter(country__name='United Kingdom').get(name='London')
-    nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
+>>> london = City.objects.filter(country__name='United Kingdom').get(name='London')
+>>> nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
 
 # All cities in a state or county
 
-    City.objects.filter(country__name="United States", region__name="Texas")
-    City.objects.filter(country__name="United States", subregion__name="Orange County")
-
+>>> City.objects.filter(country__name="United States", region__name="Texas")
+>>> City.objects.filter(country__name="United States", subregion__name="Orange County")
 
 # Get all countries in Japanese preferring official names if available, fallback on ASCII names:
 
 [country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
 
-
 # Use alternate names model to get Vancouver in Japanese
 
-    geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
-
+geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
 
 # Get region objects for US postal code:
 
-    Region.objects.filter(postal_codes_US__code='90210')
-    [<Region: California, United States>]
-    Subregion.objects.filter(postal_codes_US__code='90210')
-    [<Subregion: Los Angeles County, California, United States>]
+>>> Region.objects.filter(postal_codes_US__code='90210')
+[<Region: California, United States>]
+
+>>> Subregion.objects.filter(postal_codes_US__code='90210')
+[<Subregion: Los Angeles County, California, United States>]
 
 ```
 
