@@ -3,7 +3,7 @@ from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
 from conf import settings
 from util import create_model, un_camel
-    
+
 __all__ = [
         'Point', 'Country', 'Region', 'Subregion',
         'City', 'District', 'geo_alt_names', 'postal_codes'
@@ -17,7 +17,7 @@ class Place(models.Model):
 
     class Meta:
         abstract = True
-        
+
     @property
     def hierarchy(self):
         """Get hierarchy, root first"""
@@ -27,13 +27,13 @@ class Place(models.Model):
 
     def get_absolute_url(self):
         return "/".join([place.slug for place in self.hierarchy])
-        
+
 class Country(Place):
     code = models.CharField(max_length=2, db_index=True)
     population = models.IntegerField()
     continent = models.CharField(max_length=2)
     tld = models.CharField(max_length=5)
-    
+
     class Meta:
         ordering = ['name']
         verbose_name_plural = "countries"
@@ -41,7 +41,7 @@ class Country(Place):
     @property
     def parent(self):
         return None
-        
+
     def __unicode__(self):
         return force_unicode(self.name)
 
@@ -51,55 +51,51 @@ class RegionBase(Place):
     country = models.ForeignKey(Country)
 
     levels = ['region', 'subregion']
-    
+
     class Meta:
         abstract = True
-        
+
     def __unicode__(self):
         return u'{}, {}'.format(force_unicode(self.name_std), self.parent)
-        
+
 class Region(RegionBase):
-     
     @property
     def parent(self):
         return self.country
-        
+
 class Subregion(RegionBase):
     region = models.ForeignKey(Region)
-    
+
     @property
     def parent(self):
         return self.region
-        
+
 class CityBase(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     location = models.PointField()
     population = models.IntegerField()
-    
+
     class Meta:
         abstract = True 
-        
+
     def __unicode__(self):
         return u'{}, {}'.format(force_unicode(self.name_std), self.parent)
-        
+
 class City(CityBase):
     region = models.ForeignKey(Region, null=True, blank=True)
     subregion = models.ForeignKey(Subregion, null=True, blank=True)
     country = models.ForeignKey(Country)
-    
+
     class Meta:
         verbose_name_plural = "cities"
-        
+
     @property
     def parent(self):
-        for parent_name in reversed(['country'] + RegionBase.levels):
-            parent_obj = getattr(self, parent_name)
-            if parent_obj: return parent_obj
-        return None
+        return self.region
 
 class District(CityBase):
     city = models.ForeignKey(City)
-    
+
     @property
     def parent(self):
         return self.city
@@ -114,7 +110,7 @@ class GeoAltNameManager(models.GeoManager):
         except self.model.DoesNotExist:
             try: return self.filter(**kwargs)[0]
             except IndexError: return default
-            
+
 def create_geo_alt_names(geo_type):
     geo_alt_names = {}
     for locale in settings.locales:
