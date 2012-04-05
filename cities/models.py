@@ -3,8 +3,11 @@ from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
 from conf import settings
 from util import create_model, un_camel
-
-__all__ = ['Point','Country','Region','City','District','geo_alt_names','postal_codes']
+    
+__all__ = [
+        'Point', 'Country', 'Region', 'Subregion',
+        'City', 'District', 'geo_alt_names', 'postal_codes'
+]
 
 class Place(models.Model):
     name = models.CharField(max_length=200, db_index=True, verbose_name="ascii name")
@@ -12,6 +15,9 @@ class Place(models.Model):
 
     objects = models.GeoManager()
 
+    class Meta:
+        abstract = True
+        
     @property
     def hierarchy(self):
         """Get hierarchy, root first"""
@@ -19,18 +25,15 @@ class Place(models.Model):
         list.append(self)
         return list
 
-    class Meta:
-        abstract = True
-
     def get_absolute_url(self):
         return "/".join([place.slug for place in self.hierarchy])
-
+        
 class Country(Place):
     code = models.CharField(max_length=2, db_index=True)
     population = models.IntegerField()
     continent = models.CharField(max_length=2)
     tld = models.CharField(max_length=5)
-
+    
     class Meta:
         ordering = ['name']
         verbose_name_plural = "countries"
@@ -38,55 +41,68 @@ class Country(Place):
     @property
     def parent(self):
         return None
-
+        
     def __unicode__(self):
         return force_unicode(self.name)
 
-class Region(Place):
+class RegionBase(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
-    level = models.IntegerField(db_index=True, verbose_name="admin level")  # Level 0 has no parent region
-    region_parent = models.ForeignKey('self', null=True, blank=True, related_name='region_children')
     country = models.ForeignKey(Country)
 
-    @property
-    def parent(self):
-        """Returns parent region if available, otherwise country"""
-        return self.region_parent or self.country
-
+    levels = ['region', 'subregion']
+    
+    class Meta:
+        abstract = True
+        
     def __unicode__(self):
         return u'{}, {}'.format(force_unicode(self.name_std), self.parent)
-
-class City(Place):
+        
+class Region(RegionBase):
+     
+    @property
+    def parent(self):
+        return self.country
+        
+class Subregion(RegionBase):
+    region = models.ForeignKey(Region)
+    
+    @property
+    def parent(self):
+        return self.region
+        
+class CityBase(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
-    region = models.ForeignKey(Region, null=True, blank=True)
-    country = models.ForeignKey(Country)
     location = models.PointField()
     population = models.IntegerField()
-
+    
+    class Meta:
+        abstract = True 
+        
+    def __unicode__(self):
+        return u'{}, {}'.format(force_unicode(self.name_std), self.parent)
+        
+class City(CityBase):
+    region = models.ForeignKey(Region, null=True, blank=True)
+    subregion = models.ForeignKey(Subregion, null=True, blank=True)
+    country = models.ForeignKey(Country)
+    
     class Meta:
         verbose_name_plural = "cities"
-
+        
     @property
     def parent(self):
-        """Returns region if available, otherwise country"""
-        return self.region if self.region else self.country
+        for parent_name in reversed(['country'] + RegionBase.levels):
+            parent_obj = getattr(self, parent_name)
+            if parent_obj: return parent_obj
+        return None
 
-    def __unicode__(self):
-        return u'{}, {}'.format(force_unicode(self.name_std), self.parent)
-
-class District(Place):
-    name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
+class District(CityBase):
     city = models.ForeignKey(City)
-    location = models.PointField()
-    population = models.IntegerField()
-
+    
     @property
     def parent(self):
         return self.city
-
-    def __unicode__(self):
-        return u'{}, {}'.format(force_unicode(self.name_std), self.parent)
 
 class GeoAltNameManager(models.GeoManager):
     def get_preferred(self, default=None, **kwargs):
@@ -98,7 +114,7 @@ class GeoAltNameManager(models.GeoManager):
         except self.model.DoesNotExist:
             try: return self.filter(**kwargs)[0]
             except IndexError: return default
-
+            
 def create_geo_alt_names(geo_type):
     geo_alt_names = {}
     for locale in settings.locales:
@@ -108,7 +124,7 @@ def create_geo_alt_names(geo_type):
             name = name,
             fields = {
                 'geo': models.ForeignKey(geo_type,                              # Related geo type
-                    related_name = 'alt_names_' + locale),
+                    related_name = 'alt_names_' + locale),                              
                 'name': models.CharField(max_length=200, db_index=True),        # Alternate name
                 'is_preferred': models.BooleanField(),                          # True if this alternate name is an official / preferred name
                 'is_short': models.BooleanField(),                              # True if this is a short name like 'California' for 'State of California'
@@ -126,38 +142,42 @@ def create_geo_alt_names(geo_type):
     return geo_alt_names
 
 geo_alt_names = {}
-for type in [Country, Region, City, District]:
+for type in [Country, Region, Subregion, City, District]:
     geo_alt_names[type] = create_geo_alt_names(type)
 
+    
 def create_postal_codes():
+    
     @property
     def parent(self):
-        """Returns region if available, otherwise country"""
-        return self.region if self.region else self.country
-
+        for parent_name in reversed(['country'] + RegionBase.levels):
+            parent_obj = getattr(self, parent_name)
+            if parent_obj: return parent_obj
+        return None
+        
     @property
     def hierarchy(self):
         """Get hierarchy, root first"""
         list = self.parent.hierarchy
         list.append(self)
         return list
-
+    
     @property
     def names(self):
         """Get a hierarchy of non-null names, root first"""
         return [e for e in [
             force_unicode(self.country),
-            force_unicode(self.region_0_name),
-            force_unicode(self.region_1_name),
-            force_unicode(self.region_2_name),
+            force_unicode(self.region_name),
+            force_unicode(self.subregion_name),
+            force_unicode(self.district_name),
             force_unicode(self.name),
         ] if e]
-
+        
     @property
     def name_full(self):
         """Get full name including hierarchy"""
         return u', '.join(reversed(self.names))
-
+        
     postal_codes = {}
     for country in settings.postal_codes:
         name_format = "{}" + country
@@ -169,11 +189,12 @@ def create_postal_codes():
                     related_name = 'postal_codes_' + country),
                 'code': models.CharField(max_length=20, primary_key=True),
                 'name': models.CharField(max_length=200, db_index=True),
-                'region_0_name': models.CharField(max_length=100, db_index=True, verbose_name="region 0 name (state)"),
-                'region_1_name': models.CharField(max_length=100, db_index=True, verbose_name="region 1 name (county)"),
-                'region_2_name': models.CharField(max_length=100, db_index=True, verbose_name="region 2 name (community)"),
-                'region': models.ForeignKey(Region, null=True, blank=True,
-                    related_name = 'postal_codes_' + country),
+                # Region names for each admin level, region may not exist in DB
+                'region_name': models.CharField(max_length=100, db_index=True),
+                'subregion_name': models.CharField(max_length=100, db_index=True),
+                'district_name': models.CharField(max_length=100, db_index=True),
+                'region': models.ForeignKey(Region, null=True, blank=True, related_name = 'postal_codes_' + country),
+                'subregion': models.ForeignKey(Subregion, null=True, blank=True, related_name = 'postal_codes_' + country),
                 'location': models.PointField(),
                 'objects': models.GeoManager(),
                 'parent': parent,
@@ -193,3 +214,5 @@ def create_postal_codes():
     return postal_codes
 
 postal_codes = create_postal_codes()
+
+
