@@ -10,8 +10,8 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'HOST': 'localhost',
         'NAME': 'cities',
-        'USER': 'DB_USER',
-        'PASSWORD': 'DB_PASS',
+        'USER': '',
+        'PASSWORD': '',
     }
 }
 
