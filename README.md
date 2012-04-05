@@ -40,6 +40,13 @@ Nearest city to a given geo-coord (longitude, latitude):
     nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
 ```
 
+Get a list of all cities in a state or county:
+
+```python
+    City.objects.filter(country__name="United States", region__name="Texas")
+    City.objects.filter(country__name="United States", subregion__name="Orange County")
+```
+
 Get all countries in Japanese preferring official names if available, fallback on ASCII names:
 
 ```python
@@ -58,23 +65,20 @@ Gather names of Tokyo from all CITIES_LOCALES:
     [name for locale in cities.conf.settings.locales
         for name in geo_alt_names[City][locale].objects.filter(geo__name='Tokyo')]
 ```
+
 Get all postal codes for Ontario, Canada (only first 3 letters available due to copyright restrictions):
 
 ```python
-    postal_codes['CA'].objects.filter(region_0_name='Ontario')
+    postal_codes['CA'].objects.filter(region__name='Ontario')
 ```
 
 Get region objects for US postal code:
 
 ```python
     Region.objects.filter(postal_codes_US__code='90210')
-    [<Region: Los Angeles County, California, United States>]
-```
-
-Get a list of cities in the state of Texas:
-
-```python
-    City.objects.filter(country__name="United States", region__region_parent__name="Texas")
+    [<Region: California, United States>]
+    Subregion.objects.filter(postal_codes_US__code='90210')
+    [<Subregion: Los Angeles County, California, United States>]
 ```
 
  Install
