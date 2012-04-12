@@ -6,7 +6,7 @@ from util import create_model, un_camel
 
 __all__ = [
         'Point', 'Country', 'Region', 'Subregion',
-        'City', 'District', 'geo_alt_names', 'postal_codes'
+        'City', 'District', 'PostalCode', 'geo_alt_names', 
 ]
 
 class Place(models.Model):
@@ -120,7 +120,7 @@ def create_geo_alt_names(geo_type):
             name = name,
             fields = {
                 'geo': models.ForeignKey(geo_type,                              # Related geo type
-                    related_name = 'alt_names_' + locale),                              
+                    related_name = 'alt_names_' + locale),
                 'name': models.CharField(max_length=200, db_index=True),        # Alternate name
                 'is_preferred': models.BooleanField(),                          # True if this alternate name is an official / preferred name
                 'is_short': models.BooleanField(),                              # True if this is a short name like 'California' for 'State of California'
@@ -141,23 +141,30 @@ geo_alt_names = {}
 for type in [Country, Region, Subregion, City, District]:
     geo_alt_names[type] = create_geo_alt_names(type)
 
-    
-def create_postal_codes():
-    
+class PostalCode(Place):
+    code = models.CharField(max_length=20, primary_key=True)
+    location = models.PointField()
+
+    country = models.ForeignKey(Country, related_name = 'postal_codes')
+    region = models.ForeignKey(Region, null=True, blank=True, related_name = 'postal_codes')
+    subregion = models.ForeignKey(Subregion, null=True, blank=True, related_name = 'postal_codes')
+
+    objects = models.GeoManager()
+
+    class Meta:
+        unique_together = [('code', 'country')]
+
     @property
     def parent(self):
         for parent_name in reversed(['country'] + RegionBase.levels):
             parent_obj = getattr(self, parent_name)
             if parent_obj: return parent_obj
         return None
-        
+
     @property
-    def hierarchy(self):
-        """Get hierarchy, root first"""
-        list = self.parent.hierarchy
-        list.append(self)
-        return list
-    
+    def name_full(self):
+        """Get full name including hierarchy"""
+        return u', '.join(reversed(self.names)) 
     @property
     def names(self):
         """Get a hierarchy of non-null names, root first"""
@@ -168,47 +175,6 @@ def create_postal_codes():
             force_unicode(self.district_name),
             force_unicode(self.name),
         ] if e]
-        
-    @property
-    def name_full(self):
-        """Get full name including hierarchy"""
-        return u', '.join(reversed(self.names))
-        
-    postal_codes = {}
-    for country in settings.postal_codes:
-        name_format = "{}" + country
-        name = name_format.format('PostalCode')
-        postal_codes[country] = create_model(
-            name = name,
-            fields = {
-                'country': models.ForeignKey(Country,
-                    related_name = 'postal_codes_' + country),
-                'code': models.CharField(max_length=20, primary_key=True),
-                'name': models.CharField(max_length=200, db_index=True),
-                # Region names for each admin level, region may not exist in DB
-                'region_name': models.CharField(max_length=100, db_index=True),
-                'subregion_name': models.CharField(max_length=100, db_index=True),
-                'district_name': models.CharField(max_length=100, db_index=True),
-                'region': models.ForeignKey(Region, null=True, blank=True, related_name = 'postal_codes_' + country),
-                'subregion': models.ForeignKey(Subregion, null=True, blank=True, related_name = 'postal_codes_' + country),
-                'location': models.PointField(),
-                'objects': models.GeoManager(),
-                'parent': parent,
-                'hierarchy': hierarchy,
-                'names': names,
-                'name_full': name_full,
-                '__unicode__': lambda self: force_unicode(self.code),
-            },
-            app_label = 'cities',
-            module = 'cities.models',
-            options = {
-                'db_table': 'cities_' + un_camel(name),
-                'verbose_name': un_camel(name).replace('_', ' '),
-                'verbose_name_plural': un_camel(name_format.format('PostalCodes')).replace('_', ' '),
-            },
-        )
-    return postal_codes
 
-postal_codes = create_postal_codes()
-
-
+    def __unicode__(self):
+        return force_unicode(self.code)

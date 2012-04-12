@@ -15,16 +15,14 @@ http://download.geonames.org/export/zip/
 """
 
 import os
-import sys
 import urllib
 import logging
 import zipfile
 import time
-from collections import namedtuple, defaultdict
+from collections import defaultdict
 from itertools import chain
 from optparse import make_option
 from django.core.management.base import BaseCommand
-from django.utils.encoding import force_unicode
 from django.template.defaultfilters import slugify
 from django.db import connection
 from django.contrib.gis.gdal.envelope import Envelope
@@ -36,7 +34,7 @@ class Command(BaseCommand):
     app_dir = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../..')
     data_dir = os.path.join(app_dir, 'data')
     logger = logging.getLogger("cities")
-    
+
     option_list = BaseCommand.option_list + (
         make_option('--force', action='store_true', default=False,
             help='Import even if files are up-to-date.'
@@ -49,26 +47,26 @@ class Command(BaseCommand):
             help =  "Selectively flush data. Comma separated list of data types."
         ),
     )
-    
+
     def handle(self, *args, **options):
         self.download_cache = {}
         self.options = options
-        
+
         self.force = self.options['force']
-        
+
         self.flushes = [e for e in self.options['flush'].split(',') if e]
         if 'all' in self.flushes: self.flushes = import_opts_all
         for flush in self.flushes:
             func = getattr(self, "flush_" + flush)
             func()
-            
+
         self.imports = [e for e in self.options['import'].split(',') if e]
         if 'all' in self.imports: self.imports = import_opts_all
         if self.flushes: self.imports = []
         for import_ in self.imports:
             func = getattr(self, "import_" + import_)
             func()
-        
+
     def call_hook(self, hook, *args, **kwargs):
         if hasattr(settings, 'plugins'):
             for plugin in settings.plugins[hook]:
@@ -80,7 +78,7 @@ class Command(BaseCommand):
                     if error: self.logger.error(error)
                     return False
         return True
-        
+
     def download(self, filekey):
         filename = settings.files[filekey]['filename']
         web_file = None
@@ -127,7 +125,7 @@ class Command(BaseCommand):
         if filekey in self.download_cache: return self.download_cache[filekey]
         uptodate = self.download_cache[filekey] = self.download(filekey)
         return uptodate
-            
+
     def get_data(self, filekey):
         filename = settings.files[filekey]['filename']
         file = open(os.path.join(self.data_dir, filename), 'rb')
@@ -140,13 +138,13 @@ class Command(BaseCommand):
             data = file.read().split('\n')
         file.close()
         return data
-        
+
     def parse(self, data):
         for line in data:
             if len(line) < 1 or line[0] == '#': continue
             items = [e.strip() for e in line.split('\t')]
             yield items
-            
+
     def import_country(self):
         uptodate = self.download('country')
         if uptodate and not self.force: return
@@ -406,64 +404,55 @@ class Command(BaseCommand):
             alt.name = items[3]
             alt.is_preferred = items[4]
             alt.is_short = items[5]
-            
+
             if not self.call_hook('alt_name_post', alt, items): continue
             alt.save()
             self.logger.debug("Added alt name: {}, {} ({})".format(locale, alt, alt.geo))
-            
+
     def import_postal_code(self):
         uptodate = self.download('postal_code')
         if uptodate and not self.force: return
         data = self.get_data('postal_code')
-        
+
         self.build_country_index()
         self.build_region_index()
-                
+
         self.logger.info("Importing postal codes")
         for items in self.parse(data):
             if not self.call_hook('postal_code_pre', items): continue
-            
+
             country_code = items[0]
             if country_code not in settings.postal_codes: continue
-            
+
             # Find country
             code = items[1]
             country = None
-            try: country = self.country_index[country_code]
+            try:
+                country = self.country_index[country_code]
             except:
                 self.logger.warning("Postal code: {}: Cannot find country: {} -- skipping".format(code, country_code))
                 continue
-            
-            pc_type = postal_codes[country_code]
-            pc = pc_type()
+
+            pc = PostalCode()
             pc.country = country
             pc.code = code
             pc.name = items[2]
-            pc.region_name = items[3]
-            pc.subregion_name = items[5]
-            pc.district_name = items[7]
-            
-            try: pc.location = Point(float(items[10]), float(items[9]))
+            try:
+                pc.region = country.region_set.get(name=items[3])
+                pc.subregion = pc.region.subregion_set.get(name=items[5])
+            except:
+                pass
+
+            try:
+                pc.location = Point(float(items[10]), float(items[9]))
             except:
                 self.logger.warning("Postal code: {}, {}: Invalid location ({}, {})".format(pc.country, pc.code, items[10], items[9]))
                 pc.location = Point(0,0)
-                
-            # Find region, search highest level first
-            item_offset = 4
-            for level, level_name in reversed(list(enumerate(Region.levels))):
-                if not items[item_offset+level*2]: continue
-                try:
-                    code = '.'.join([country_code] + [items[item_offset+i*2] for i in range(level+1)])
-                    region = self.region_index[code]
-                    setattr(pc, level_name, region)
-                except:
-                    self.logger.log(logging.DEBUG if level else logging.WARNING, # Escalate if level 0 failed
-                                    "Postal code: {}, {}: Cannot find {}: {}".format(pc.country, pc.code, level_name, code))
-        
+
             if not self.call_hook('postal_code_post', pc, items): continue
             pc.save()
             self.logger.debug("Added postal code: {}, {}".format(pc.country, pc))
-            
+
     def flush_country(self):
         self.logger.info("Flushing country data")
         Country.objects.all().delete()
