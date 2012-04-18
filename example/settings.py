@@ -9,9 +9,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'HOST': 'localhost',
-        'NAME': 'cities',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': 'geomium',
+        'USER': 'geomium',
+        'PASSWORD': 'ge0m1um',
+        'OPTIONS': {
+            'autocommit': True,
+        }
     }
 }
 
@@ -22,7 +25,6 @@ LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 
 SECRET_KEY = 'YOUR_SECRET_KEY'
-
 MIDDLEWARE_CLASSES = (
 )
 
@@ -32,4 +34,4 @@ INSTALLED_APPS = (
     'cities',
 )
 
-CITIES_POSTAL_CODES = ['US','UK']
+CITIES_POSTAL_CODES = ['GB']
