@@ -15,7 +15,7 @@ setup(
     author='Ben Dowling',
     author_email='ben.m.dowling@gmail.com',
     url='https://github.com/coderholic/django-cities',
-    packages=find_packages(),
+    packages=find_packages(exclude=['example']),
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.md'),
