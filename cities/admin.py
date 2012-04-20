@@ -47,8 +47,8 @@ class GeoAltNameAdmin(admin.ModelAdmin):
 
 class PostalCodeAdmin(admin.ModelAdmin):
     ordering = ['code']
-    list_display = ['code', 'name', 'region_name', 'subregion_name', 'district_name']
-    search_fields = ['code', 'name', 'region_name', 'subregion_name', 'district_name']
+    list_display = ['code', 'country', 'region', 'subregion']
+    search_fields = ['code', 'country__name', 'region__name', 'subregion__name']
     raw_id_fields = Region.levels
-    
-[admin.site.register(postal_code, PostalCodeAdmin) for postal_code in postal_codes.values()]
+
+admin.site.register(PostalCode, PostalCodeAdmin)
