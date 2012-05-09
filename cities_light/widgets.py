@@ -22,6 +22,3 @@ class CityAutocompleteWidget(forms.MultiWidget):
     def value_from_datadict(self, data, files, name):
         values = super(CityAutocompleteWidget, self).value_from_datadict(data, files, name)
         return values[1]
-
-    def format_output(self, rendered_widgets):
-        return u''.join(rendered_widgets)
