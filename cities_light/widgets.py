@@ -2,6 +2,8 @@ from django import forms
 
 import autocomplete_light
 
+from models import City
+
 class CityAutocompleteWidget(forms.MultiWidget):
     def __init__(self, channel_name, attrs=None, **kwargs):
         widgets = (
@@ -13,8 +15,13 @@ class CityAutocompleteWidget(forms.MultiWidget):
 
     def decompress(self, value):
         if value:
-            return [value.country, value]
+            city = City.objects.get(pk=value)
+            return [city.country.pk, value]
         return [None, None]
+    
+    def value_from_datadict(self, data, files, name):
+        values = super(CityAutocompleteWidget, self).value_from_datadict(data, files, name)
+        return values[1]
 
     def format_output(self, rendered_widgets):
         return u''.join(rendered_widgets)
