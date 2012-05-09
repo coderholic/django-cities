@@ -108,6 +108,35 @@ logger. For example::
 Ajax autocomplete
 -----------------
 
+django-autocomplete-light
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If `autocomplete_light` from `django-autocomplete-light
+<https://github.com/yourlabs/django-autocomplete-light/>`_, you
+have two channels and a widget for City ModelChoiceField that has two
+autocompletes: one for the country, and one for the city that is filtered by
+the selected country. Example usage::
+
+    from django import forms
+
+    import autocomplete_light
+    from cities_light.models import City
+    from cities_light.widgets import CityAutocompleteWidget
+
+    from models import Address
+
+    class AddressForm(forms.ModelForm):
+        city = forms.ModelChoiceField(City.objects.all(),
+            widget=CityAutocompleteWidget('CityChannel', max_items=1))
+                                              
+        class Meta:
+            model = Address
+            widgets = autocomplete_light.get_widgets_dict(Address, 
+                autocomplete_exclude=('city'))
+
+django-ajax-selects
+~~~~~~~~~~~~~~~~~~~
+
 If `ajax_selects` from
 `django-ajax-selects
 <https://github.com/crucialfelix/django-ajax-selects>`_, you
