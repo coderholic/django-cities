@@ -145,8 +145,12 @@ should have two new channels usable right away:
   - `cities_light_country`
   - `cities_light_city`
 
-Next features
--------------
+Ideas for contribution
+----------------------
 
   - django-modeltranslation support and alternateNames.txt
   - country flags support
+
+I might implement this in the next project or refactor of
+my projects that use django-cities-light. In the mean time, 
+this app just works because it's so simple. I wonder if there's a bug ....
