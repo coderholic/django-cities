@@ -120,17 +120,16 @@ the selected country.
 Check out:
 
 - `example project README
-<https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/README>`_,
+  <https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/README>`_,
 - `example project source code
-<https://github.com/yourlabs/django-autocomplete-light/tree/master/test_project>`_,
+  <https://github.com/yourlabs/django-autocomplete-light/tree/master/test_project>`_,
 - `example widget usage
-<https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/project_specific/forms.py>`_.
+  <https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/project_specific/forms.py>`_.
 
 django-ajax-selects
 ~~~~~~~~~~~~~~~~~~~
 
-If `ajax_selects` from
-`django-ajax-selects
+If `ajax_selects` from `django-ajax-selects
 <https://github.com/crucialfelix/django-ajax-selects>`_, you
 should have two new channels usable right away:
 
