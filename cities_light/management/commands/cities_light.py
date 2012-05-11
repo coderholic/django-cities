@@ -18,8 +18,8 @@ from ...settings import *
 class Command(BaseCommand):
     args = '''
 [--force-all] [--force-import-all \\]
-                              [--force-import allCountries.txt FR.zip ...] \\
-                              [--force allCountries.txt FR.zip ...]
+                              [--force-import allCountries.txt cities15000.txt ...] \\
+                              [--force allCountries.txt cities15000.txt ...]
     '''.strip()
     help = '''
 Download all files in CITIES_LIGHT_COUNTRY_SOURCES if they were updated or if 
@@ -31,12 +31,12 @@ Same goes for CITIES_LIGHT_CITY_SOURCES.
 It is possible to force the download of some files which have not been updated
 on the server:
 
-    manage.py --force FR.zip countryInfo.txt
+    manage.py --force cities15000.txt countryInfo.txt
 
 It is possible to force the import of files which weren't downloaded using the 
 --force-import option:
 
-    manage.py --force-import FR.zip countryInfo.txt
+    manage.py --force-import cities15000.txt countryInfo.txt
     '''.strip()
 
     logger = logging.getLogger('cities_light')
