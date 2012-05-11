@@ -115,24 +115,16 @@ If `autocomplete_light` from `django-autocomplete-light
 <https://github.com/yourlabs/django-autocomplete-light/>`_, you
 have two channels and a widget for City ModelChoiceField that has two
 autocompletes: one for the country, and one for the city that is filtered by
-the selected country. Example usage::
+the selected country.
 
-    from django import forms
+Check out:
 
-    import autocomplete_light
-    from cities_light.models import City
-    from cities_light.widgets import CityAutocompleteWidget
-
-    from models import Address
-
-    class AddressForm(forms.ModelForm):
-        city = forms.ModelChoiceField(City.objects.all(),
-            widget=CityAutocompleteWidget('CityChannel', max_items=1))
-                                              
-        class Meta:
-            model = Address
-            widgets = autocomplete_light.get_widgets_dict(Address, 
-                autocomplete_exclude=('city'))
+- `example project README
+<https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/README>`_,
+- `example project source code
+<https://github.com/yourlabs/django-autocomplete-light/tree/master/test_project>`_,
+- `example widget usage
+<https://github.com/yourlabs/django-autocomplete-light/blob/master/test_project/project_specific/forms.py>`_.
 
 django-ajax-selects
 ~~~~~~~~~~~~~~~~~~~
