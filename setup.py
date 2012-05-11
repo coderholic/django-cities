@@ -21,7 +21,7 @@ setup(
     long_description=read('README.rst'),
     license = 'MIT',
     keywords = 'django cities countries postal codes',
-    requires=[
+    install_requires=[
         'django_autoslug',
     ],
     classifiers = [
