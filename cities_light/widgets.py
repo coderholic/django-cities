@@ -22,3 +22,7 @@ class CityAutocompleteWidget(forms.MultiWidget):
     def value_from_datadict(self, data, files, name):
         values = super(CityAutocompleteWidget, self).value_from_datadict(data, files, name)
         return values[1]
+    
+    def _has_changed(self, initial, data):
+        # we want multiwidget for rendering, but simple for data
+        return forms.Widget._has_changed(self, initial, data)
