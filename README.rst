@@ -7,7 +7,7 @@ The data is pulled from `GeoNames
 <http://www.geonames.org/>`_ and contains:
 
   - country names
-  - optionnal city names
+  - optional city names
 
 Spatial query support is not required by this application.
 
@@ -43,7 +43,7 @@ Now, run syncdb, it will only create tables for models that are not disabled::
 Data update
 -----------
 
-Finnaly, populate your database with command::
+Finally, populate your database with command::
 
     ./manage.py cities_light
 
