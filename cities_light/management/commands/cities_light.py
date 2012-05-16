@@ -167,6 +167,17 @@ It is possible to force the import of files which weren't downloaded using the
             except City.DoesNotExist:
                 city = City(**kwargs)
 
+            save = False
+            if not city.latitude:
+                city.latitude = items[4]
+                save = True
+            if not city.longitude:
+                city.longitude = items[5]
+                save = True
+
             if not city.geoname_id: # city may have been added manually
                 city.geoname_id = items[0]
+                save = True
+
+            if save:
                 city.save()
