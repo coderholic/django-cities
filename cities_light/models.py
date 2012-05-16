@@ -53,7 +53,12 @@ class City(models.Model):
     name_ascii = models.CharField(max_length=200, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii', 
         unique_with=('country__name',))
-    
+
+    latitude = models.DecimalField(max_digits=8, decimal_places=5,
+        null=True, blank=True)
+    longitude = models.DecimalField(max_digits=8, decimal_places=5,
+        null=True, blank=True)
+
     geoname_id = models.IntegerField(null=True, blank=True)
     country = models.ForeignKey(Country)
 
@@ -64,7 +69,7 @@ class City(models.Model):
 
         if not ENABLE_CITY:
             abstract = True
-        
+
     def __unicode__(self):
         return self.name
 signals.pre_save.connect(set_name_ascii, sender=City)

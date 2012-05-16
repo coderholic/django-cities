@@ -111,7 +111,8 @@ It is possible to force the import of files which weren't downloaded using the
         
         self.logger.info('Extracting %s from %s into %s' % (file_name, zip_path, destination))
 
-        with zipfile.ZipFile(zip_path) as zip_file:
+        zip_file = zipfile.ZipFile(zip_path)
+        if zip_file:
             with open(destination, 'wb') as destination_file:
                 destination_file.write(zip_file.read(file_name))
 
@@ -166,6 +167,17 @@ It is possible to force the import of files which weren't downloaded using the
             except City.DoesNotExist:
                 city = City(**kwargs)
 
+            save = False
+            if not city.latitude:
+                city.latitude = items[4]
+                save = True
+            if not city.longitude:
+                city.longitude = items[5]
+                save = True
+
             if not city.geoname_id: # city may have been added manually
                 city.geoname_id = items[0]
+                save = True
+
+            if save:
                 city.save()
