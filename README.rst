@@ -40,6 +40,8 @@ Now, run syncdb, it will only create tables for models that are not disabled::
 
     ./manage.py syncdb
 
+Note that this project supports django-south.
+
 Data update
 -----------
 
