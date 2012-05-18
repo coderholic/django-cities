@@ -10,4 +10,4 @@ class CountryForm(forms.ModelForm):
 class CityForm(forms.ModelForm):
     class Meta:
         model = City
-        exclude = ('name_ascii', 'slug')
+        exclude = ('name_ascii', 'search_names', 'slug')

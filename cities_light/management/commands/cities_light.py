@@ -5,6 +5,7 @@ import os.path
 import logging
 import zipfile
 import optparse
+import unicodedata
 
 from django.db import models
 from django.core.management.base import BaseCommand
@@ -153,13 +154,20 @@ It is possible to force the import of files which weren't downloaded using the
             country.tld = items[9][1:] # strip the leading dot
             country.save()
 
+    def _normalize_search_names(self, search_names):
+        if isinstance(search_names, str):
+             search_names = force_unicode(search_names)
+
+        return unicodedata.normalize('NFKD', search_names).encode(
+             'ascii', 'ignore')
+
     def city_import(self, file_path):
         for items in self.parse(file_path):
             try:
                 city_items_pre_import.send(sender=self, items=items)
             except InvalidItems:
                 continue
-            
+
             kwargs = dict(name=items[1], country=self._get_country(items[8]))
 
             try:
@@ -174,6 +182,13 @@ It is possible to force the import of files which weren't downloaded using the
             if not city.longitude:
                 city.longitude = items[5]
                 save = True
+
+            if not city.search_names:
+                # remove commas for names that are empty after normalization
+                search_names = ','.join([n.strip() for n in self._normalize_search_names(items[3]).split(',') if n.strip()])
+                if search_names:
+                    city.search_names = search_names
+                    save = True
 
             if not city.geoname_id: # city may have been added manually
                 city.geoname_id = items[0]
