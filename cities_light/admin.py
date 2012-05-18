@@ -30,7 +30,7 @@ class CityAdmin(admin.ModelAdmin):
     )
     search_fields = (
         'name',
-        'name_ascii',
+        'search_names',
     )
     list_filter = (
         'country__continent',

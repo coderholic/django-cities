@@ -5,6 +5,8 @@ from models import *
 autocomplete_light.register(Country)
 
 class CityChannel(autocomplete_light.ChannelBase):
+    search_field = 'search_names'
+
     def query_filter(self, results):
         results = super(CityChannel, self).query_filter(results)
 

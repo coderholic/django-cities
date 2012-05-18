@@ -50,9 +50,9 @@ signals.pre_save.connect(set_name_ascii, sender=Country)
 
 class City(models.Model):
     name = models.CharField(max_length=200, db_index=True)
-    name_ascii = models.CharField(max_length=200, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii', 
         unique_with=('country__name',))
+    search_names = models.TextField(db_index=True, default='')
 
     latitude = models.DecimalField(max_digits=8, decimal_places=5,
         null=True, blank=True)

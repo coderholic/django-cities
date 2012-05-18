@@ -28,7 +28,7 @@ class CityLookup(StandardLookupChannel):
     def get_query(self, q, request):
         return City.objects.filter(
             Q(name__icontains=q) |
-            Q(ascii_name__icontains=q)
+            Q(search_names__icontains=q)
         ).select_related('country').distinct()
     
     def get_result(self, obj):
