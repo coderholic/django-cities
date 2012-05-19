@@ -4,6 +4,10 @@ from .models import *
 from .settings import *
 
 class CountryAdmin(admin.ModelAdmin):
+    """
+    ModelAdmin for Country.
+    """
+
     list_display = (
         'name',
         'code2',
@@ -24,6 +28,9 @@ class CountryAdmin(admin.ModelAdmin):
 admin.site.register(Country, CountryAdmin)
 
 class CityAdmin(admin.ModelAdmin):
+    """
+    ModelAdmin for City.
+    """
     list_display = (
         'name',
         'country',
@@ -36,5 +43,5 @@ class CityAdmin(admin.ModelAdmin):
         'country__continent',
         'country',
     )
-if ENABLE_CITY:
-    admin.site.register(City, CityAdmin)
+
+admin.site.register(City, CityAdmin)

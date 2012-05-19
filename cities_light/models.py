@@ -23,6 +23,12 @@ CONTINENT_CHOICES = (
 )
 
 def set_name_ascii(sender, instance=None, **kwargs):
+    """
+    Signal reciever that sets instance.name_ascii from instance.name.
+
+    Ascii versions of names are often useful for autocompletes and search.
+    """
+
     if isinstance(instance.name, str):
         instance.name = force_unicode(instance.name)
 
@@ -30,8 +36,12 @@ def set_name_ascii(sender, instance=None, **kwargs):
         ).encode('ascii', 'ignore')
 
 class Country(models.Model):
+    """
+    Country model.
+    """
+
     name = models.CharField(max_length=200, unique=True)
-    name_ascii = models.CharField(max_length=200, db_index=True)
+    name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii')
 
     code2 = models.CharField(max_length=2, null=True, blank=True, unique=True)
@@ -49,11 +59,15 @@ class Country(models.Model):
 signals.pre_save.connect(set_name_ascii, sender=Country)
 
 class City(models.Model):
+    """
+    City model.
+    """
+
     name = models.CharField(max_length=200, db_index=True)
-    name_ascii = models.CharField(max_length=200, db_index=True)
+    name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii', 
         unique_with=('country__name',))
-    search_names = models.TextField(db_index=True, default='')
+    search_names = models.TextField(db_index=True, blank=True, default='')
 
     latitude = models.DecimalField(max_digits=8, decimal_places=5,
         null=True, blank=True)
@@ -67,9 +81,6 @@ class City(models.Model):
         unique_together = (('country', 'name'),)
         verbose_name_plural = _(u'cities')
         ordering = ['name']
-
-        if not ENABLE_CITY:
-            abstract = True
 
     def __unicode__(self):
         return self.name
