@@ -9,13 +9,12 @@ $(document).ready(function() {
             var country_deck = country_wrapper.yourlabs_deck(); 
             var country_select = country_deck.valueSelect;
 
-            // prepare city overrides
             if (country_deck.bootstrap == 'remote') {
                 // instanciate a RemoteChannelDeck deck for this city
                 var city_deck = city_wrapper.yourlabs_deck(RemoteChannelDeck);
             } else {
                 // instanciate a deck for this city
-                var city_deck = city_wrapper.yourlabs_deck(overrides);
+                var city_deck = city_wrapper.yourlabs_deck();
             }
 
             // set country_pk in city autocomplete data when a country is selected
