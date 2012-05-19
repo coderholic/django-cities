@@ -1,0 +1,25 @@
+2012-05-19 1.0 to 1.1
+    
+    Backward compatibility breaks:
+        - cities_light.widgets moved to
+          cities_light.contrib.autocomplete_light_widgets,
+
+        - cities_light.lookups moved to
+          cities_light.contrib.ajax_selects_lookups,
+
+        - cities_light.autocomplete_light_registry moved to
+          cities_light.contrib.autocomplete_light_channels,
+
+        - cities_light does not auto-register channels anymore (because you now
+          have the choice between a basic channel and the remote channel.
+
+    New features:
+        
+        - latitude and longitude fields,
+        - search_names,
+        - djangorestframework integration,
+        - autocomplete_light+djangorestframework integration.
+
+    New author:
+        
+        - Riccardo Magliocchetti

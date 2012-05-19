@@ -1,0 +1,3 @@
+django
+pycco
+django-ajax-selects
