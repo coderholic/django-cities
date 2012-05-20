@@ -10,11 +10,11 @@ def read(fname):
 
 setup(
     name='django-cities-light',
-    version='1.2',
+    version='1.3',
     description='Simple alternative to django-cities',
-    author='James Pic (original by Dan Carter (original by Ben Dowling))',
-    author_email='jamespic@gmail.com@gmail.com',
-    url='https://github.com/jpic/django-cities-light',
+    author='James Pic',
+    author_email='jamespic@gmail.com',
+    url='https://github.com/yourlabs/django-cities-light',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
