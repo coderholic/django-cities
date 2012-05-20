@@ -6,10 +6,10 @@ $(document).ready(function() {
 
         function setup() {
             // get the related country deck
-            var country_deck = country_wrapper.yourlabs_deck(); 
+            var country_deck = country_wrapper.yourlabs_deck();
             var country_select = country_deck.valueSelect;
 
-            if (country_deck.bootstrap == 'remote') {
+            if (country_deck.payload.bootstrap == 'remote') {
                 // instanciate a RemoteChannelDeck deck for this city
                 var city_deck = city_wrapper.yourlabs_deck(RemoteChannelDeck);
             } else {
