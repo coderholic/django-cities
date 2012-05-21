@@ -27,8 +27,13 @@ Basic Channel
 .. automodule:: cities_light.contrib.autocomplete_light_channels
    :members:
 
-Remote channel
-~~~~~~~~~~~~~~
+.. _remote-channel:
+
+Remote channels
+~~~~~~~~~~~~~~~
+
+Check out the :ref:`example usage <autocompletelight:remote-example>`. This is
+the API:
 
 .. automodule:: cities_light.contrib.autocomplete_light_restframework
    :members:
