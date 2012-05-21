@@ -47,8 +47,25 @@ This command is well documented, consult the help with::
 
     ./manage.py help cities_light
 
-Documentation
--------------
+Resources
+---------
 
-Move on to the complete documentation for details, particularely how to filter
-what cities you want to import.
+Documentation graciously hosted by RTFD:
+http://django-cities-light.rtfd.org
+
+Continuous integration graciously hosted by Travis:
+http://travis-ci.org/yourlabs/django-cities-light
+
+Git graciously hosted by GitHub:
+https://github.com/yourlabs/django-cities-light/
+
+Package graciously hosted by PyPi:
+http://pypi.python.org/pypi/django-cities-light/
+
+Support
+-------
+
+Mailing list graciously hosted by librelist:
+yourlabs @ librelist.com
+
+
