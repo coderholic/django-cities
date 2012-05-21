@@ -1,3 +1,5 @@
 django
 pycco
 django-ajax-selects
+djangorestframework
+django-autocomplete-light
