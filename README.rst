@@ -7,7 +7,7 @@ The data is pulled from `GeoNames
 <http://www.geonames.org/>`_ and contains:
 
   - country names
-  - optional city names
+  - city names
 
 Spatial query support is not required by this application.
 
@@ -30,12 +30,6 @@ Or the development version::
 
 Add `cities_light` to your `INSTALLED_APPS`.
 
-You may not need the city model and database table. A project like
-betspire.com doesn't need it for instance. So the City model will be made
-'abstract' if this setting is set as such::
-
-    CITIES_LIGHT_ENABLE_CITY=False
-
 Now, run syncdb, it will only create tables for models that are not disabled::
 
     ./manage.py syncdb
@@ -50,7 +44,7 @@ Finally, populate your database with command::
     ./manage.py cities_light
 
 This command is well documented, consult the help with::
-    
+
     ./manage.py help cities_light
 
 Documentation
