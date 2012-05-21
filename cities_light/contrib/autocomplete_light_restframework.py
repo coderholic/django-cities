@@ -8,6 +8,7 @@ from ..models import City, Country
 
 from autocomplete_light_channels import CityChannelMixin
 
+
 class ApiChannelMixin(object):
     """
     Defines model_for_source_url for cities_light.contrib.restframework.
@@ -22,7 +23,8 @@ class ApiChannelMixin(object):
         elif 'cities_light/country/' in url:
             return Country
 
-class RemoteCityChannel(CityChannelMixin, ApiChannelMixin, 
+
+class RemoteCityChannel(CityChannelMixin, ApiChannelMixin,
     autocomplete_light.RemoteChannelBase):
     """
     Remote channel for City that is compatible with
@@ -40,7 +42,8 @@ class RemoteCityChannel(CityChannelMixin, ApiChannelMixin,
         data['country_name'] = Country.objects.get(pk=country_pk).name
         return data
 
-class RemoteCountryChannel(ApiChannelMixin, 
+
+class RemoteCountryChannel(ApiChannelMixin,
     autocomplete_light.RemoteChannelBase):
     """
     Remote channel for Country that is compatible with

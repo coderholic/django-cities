@@ -7,7 +7,6 @@ import zipfile
 import optparse
 import unicodedata
 
-from django.db import models
 from django.core.management.base import BaseCommand
 from django.utils.encoding import force_unicode
 
@@ -16,14 +15,15 @@ from ...signals import *
 from ...models import *
 from ...settings import *
 
+
 class Command(BaseCommand):
     args = '''
 [--force-all] [--force-import-all \\]
-                              [--force-import allCountries.txt cities15000.txt ...] \\
-                              [--force allCountries.txt cities15000.txt ...]
+                              [--force-import countries.txt cities.txt ...] \\
+                              [--force countries.txt cities.txt ...]
     '''.strip()
     help = '''
-Download all files in CITIES_LIGHT_COUNTRY_SOURCES if they were updated or if 
+Download all files in CITIES_LIGHT_COUNTRY_SOURCES if they were updated or if
 --force-all option was used.
 Import country data if they were downloaded or if --force-import-all was used.
 
@@ -34,7 +34,7 @@ on the server:
 
     manage.py --force cities15000.txt countryInfo.txt
 
-It is possible to force the import of files which weren't downloaded using the 
+It is possible to force the import of files which weren't downloaded using the
 --force-import option:
 
     manage.py --force-import cities15000.txt countryInfo.txt
@@ -43,17 +43,17 @@ It is possible to force the import of files which weren't downloaded using the
     logger = logging.getLogger('cities_light')
 
     option_list = BaseCommand.option_list + (
-        optparse.make_option('--force-import-all', action='store_true', default=False,
-            help='Import even if files are up-to-date.'
+        optparse.make_option('--force-import-all', action='store_true',
+            default=False, help='Import even if files are up-to-date.'
         ),
         optparse.make_option('--force-all', action='store_true', default=False,
             help='Download and import if files are up-to-date.'
         ),
         optparse.make_option('--force-import', action='append', default=[],
-            help='Import even if filenames matching FORCE_IMPORT are up-to-date.'
+            help='Import even if files matching files are up-to-date'
         ),
         optparse.make_option('--force', action='append', default=[],
-            help='Download and import if filenames matching FORCE are up-to-date.'
+            help='Download and import even if matching files are up-to-date'
         ),
     )
 
@@ -64,18 +64,27 @@ It is possible to force the import of files which weren't downloaded using the
 
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
-            destination_file_path = os.path.join(DATA_DIR, destination_file_name)
-            
-            force = options['force_all'] or destination_file_name in options['force']
+            destination_file_path = os.path.join(DATA_DIR,
+                destination_file_name)
+
+            force = options['force_all'] or \
+                destination_file_name in options['force']
             downloaded = self.download(url, destination_file_path, force)
-            
+
             if destination_file_name.split('.')[-1] == 'zip':
-                destination_file_name = destination_file_name.replace('zip', 'txt')
+                # extract the destination file, use the extracted file as new
+                # destination
+                destination_file_name = destination_file_name.replace(
+                    'zip', 'txt')
+
                 self.extract(destination_file_path, destination_file_name)
-                destination_file_path = os.path.join(DATA_DIR, destination_file_name)
+
+                destination_file_path = os.path.join(
+                    DATA_DIR, destination_file_name)
 
             force_import = options['force_import_all'] or \
                 destination_file_name in options['force_import']
+
             if downloaded or force_import:
                 self.logger.info('Importing %s' % destination_file_name)
 
@@ -83,10 +92,10 @@ It is possible to force the import of files which weren't downloaded using the
                     self.city_import(destination_file_path)
                 elif url in COUNTRY_SOURCES:
                     self.country_import(destination_file_path)
-  
+
     def download(self, url, path, force=False):
         remote_file = urllib.urlopen(url)
-        remote_time = time.strptime(remote_file.headers['last-modified'], 
+        remote_time = time.strptime(remote_file.headers['last-modified'],
             '%a, %d %b %Y %H:%M:%S %Z')
         remote_size = int(remote_file.headers['content-length'])
 
@@ -95,7 +104,9 @@ It is possible to force the import of files which weren't downloaded using the
             local_size = os.path.getsize(path)
 
             if local_time >= remote_time and local_size == remote_size:
-                self.logger.warning('Assuming local download is up to date for %s' % url)
+                self.logger.warning(
+                    'Assuming local download is up to date for %s' % url)
+
                 return False
 
         self.logger.info('Downloading %s into %s' % (url, path))
@@ -104,13 +115,14 @@ It is possible to force the import of files which weren't downloaded using the
             while chunk:
                 local_file.write(chunk)
                 chunk = remote_file.read()
-        
+
         return True
 
     def extract(self, zip_path, file_name):
         destination = os.path.join(DATA_DIR, file_name)
-        
-        self.logger.info('Extracting %s from %s into %s' % (file_name, zip_path, destination))
+
+        self.logger.info('Extracting %s from %s into %s' % (
+            file_name, zip_path, destination))
 
         zip_file = zipfile.ZipFile(zip_path)
         if zip_file:
@@ -123,7 +135,7 @@ It is possible to force the import of files which weren't downloaded using the
 
         while line:
             line = file.readline().strip()
-            
+
             if len(line) < 1 or line[0] == '#':
                 continue
 
@@ -138,7 +150,7 @@ It is possible to force the import of files which weren't downloaded using the
 
         if code2 not in self._country_codes.keys():
             self._country_codes[code2] = Country.objects.get(code2=code2)
-        
+
         return self._country_codes[code2]
 
     def country_import(self, file_path):
@@ -151,12 +163,12 @@ It is possible to force the import of files which weren't downloaded using the
             country.name = items[4]
             country.code3 = items[1]
             country.continent = items[8]
-            country.tld = items[9][1:] # strip the leading dot
+            country.tld = items[9][1:]  # strip the leading dot
             country.save()
 
     def _normalize_search_names(self, search_names):
         if isinstance(search_names, str):
-             search_names = force_unicode(search_names)
+            search_names = force_unicode(search_names)
 
         return unicodedata.normalize('NFKD', search_names).encode(
              'ascii', 'ignore')
@@ -185,12 +197,18 @@ It is possible to force the import of files which weren't downloaded using the
 
             if not city.search_names:
                 # remove commas for names that are empty after normalization
-                search_names = ','.join([n.strip() for n in self._normalize_search_names(items[3]).split(',') if n.strip()])
+                search_names = []
+                for name in self._normalize_search_names(items[3]).split(','):
+                    name = name.strip()
+                    if name:
+                        search_names.append(name)
+                search_names = ','.join(search_names)
                 if search_names:
                     city.search_names = search_names
                     save = True
 
-            if not city.geoname_id: # city may have been added manually
+            if not city.geoname_id:
+                # city may have been added manually
                 city.geoname_id = items[0]
                 save = True
 

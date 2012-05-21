@@ -26,6 +26,7 @@ from djangorestframework.resources import ModelResource
 
 from ..models import City, Country
 
+
 class CityResource(ModelResource):
     """
     ModelResource for City.
@@ -39,17 +40,20 @@ class CityResource(ModelResource):
         return urlresolvers.reverse('cities_light_api_country_detail',
             args=(instance.country.pk,))
 
+
 class CountryResource(ModelResource):
     """
     ModelResource for Country.
     """
     model = Country
 
+
 class DetailView(InstanceMixin, ReadModelMixin, ModelView):
     """
     Read-only detail view for djangorestframework.
     """
     pass
+
 
 class LimitListModelView(ListModelView):
     """
@@ -64,11 +68,12 @@ class LimitListModelView(ListModelView):
         limit = request.GET.get('limit', None)
         queryset = super(LimitListModelView, self).get(
             request, *args, **kwargs)
-        
+
         if limit:
             return queryset[:limit]
         else:
             return queryset
+
 
 class CountryListModelView(LimitListModelView):
     """
@@ -86,8 +91,9 @@ class CountryListModelView(LimitListModelView):
             kwargs['continent'] = request.GET['continent']
         if 'q' in request.GET.keys():
             kwargs['name__icontains'] = request.GET['q']
-        
+
         return kwargs
+
 
 class CityListModelView(LimitListModelView):
     """
@@ -114,27 +120,27 @@ class CityListModelView(LimitListModelView):
             kwargs['country__continent'] = request.GET['continent']
         if 'q' in request.GET.keys():
             kwargs['search_names__icontains'] = request.GET['q']
-        
+
         return kwargs
 
 urlpatterns = patterns('',
     url(
-        r'^city/$', 
+        r'^city/$',
         CityListModelView.as_view(resource=CityResource),
         name='cities_light_api_city_list',
     ),
     url(
-        r'^city/(?P<pk>[^/]+)/$', 
+        r'^city/(?P<pk>[^/]+)/$',
         DetailView.as_view(resource=CityResource),
         name='cities_light_api_city_detail',
     ),
     url(
-        r'^country/$', 
+        r'^country/$',
         CountryListModelView.as_view(resource=CountryResource),
         name='cities_light_api_country_list',
     ),
     url(
-        r'^country/(?P<pk>[^/]+)/$', 
+        r'^country/(?P<pk>[^/]+)/$',
         DetailView.as_view(resource=CountryResource),
         name='cities_light_api_country_detail',
     ),

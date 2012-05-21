@@ -5,6 +5,7 @@ from django.utils import unittest
 from .forms import CountryForm, CityForm
 from .models import Country, City
 
+
 class FormTestCase(unittest.TestCase):
     def testCountryFormNameAndContinentAlone(self):
         form = CountryForm({'name': 'Spain', 'continent': 'EU'})
@@ -17,6 +18,7 @@ class FormTestCase(unittest.TestCase):
         form = CityForm({'name': 'Paris', 'country': country.pk})
         self.assertTrue(form.is_valid())
         form.save()
+
 
 class SaveTestCase(unittest.TestCase):
     def testCountryAsciiAndSlug(self):

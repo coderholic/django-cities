@@ -6,8 +6,8 @@ city_items_pre_import
     the data file. If a signal reciever raises InvalidItems then it will be
     skipped.
 
-    An example is worth 1000 words: if you want to import only cities from France,
-    USA and Belgium you could do as such::
+    An example is worth 1000 words: if you want to import only cities from
+    France, USA and Belgium you could do as such::
 
         import cities_light
 
@@ -17,7 +17,8 @@ city_items_pre_import
 
         cities_light.signals.city_items_pre_import.connect(filter_city_import)
 
-Note: this signal gets a list rather than a City instance for performance reasons.
+Note: this signal gets a list rather than a City instance for performance
+reasons.
 
 filter_non_cities()
     By default, this reciever is connected to city_items_pre_import, it raises
@@ -32,6 +33,7 @@ from exceptions import *
 __all__ = ['city_items_pre_import']
 
 city_items_pre_import = django.dispatch.Signal(providing_args=['items'])
+
 
 def filter_non_cities(sender, items, **kwargs):
     if 'PPL' not in items[7]:

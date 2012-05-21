@@ -3,14 +3,13 @@ import unicodedata
 from django.utils.encoding import force_unicode
 from django.db.models import signals
 from django.db import models
-from django.template import defaultfilters
 from django.utils.translation import ugettext as _
 
 import autoslug
 
 from settings import *
 
-__all__ = ['Country','City', 'CONTINENT_CHOICES']
+__all__ = ['Country', 'City', 'CONTINENT_CHOICES']
 
 CONTINENT_CHOICES = (
     ('OC', _(u'Oceania')),
@@ -21,6 +20,7 @@ CONTINENT_CHOICES = (
     ('SA', _(u'South America')),
     ('AS', _(u'Asia')),
 )
+
 
 def set_name_ascii(sender, instance=None, **kwargs):
     """
@@ -35,6 +35,7 @@ def set_name_ascii(sender, instance=None, **kwargs):
     instance.name_ascii = unicodedata.normalize('NFKD', instance.name
         ).encode('ascii', 'ignore')
 
+
 class Country(models.Model):
     """
     Country model.
@@ -46,10 +47,11 @@ class Country(models.Model):
 
     code2 = models.CharField(max_length=2, null=True, blank=True, unique=True)
     code3 = models.CharField(max_length=3, null=True, blank=True, unique=True)
-    continent = models.CharField(max_length=2, db_index=True, choices=CONTINENT_CHOICES)
+    continent = models.CharField(max_length=2, db_index=True,
+        choices=CONTINENT_CHOICES)
     tld = models.CharField(max_length=5, blank=True, db_index=True)
     geoname_id = models.IntegerField(null=True, blank=True)
-    
+
     class Meta:
         verbose_name_plural = _(u'countries')
         ordering = ['name']
@@ -58,6 +60,7 @@ class Country(models.Model):
         return self.name
 signals.pre_save.connect(set_name_ascii, sender=Country)
 
+
 class City(models.Model):
     """
     City model.
@@ -65,7 +68,7 @@ class City(models.Model):
 
     name = models.CharField(max_length=200, db_index=True)
     name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
-    slug = autoslug.AutoSlugField(populate_from='name_ascii', 
+    slug = autoslug.AutoSlugField(populate_from='name_ascii',
         unique_with=('country__name',))
     search_names = models.TextField(db_index=True, blank=True, default='')
 

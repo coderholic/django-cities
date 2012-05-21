@@ -8,6 +8,7 @@ import autocomplete_light
 
 from ..models import City
 
+
 class CityAutocompleteWidget(forms.MultiWidget):
     """
     Double autocomplete for a City selection form field, requires
@@ -19,9 +20,10 @@ class CityAutocompleteWidget(forms.MultiWidget):
     """
     def __init__(self, channel_name, attrs=None, **kwargs):
         widgets = (
-            autocomplete_light.AutocompleteWidget('CountryChannel', max_items=1),
-            autocomplete_light.AutocompleteWidget(channel_name, bootstrap='countrycity', 
-                **kwargs),
+            autocomplete_light.AutocompleteWidget('CountryChannel',
+                max_items=1),
+            autocomplete_light.AutocompleteWidget(channel_name,
+                bootstrap='countrycity', **kwargs),
         )
         super(CityAutocompleteWidget, self).__init__(widgets, attrs)
 
@@ -33,14 +35,15 @@ class CityAutocompleteWidget(forms.MultiWidget):
             city = City.objects.get(pk=value)
             return [city.country.pk, value]
         return [None, None]
-    
+
     def value_from_datadict(self, data, files, name):
         """
         Given values from the widget, return the value for the database.
         """
-        values = super(CityAutocompleteWidget, self).value_from_datadict(data, files, name)
+        values = super(CityAutocompleteWidget, self).value_from_datadict(
+            data, files, name)
         return values[1]
-    
+
     def _has_changed(self, initial, data):
         # we want multiwidget for rendering, but simple for data
         return forms.Widget._has_changed(self, initial, data)

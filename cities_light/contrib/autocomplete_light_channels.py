@@ -4,7 +4,6 @@ Channels that couple autocomplete_light and cities_light.
 
 import autocomplete_light
 
-from ..models import City, Country
 
 class CityChannelMixin(object):
     """
@@ -31,6 +30,7 @@ class CityChannelMixin(object):
             results = results.filter(country__pk=country_pk)
 
         return results
+
 
 class CityChannel(CityChannelMixin, autocomplete_light.ChannelBase):
     """
