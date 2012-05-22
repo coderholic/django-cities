@@ -15,6 +15,8 @@ For djangorestframework
 For django-autocomplete-light
 -----------------------------
 
+.. _double-widget:
+
 Widgets
 ~~~~~~~
 
