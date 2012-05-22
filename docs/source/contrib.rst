@@ -21,6 +21,8 @@ Widgets
 .. automodule:: cities_light.contrib.autocomplete_light_widgets
    :members:
 
+.. _basic-channel:
+
 Basic Channel
 ~~~~~~~~~~~~~
 
