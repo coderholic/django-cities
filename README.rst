@@ -1,3 +1,5 @@
+.. image:: https://secure.travis-ci.org/yourlabs/django-cities-light.png?branch=master
+
 django-cities-light -- *Simple django-cities alternative*
 =========================================================
 
