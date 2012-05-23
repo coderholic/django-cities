@@ -52,22 +52,21 @@ This command is well documented, consult the help with::
 Resources
 ---------
 
-Documentation graciously hosted by RTFD:
-http://django-cities-light.rtfd.org
+You could subscribe to the mailing list ask questions or just be informed of
+package updates.
 
-Continuous integration graciously hosted by Travis:
-http://travis-ci.org/yourlabs/django-cities-light
-
-Git graciously hosted by GitHub:
-https://github.com/yourlabs/django-cities-light/
-
-Package graciously hosted by PyPi:
-http://pypi.python.org/pypi/django-cities-light/
-
-Support
--------
-
-Mailing list graciously hosted by librelist:
-yourlabs @ librelist.com
-
-
+- `Mailing list graciously hosted
+  <http://groups.google.com/group/yourlabs>`_ by `Google
+  <http://groups.google.com>`_
+- `Git graciously hosted
+  <https://github.com/yourlabs/django-cities-light/>`_ by `GitHub
+  <http://github.com>`_,
+- `Documentation graciously hosted
+  <http://django-cities-light.rtfd.org>`_ by `RTFD
+  <http://rtfd.org>`_,
+- `Package graciously hosted
+  <http://pypi.python.org/pypi/django-cities-light/>`_ by `PyPi
+  <http://pypi.python.org/pypi>`_,
+- `Continuous integration graciously hosted
+  <http://travis-ci.org/yourlabs/django-cities-light>`_ by `Travis-ci
+  <http://travis-ci.org>`_
