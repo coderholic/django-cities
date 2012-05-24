@@ -70,7 +70,7 @@ class City(models.Model):
     name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii',
         unique_with=('country__name',))
-    search_names = models.TextField(db_index=True, blank=True, default='')
+    search_names = models.TextField(max_length=4000, db_index=True, blank=True, default='')
 
     latitude = models.DecimalField(max_digits=8, decimal_places=5,
         null=True, blank=True)
