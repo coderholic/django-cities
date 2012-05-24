@@ -1,5 +1,15 @@
+2012-05-24 1.3+ to 1.5.1
+
+    We had to fix migration 0003 for mysql. So to upgrade from 1.3, 1.4, or 1.5
+    to 1.5.1, do::
+
+        ./manage.py migrate cities_light 0002
+        pip install -U django-cities-light
+        ./manage.py migrate cities_light
+
+
 2012-05-19 1.0 to 1.1
-    
+
     Backward compatibility breaks:
         - cities_light.widgets moved to
           cities_light.contrib.autocomplete_light_widgets,
@@ -14,12 +24,12 @@
           have the choice between a basic channel and the remote channel.
 
     New features:
-        
+
         - latitude and longitude fields,
         - search_names,
         - djangorestframework integration,
         - autocomplete_light+djangorestframework integration.
 
     New author:
-        
+
         - Riccardo Magliocchetti
