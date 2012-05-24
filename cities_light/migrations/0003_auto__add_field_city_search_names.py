@@ -9,7 +9,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Adding field 'City.search_names'
-        db.add_column('cities_light_city', 'search_names', self.gf('django.db.models.fields.TextField')(default='', db_index=True), keep_default=False)
+        db.add_column('cities_light_city', 'search_names', self.gf('django.db.models.fields.TextField')(default='', max_length=4000, db_index=True, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
@@ -28,7 +28,7 @@ class Migration(SchemaMigration):
             'longitude': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '8', 'decimal_places': '5', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'name_ascii': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
-            'search_names': ('django.db.models.fields.TextField', [], {'default': "''", 'db_index': 'True'}),
+            'search_names': ('django.db.models.fields.TextField', [], {'default': "''", 'max_length': '4000', 'db_index': 'True', 'blank': 'True'}),
             'slug': ('autoslug.fields.AutoSlugField', [], {'unique_with': '()', 'max_length': '50', 'populate_from': 'None', 'db_index': 'True'})
         },
         'cities_light.country': {
