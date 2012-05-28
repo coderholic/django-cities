@@ -38,6 +38,6 @@ $(document).ready(function() {
         }
 
         // if the country deck is ready: setup the city deck, else wait for country deck to be ready
-        country_wrapper.data('deckready', 0) ? setup() : country_wrapper.bind('deckready', setup);
+        country_wrapper.data('deckready') ? setup() : country_wrapper.bind('deckready', setup);
     });
 });
