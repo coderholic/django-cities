@@ -2,6 +2,7 @@
 Widgets that couple cities_light and autocomplete_light.
 """
 
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 import autocomplete_light
@@ -21,9 +22,10 @@ class CityAutocompleteWidget(forms.MultiWidget):
     def __init__(self, channel_name, attrs=None, **kwargs):
         widgets = (
             autocomplete_light.AutocompleteWidget('CountryChannel',
-                max_items=1),
+                max_items=1, placeholder=_(u'country name ...')),
             autocomplete_light.AutocompleteWidget(channel_name,
-                bootstrap='countrycity', **kwargs),
+                bootstrap='countrycity', placeholder=_(u'city name ...'),
+                **kwargs),
         )
         super(CityAutocompleteWidget, self).__init__(widgets, attrs)
 
