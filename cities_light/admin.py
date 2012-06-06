@@ -29,17 +29,26 @@ class CountryAdmin(admin.ModelAdmin):
 admin.site.register(Country, CountryAdmin)
 
 
+class RegionAdmin(admin.ModelAdmin):
+    """
+    ModelAdmin for Region.
+    """
+    pass
+admin.site.register(Region, RegionAdmin)
+
 class CityAdmin(admin.ModelAdmin):
     """
     ModelAdmin for City.
     """
     list_display = (
         'name',
+        'region',
         'country',
     )
     search_fields = (
-        'name',
         'search_names',
+        'region__name',
+        'region__name_ascii',
     )
     list_filter = (
         'country__continent',

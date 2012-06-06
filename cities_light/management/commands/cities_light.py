@@ -90,6 +90,8 @@ It is possible to force the import of files which weren't downloaded using the
 
                 if url in CITY_SOURCES:
                     self.city_import(destination_file_path)
+                elif url in REGION_SOURCES:
+                    self.region_import(destination_file_path)
                 elif url in COUNTRY_SOURCES:
                     self.country_import(destination_file_path)
 
@@ -153,6 +155,23 @@ It is possible to force the import of files which weren't downloaded using the
 
         return self._country_codes[code2]
 
+    def _get_region(self, country_code2, region_id):
+        '''
+        Simple lazy identity map for (country_code2, region_id)->region
+        '''
+        if not hasattr(self, '_region_codes'):
+            self._region_codes = {}
+
+        country = self._get_country(country_code2)
+        if country.code2 not in self._region_codes:
+            self._region_codes[country.code2] = {}
+
+        if region_id not in self._region_codes[country.code2]:
+            self._region_codes[country.code2][region_id] = Region.objects.get(
+                country=country, geoname_id=region_id)
+
+        return self._region_codes[country.code2][region_id]
+
     def country_import(self, file_path):
         for items in self.parse(file_path):
             try:
@@ -173,6 +192,25 @@ It is possible to force the import of files which weren't downloaded using the
         return unicodedata.normalize('NFKD', search_names).encode(
              'ascii', 'ignore')
 
+    def region_import(self, file_path):
+        for items in self.parse(file_path):
+            try:
+                region_items_pre_import.send(sender=self, items=items)
+            except InvalidItems:
+                continue
+
+            code2, geoname_id = items[0].split('.')
+            kwargs = dict(geoname_id=geoname_id,
+                country=self._get_country(code2))
+
+            try:
+                region = Region.objects.get(**kwargs)
+            except Region.DoesNotExist:
+                region = Region(**kwargs)
+
+            region.name = items[2]
+            region.save()
+
     def city_import(self, file_path):
         for items in self.parse(file_path):
             try:
@@ -188,9 +226,14 @@ It is possible to force the import of files which weren't downloaded using the
                 city = City(**kwargs)
 
             save = False
+            if not city.region:
+                city.region = self._get_region(items[8], items[10])
+                save = True
+
             if not city.latitude:
                 city.latitude = items[4]
                 save = True
+
             if not city.longitude:
                 city.longitude = items[5]
                 save = True

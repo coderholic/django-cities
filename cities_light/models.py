@@ -9,7 +9,7 @@ import autoslug
 
 from settings import *
 
-__all__ = ['Country', 'City', 'CONTINENT_CHOICES']
+__all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES']
 
 CONTINENT_CHOICES = (
     ('OC', _(u'Oceania')),
@@ -36,40 +36,65 @@ def set_name_ascii(sender, instance=None, **kwargs):
         ).encode('ascii', 'ignore')
 
 
-class Country(models.Model):
+class Base(models.Model):
+    """
+    Base model with boilerplate for all models.
+    """
+
+    name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
+    slug = autoslug.AutoSlugField(populate_from='name_ascii')
+
+    class Meta:
+        abstract = True
+        ordering = ['name']
+
+    def __unicode__(self):
+        return self.name
+
+
+class Country(Base):
     """
     Country model.
     """
 
     name = models.CharField(max_length=200, unique=True)
-    name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
-    slug = autoslug.AutoSlugField(populate_from='name_ascii')
+    geoname_id = models.IntegerField(null=True, blank=True)
 
     code2 = models.CharField(max_length=2, null=True, blank=True, unique=True)
     code3 = models.CharField(max_length=3, null=True, blank=True, unique=True)
     continent = models.CharField(max_length=2, db_index=True,
         choices=CONTINENT_CHOICES)
     tld = models.CharField(max_length=5, blank=True, db_index=True)
-    geoname_id = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name_plural = _(u'countries')
-        ordering = ['name']
-
-    def __unicode__(self):
-        return self.name
 signals.pre_save.connect(set_name_ascii, sender=Country)
 
 
-class City(models.Model):
+class Region(Base):
+    """
+    Region model.
+    """
+
+    name = models.CharField(max_length=200, db_index=True)
+    geoname_id = models.CharField(max_length=50, null=True, blank=True,
+        db_index=True)
+
+    country = models.ForeignKey(Country)
+
+    class Meta:
+        unique_together = (('country', 'name'), )
+signals.pre_save.connect(set_name_ascii, sender=Region)
+
+
+class City(Base):
     """
     City model.
     """
 
     name = models.CharField(max_length=200, db_index=True)
-    name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
-    slug = autoslug.AutoSlugField(populate_from='name_ascii',
-        unique_with=('country__name',))
+    geoname_id = models.IntegerField(null=True, blank=True)
+
     search_names = models.TextField(max_length=4000, db_index=True, blank=True,
         default='')
 
@@ -78,14 +103,10 @@ class City(models.Model):
     longitude = models.DecimalField(max_digits=8, decimal_places=5,
         null=True, blank=True)
 
-    geoname_id = models.IntegerField(null=True, blank=True)
+    region = models.ForeignKey(Region, null=True)
     country = models.ForeignKey(Country)
 
     class Meta:
-        unique_together = (('country', 'name'),)
+        unique_together = (('region', 'name'),)
         verbose_name_plural = _(u'cities')
-        ordering = ['name']
-
-    def __unicode__(self):
-        return self.name
 signals.pre_save.connect(set_name_ascii, sender=City)

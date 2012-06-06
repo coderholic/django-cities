@@ -6,6 +6,11 @@ COUNTRY_SOURCES
     from geonames download server. Overridable in
     settings.CITIES_LIGHT_COUNTRY_SOURCES.
 
+REGION_SOURCES
+    A list of urls to download region info from. Default is
+    admin1CodesASCII.txt from geonames download server. Overridable in
+    settings.CITIES_LIGHT_REGION_SOURCES
+
 CITY_SOURCES
     A list of urls to download city info from. Default is cities15000.zip from
     geonames download server. Overridable in settings.CITIES_LIGHT_CITY_SOURCES
@@ -22,14 +27,17 @@ import os.path
 
 from django.conf import settings
 
-__all__ = ['COUNTRY_SOURCES', 'CITY_SOURCES', 'SOURCES', 'DATA_DIR']
+__all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES', 'SOURCES',
+    'DATA_DIR']
 
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
+REGION_SOURCES = getattr(settings, 'CITIES_LIGHT_REGION_SOURCES',
+    ['http://download.geonames.org/export/dump/admin1CodesASCII.txt'])
 CITY_SOURCES = getattr(settings, 'CITIES_LIGHT_CITY_SOURCES',
     ['http://download.geonames.org/export/dump/cities15000.zip'])
 
-SOURCES = list(COUNTRY_SOURCES) + list(CITY_SOURCES)
+SOURCES = list(COUNTRY_SOURCES) + list(REGION_SOURCES) + list(CITY_SOURCES)
 
 DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
     os.path.normpath(os.path.join(

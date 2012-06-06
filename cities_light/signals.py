@@ -17,8 +17,14 @@ city_items_pre_import
 
         cities_light.signals.city_items_pre_import.connect(filter_city_import)
 
-Note: this signal gets a list rather than a City instance for performance
-reasons.
+    Note: this signal gets a list rather than a City instance for performance
+    reasons.
+
+region_items_pre_import
+    Same as city_items_pre_import, note that you should get the country code
+    like this:
+
+        code2, geoname_id = items[0].split('.')
 
 filter_non_cities()
     By default, this reciever is connected to city_items_pre_import, it raises
@@ -30,9 +36,10 @@ import django.dispatch
 
 from exceptions import *
 
-__all__ = ['city_items_pre_import']
+__all__ = ['city_items_pre_import', 'region_items_pre_import']
 
 city_items_pre_import = django.dispatch.Signal(providing_args=['items'])
+region_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 
 
 def filter_non_cities(sender, items, **kwargs):
