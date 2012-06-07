@@ -44,6 +44,7 @@ class Base(models.Model):
 
     name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii')
+    geoname_id = models.IntegerField(null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -59,7 +60,6 @@ class Country(Base):
     """
 
     name = models.CharField(max_length=200, unique=True)
-    geoname_id = models.IntegerField(null=True, blank=True)
 
     code2 = models.CharField(max_length=2, null=True, blank=True, unique=True)
     code3 = models.CharField(max_length=3, null=True, blank=True, unique=True)
@@ -78,7 +78,7 @@ class Region(Base):
     """
 
     name = models.CharField(max_length=200, db_index=True)
-    geoname_id = models.CharField(max_length=50, null=True, blank=True,
+    geoname_code = models.CharField(max_length=50, null=True, blank=True,
         db_index=True)
 
     country = models.ForeignKey(Country)
@@ -94,7 +94,6 @@ class City(Base):
     """
 
     name = models.CharField(max_length=200, db_index=True)
-    geoname_id = models.IntegerField(null=True, blank=True)
 
     alternate_names = models.TextField(null=True, blank=True)
     search_names = models.TextField(max_length=4000, db_index=True, blank=True,

@@ -111,7 +111,7 @@ It is possible to force the import of files which weren't downloaded using the
 
         if region_id not in self._region_codes[country.code2]:
             self._region_codes[country.code2][region_id] = Region.objects.get(
-                country=country, geoname_id=region_id)
+                country=country, geoname_code=region_id)
 
         return self._region_codes[country.code2][region_id]
 
@@ -125,6 +125,8 @@ It is possible to force the import of files which weren't downloaded using the
         country.code3 = items[1]
         country.continent = items[8]
         country.tld = items[9][1:]  # strip the leading dot
+        if items[16]:
+            country.geoname_id = items[16]
         country.save()
 
     def region_import(self, items):
@@ -133,8 +135,8 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
-        code2, geoname_id = items[0].split('.')
-        kwargs = dict(geoname_id=geoname_id,
+        code2, geoname_code = items[0].split('.')
+        kwargs = dict(geoname_code=geoname_code,
             country=self._get_country(code2))
 
         try:
@@ -142,7 +144,8 @@ It is possible to force the import of files which weren't downloaded using the
         except Region.DoesNotExist:
             region = Region(**kwargs)
 
-        region.name = items[2]
+        region.name = items[1]
+        region.geoname_id = items[3]
         region.save()
 
     def city_import(self, items):
