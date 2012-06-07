@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin.views.main import ChangeList
 
 from .models import *
 from .settings import *
@@ -48,6 +49,12 @@ class RegionAdmin(admin.ModelAdmin):
 admin.site.register(Region, RegionAdmin)
 
 
+class CityChangeList(ChangeList):
+    def get_query_set(self, request):
+        return City.objects.filter(search_names__icontains=
+            to_search(self.params.get('q', '')))
+
+
 class CityAdmin(admin.ModelAdmin):
     """
     ModelAdmin for City.
@@ -59,12 +66,13 @@ class CityAdmin(admin.ModelAdmin):
     )
     search_fields = (
         'search_names',
-        'region__name',
-        'region__name_ascii',
     )
     list_filter = (
         'country__continent',
         'country',
     )
+
+    def get_changelist(self, request, **kwargs):
+        return CityChangeList
 
 admin.site.register(City, CityAdmin)

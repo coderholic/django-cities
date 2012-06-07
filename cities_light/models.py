@@ -1,4 +1,5 @@
 import unicodedata
+import re
 
 from django.utils.encoding import force_unicode
 from django.db.models import signals
@@ -9,7 +10,9 @@ import autoslug
 
 from settings import *
 
-__all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES']
+__all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search']
+
+ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
 
 CONTINENT_CHOICES = (
     ('OC', _(u'Oceania')),
@@ -26,6 +29,17 @@ def to_ascii(value):
         value = force_unicode(value)
 
     return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+
+
+def to_search(value):
+    """
+    Convert a string value into a string that is usable against
+    City.search_names.
+
+    For example, 'Paris Texas' would become 'paristexas'.
+    """
+
+    return ALPHA_REGEXP.sub('', to_ascii(value)).lower()
 
 
 def set_name_ascii(sender, instance=None, **kwargs):
@@ -119,3 +133,36 @@ def city_country(sender, instance, **kwargs):
     if instance.region_id and not instance.country_id:
         instance.country = instance.region.country
 signals.pre_save.connect(city_country, sender=City)
+
+
+def city_search_names(sender, instance, **kwargs):
+    search_names = []
+
+    country_names = [instance.country.name]
+    if instance.country.alternate_names:
+        country_names += instance.country.alternate_names.split(',')
+
+    city_names = [instance.name]
+    if instance.alternate_names:
+        city_names += instance.alternate_names.split(',')
+
+    if instance.region_id:
+        region_names = [instance.region.name]
+        if instance.region.alternate_names:
+            region_names += instance.region.alternate_names.split(',')
+
+
+    for city_name in city_names:
+        for country_name in country_names:
+            name = to_search(city_name + country_name)
+            if name not in search_names:
+                search_names.append(name)
+
+            if instance.region_id:
+                for region_name in region_names:
+                    name = to_search(city_name + region_name + country_name)
+                    if name not in search_names:
+                        search_names.append(name)
+
+    instance.search_names = ' '.join(search_names)
+signals.pre_save.connect(city_search_names, sender=City)

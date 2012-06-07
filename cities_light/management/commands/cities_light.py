@@ -179,7 +179,7 @@ It is possible to force the import of files which weren't downloaded using the
         except Country.DoesNotExist:
             country = Country(code2=items[0])
 
-        country.name = items[4]
+        country.name = force_unicode(items[4])
         country.code3 = items[1]
         country.continent = items[8]
         country.tld = items[9][1:]  # strip the leading dot
@@ -202,7 +202,7 @@ It is possible to force the import of files which weren't downloaded using the
         except Region.DoesNotExist:
             region = Region(**kwargs)
 
-        region.name = items[1]
+        region.name = force_unicode(items[1])
         region.geoname_id = items[3]
         region.save()
 
@@ -212,7 +212,8 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
-        kwargs = dict(name=items[1], country=self._get_country(items[8]))
+        kwargs = dict(name=force_unicode(items[1]),
+            country=self._get_country(items[8]))
 
         try:
             city = City.objects.get(**kwargs)
@@ -233,7 +234,7 @@ It is possible to force the import of files which weren't downloaded using the
             save = True
 
         if not TRANSLATION_SOURCES and not city.alternate_names:
-            city.alternate_names = items[3]
+            city.alternate_names = force_unicode(items[3])
             save = True
 
         if not city.geoname_id:
@@ -296,7 +297,10 @@ It is possible to force the import of files which weren't downloaded using the
         progress = progressbar.ProgressBar(maxval=max, widgets=self.widgets)
         for model_class, model_class_data in data.items():
             for geoname_id, geoname_data in model_class_data.items():
-                model = model_class.objects.get(geoname_id=geoname_id)
+                try:
+                    model = model_class.objects.get(geoname_id=geoname_id)
+                except model_class.DoesNotExist:
+                    continue
                 save = False
 
                 if not model.alternate_names:
