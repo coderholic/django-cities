@@ -53,6 +53,14 @@ def set_name_ascii(sender, instance=None, **kwargs):
     instance.name_ascii = to_ascii(instance.name)
 
 
+def set_display_name(sender, instance=None, **kwargs):
+    """
+    Set instance.display_name to instance.get_display_name(), avoid spawning
+    queries during __unicode__().
+    """
+    instance.display_name = instance.get_display_name()
+
+
 class Base(models.Model):
     """
     Base model with boilerplate for all models.
@@ -68,6 +76,9 @@ class Base(models.Model):
         ordering = ['name']
 
     def __unicode__(self):
+        display_name = getattr(self, 'display_name', None)
+        if display_name:
+            return display_name
         return self.name
 
 
@@ -95,6 +106,7 @@ class Region(Base):
     """
 
     name = models.CharField(max_length=200, db_index=True)
+    display_name = models.CharField(max_length=200)
     geoname_code = models.CharField(max_length=50, null=True, blank=True,
         db_index=True)
 
@@ -105,10 +117,11 @@ class Region(Base):
         verbose_name = _('region/state')
         verbose_name_plural = _('regions/states')
 
-    def __unicode__(self):
+    def get_display_name(self):
         return u'%s, %s' % (self.name, self.country.name)
 
 signals.pre_save.connect(set_name_ascii, sender=Region)
+signals.pre_save.connect(set_display_name, sender=Region)
 
 
 class City(Base):
@@ -117,6 +130,7 @@ class City(Base):
     """
 
     name = models.CharField(max_length=200, db_index=True)
+    display_name = models.CharField(max_length=200)
 
     search_names = models.TextField(max_length=4000, db_index=True, blank=True,
         default='')
@@ -133,13 +147,14 @@ class City(Base):
         unique_together = (('region', 'name'),)
         verbose_name_plural = _(u'cities')
 
-    def __unicode__(self):
+    def get_display_name(self):
         if self.region_id:
             return u'%s, %s, %s' % (self.name, self.region.name,
                 self.country.name)
         else:
             return u'%s, %s' % (self.name, self.country.name)
 signals.pre_save.connect(set_name_ascii, sender=City)
+signals.pre_save.connect(set_display_name, sender=City)
 
 
 def city_country(sender, instance, **kwargs):
