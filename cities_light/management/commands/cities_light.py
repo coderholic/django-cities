@@ -232,7 +232,7 @@ It is possible to force the import of files which weren't downloaded using the
             city.longitude = items[5]
             save = True
 
-        if not city.alternate_names:
+        if not TRANSLATION_SOURCES and not city.alternate_names:
             city.alternate_names = items[3]
             save = True
 
