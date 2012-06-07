@@ -75,7 +75,7 @@ signals.pre_save.connect(set_name_ascii, sender=Country)
 
 class Region(Base):
     """
-    Region model.
+    Region/State model.
     """
 
     name = models.CharField(max_length=200, db_index=True)
@@ -86,6 +86,8 @@ class Region(Base):
 
     class Meta:
         unique_together = (('country', 'name'), )
+        verbose_name = _('region/state')
+        verbose_name_plural = _('regions/states')
 signals.pre_save.connect(set_name_ascii, sender=Region)
 
 
