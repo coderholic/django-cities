@@ -110,3 +110,9 @@ class City(Base):
         unique_together = (('region', 'name'),)
         verbose_name_plural = _(u'cities')
 signals.pre_save.connect(set_name_ascii, sender=City)
+
+
+def city_country(sender, instance, **kwargs):
+    if instance.region_id and not instance.country_id:
+        instance.country = instance.region.country
+signals.pre_save.connect(city_country, sender=City)
