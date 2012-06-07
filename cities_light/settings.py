@@ -25,8 +25,13 @@ CITY_SOURCES
     A list of urls to download city info from. Default is cities15000.zip from
     geonames download server. Overridable in settings.CITIES_LIGHT_CITY_SOURCES
 
+TRANSLATION_SOURCES
+    A list of urls to download alternate names info from. Default is
+    alternateNames.zip from geonames download server. Overridable in
+    settings.CITIES_LIGHT_TRANSLATION_SOURCES
+
 SOURCES
-    A list with all sources, including city and coutry.
+    A list with all sources.
 
 DATA_DIR
     Absolute path to download and extract data into. Default is
