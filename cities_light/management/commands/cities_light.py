@@ -14,6 +14,7 @@ from ...exceptions import *
 from ...signals import *
 from ...models import *
 from ...settings import *
+from ...geonames import Geonames
 
 
 class Command(BaseCommand):
@@ -64,23 +65,12 @@ It is possible to force the import of files which weren't downloaded using the
 
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
-            destination_file_path = os.path.join(DATA_DIR,
-                destination_file_name)
 
             force = options['force_all'] or \
                 destination_file_name in options['force']
-            downloaded = self.download(url, destination_file_path, force)
 
-            if destination_file_name.split('.')[-1] == 'zip':
-                # extract the destination file, use the extracted file as new
-                # destination
-                destination_file_name = destination_file_name.replace(
-                    'zip', 'txt')
-
-                self.extract(destination_file_path, destination_file_name)
-
-                destination_file_path = os.path.join(
-                    DATA_DIR, destination_file_name)
+            geonames = Geonames(url, force=force)
+            downloaded = geonames.downloaded
 
             force_import = options['force_import_all'] or \
                 destination_file_name in options['force_import']
@@ -89,59 +79,11 @@ It is possible to force the import of files which weren't downloaded using the
                 self.logger.info('Importing %s' % destination_file_name)
 
                 if url in CITY_SOURCES:
-                    self.city_import(destination_file_path)
+                    self.city_import(geonames)
                 elif url in REGION_SOURCES:
-                    self.region_import(destination_file_path)
+                    self.region_import(geonames)
                 elif url in COUNTRY_SOURCES:
-                    self.country_import(destination_file_path)
-
-    def download(self, url, path, force=False):
-        remote_file = urllib.urlopen(url)
-        remote_time = time.strptime(remote_file.headers['last-modified'],
-            '%a, %d %b %Y %H:%M:%S %Z')
-        remote_size = int(remote_file.headers['content-length'])
-
-        if os.path.exists(path) and not force:
-            local_time = time.gmtime(os.path.getmtime(path))
-            local_size = os.path.getsize(path)
-
-            if local_time >= remote_time and local_size == remote_size:
-                self.logger.warning(
-                    'Assuming local download is up to date for %s' % url)
-
-                return False
-
-        self.logger.info('Downloading %s into %s' % (url, path))
-        with open(path, 'wb') as local_file:
-            chunk = remote_file.read()
-            while chunk:
-                local_file.write(chunk)
-                chunk = remote_file.read()
-
-        return True
-
-    def extract(self, zip_path, file_name):
-        destination = os.path.join(DATA_DIR, file_name)
-
-        self.logger.info('Extracting %s from %s into %s' % (
-            file_name, zip_path, destination))
-
-        zip_file = zipfile.ZipFile(zip_path)
-        if zip_file:
-            with open(destination, 'wb') as destination_file:
-                destination_file.write(zip_file.read(file_name))
-
-    def parse(self, file_path):
-        file = open(file_path, 'r')
-        line = True
-
-        while line:
-            line = file.readline().strip()
-
-            if len(line) < 1 or line[0] == '#':
-                continue
-
-            yield [e.strip() for e in line.split('\t')]
+                    self.country_import(geonames)
 
     def _get_country(self, code2):
         '''
@@ -172,8 +114,8 @@ It is possible to force the import of files which weren't downloaded using the
 
         return self._region_codes[country.code2][region_id]
 
-    def country_import(self, file_path):
-        for items in self.parse(file_path):
+    def country_import(self, geonames):
+        for items in geonames.parse():
             try:
                 country = Country.objects.get(code2=items[0])
             except Country.DoesNotExist:
@@ -185,8 +127,8 @@ It is possible to force the import of files which weren't downloaded using the
             country.tld = items[9][1:]  # strip the leading dot
             country.save()
 
-    def region_import(self, file_path):
-        for items in self.parse(file_path):
+    def region_import(self, geonames):
+        for items in geonames.parse():
             try:
                 region_items_pre_import.send(sender=self, items=items)
             except InvalidItems:
@@ -204,8 +146,8 @@ It is possible to force the import of files which weren't downloaded using the
             region.name = items[2]
             region.save()
 
-    def city_import(self, file_path):
-        for items in self.parse(file_path):
+    def city_import(self, geonames):
+        for items in geonames.parse():
             try:
                 city_items_pre_import.send(sender=self, items=items)
             except InvalidItems:

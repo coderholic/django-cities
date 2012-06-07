@@ -7,7 +7,7 @@ from south.v2 import DataMigration
 from django.db import models
 
 from ..settings import *
-from ..management.commands.cities_light import Command as CitiesLightCommand
+from ..geonames import Geonames
 
 class Migration(DataMigration):
     def _get_country(self, code2):
@@ -41,9 +41,11 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         self.orm = orm
-        cmd = CitiesLightCommand()
 
         if db.dry_run:
+            return
+
+        if not orm['cities_light.City'].objects.count():
             return
 
         self.regions = {}
@@ -51,32 +53,16 @@ class Migration(DataMigration):
             self.regions[country.code2] = {}
 
         for url in REGION_SOURCES + CITY_SOURCES:
-            destination_file_name = url.split('/')[-1]
-            destination_file_path = os.path.join(DATA_DIR,
-                destination_file_name)
-
-            cmd.download(url, destination_file_path)
-
-            if destination_file_name.split('.')[-1] == 'zip':
-                # extract the destination file, use the extracted file as new
-                # destination
-                destination_file_name = destination_file_name.replace(
-                    'zip', 'txt')
-
-                cmd.extract(destination_file_path, destination_file_name)
-
-                destination_file_path = os.path.join(
-                    DATA_DIR, destination_file_name)
-
+            geonames = Geonames(url)
 
             if url in REGION_SOURCES:
-                for items in cmd.parse(destination_file_path):
+                for items in geonames.parse():
                     code2, geoname_id = items[0].split('.')
                     if code2 in self.regions.keys():
                         self.regions[code2][geoname_id] = items
 
             elif url in CITY_SOURCES:
-                for items in cmd.parse(destination_file_path):
+                for items in geonames.parse():
                     try:
                         kwargs = dict(name=items[1], country=self._get_country(items[8]))
                     except orm['cities_light.Country'].DoesNotExist:
