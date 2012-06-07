@@ -7,6 +7,8 @@ import zipfile
 import optparse
 import unicodedata
 
+import progressbar
+
 from django.core.management.base import BaseCommand
 from django.utils.encoding import force_unicode
 
@@ -78,6 +80,9 @@ It is possible to force the import of files which weren't downloaded using the
             if downloaded or force_import:
                 self.logger.info('Importing %s' % destination_file_name)
 
+                i = 0
+                progress = progressbar.ProgressBar(maxval=geonames.num_lines())
+
                 for items in geonames.parse():
                     if url in CITY_SOURCES:
                         self.city_import(items)
@@ -85,6 +90,13 @@ It is possible to force the import of files which weren't downloaded using the
                         self.region_import(items)
                     elif url in COUNTRY_SOURCES:
                         self.country_import(items)
+                    elif url in TRANSLATION_SOURCES:
+                        self.translation_import(items)
+
+                    i += 1
+                    progress.update(i)
+
+                progress.finish()
 
     def _get_country(self, code2):
         '''

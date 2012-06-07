@@ -80,5 +80,5 @@ class Geonames(object):
 
             yield [e.strip() for e in line.split('\t')]
 
-
-
+    def num_lines(self):
+        return sum(1 for line in open(self.file_path))
