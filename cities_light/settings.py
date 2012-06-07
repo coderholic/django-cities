@@ -1,5 +1,15 @@
 """
-Settings for this application.
+Settings for this application. The most important is TRANSLATION_LANGUAGES
+because it's probably project specific.
+
+TRANSLATION_LANGUAGES
+    List of language codes. It is used to generate the alternate_names property
+    of cities_light models. You want to keep it as small as possible.
+    By default, it includes the most popular languages according to wikipedia,
+    which use a rather ascii-compatible alphabet.
+
+    See the source: http://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers
+    See the list: http://download.geonames.org/export/dump/iso-languagecodes.txt
 
 COUNTRY_SOURCES
     A list of urls to download country info from. Default is countryInfo.txt
@@ -28,7 +38,7 @@ import os.path
 from django.conf import settings
 
 __all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
-    'TRANSLATION_SOURCES', 'SOURCES','DATA_DIR']
+    'TRANSLATION_LANGUAGES', 'TRANSLATION_SOURCES', 'SOURCES', 'DATA_DIR']
 
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
@@ -38,6 +48,8 @@ CITY_SOURCES = getattr(settings, 'CITIES_LIGHT_CITY_SOURCES',
     ['http://download.geonames.org/export/dump/cities15000.zip'])
 TRANSLATION_SOURCES = getattr(settings, 'CITIES_LIGHT_TRANSLATION_SOURCES',
     ['http://download.geonames.org/export/dump/alternateNames.zip'])
+TRANSLATION_LANGUAGES = getattr(settings, 'CITIES_LIGHT_TRANSLATION_LANGUAGES',
+    ['es', 'en', 'pt', 'de', 'pl'])
 
 SOURCES = list(COUNTRY_SOURCES) + list(REGION_SOURCES) + list(CITY_SOURCES)
 SOURCES += TRANSLATION_SOURCES

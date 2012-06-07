@@ -81,6 +81,16 @@ It is possible to force the import of files which weren't downloaded using the
             os.mkdir(DATA_DIR)
 
         translation_hack_path = os.path.join(DATA_DIR, 'translation_hack')
+        self.widgets = [
+            'RAM used: ',
+            MemoryUsageWidget(),
+            ' ',
+            progressbar.ETA(),
+            ' Done: ',
+            progressbar.Percentage(),
+            progressbar.Bar(),
+        ]
+
 
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
@@ -105,17 +115,8 @@ It is possible to force the import of files which weren't downloaded using the
                             continue
 
                 i = 0
-                widgets = [
-                    'RAM used: ',
-                    MemoryUsageWidget(),
-                    ' ',
-                    progressbar.ETA(),
-                    ' Done: ',
-                    progressbar.Percentage(),
-                    progressbar.Bar(),
-                ]
                 progress = progressbar.ProgressBar(maxval=geonames.num_lines(),
-                    widgets=widgets)
+                    widgets=self.widgets)
 
                 for items in geonames.parse():
                     if url in CITY_SOURCES:
@@ -132,7 +133,7 @@ It is possible to force the import of files which weren't downloaded using the
 
                 progress.finish()
 
-                if options['hack_translations']:
+                if url in TRANSLATION_SOURCES and options['hack_translations']:
                     with open(translation_hack_path, 'w+') as f:
                         pickle.dump(self.translation_data, f)
 
@@ -140,6 +141,7 @@ It is possible to force the import of files which weren't downloaded using the
             with open(translation_hack_path, 'r') as f:
                 self.translation_data = pickle.load(f)
 
+        self.logger.info('Importing parsed translation in the database')
         self.translation_import()
 
     def _get_country(self, code2):
@@ -257,16 +259,7 @@ It is possible to force the import of files which weren't downloaded using the
             # avoid shortnames, colloquial, and historic
             return
 
-        if items[2] == 'link':
-            # skip links like wikipedia etc ...
-            return
-
-        if items[2] == 'post':
-            # skip postal codes ... for now !!
-            return
-
-        if items[2] == 'fr_1793':
-            # as much as i like revolutions, skip revolutionary names
+        if items[2] not in TRANSLATION_LANGUAGES:
             return
 
         # arg optimisation code kills me !!!
@@ -291,14 +284,20 @@ It is possible to force the import of files which weren't downloaded using the
 
     def translation_import(self):
         data = getattr(self, 'translation_data', None)
-        collection = []
 
         if not data:
             return
 
+        max = 0
+        for model_class, model_class_data in data.items():
+            max += len(model_class_data.keys())
+
+        i = 0
+        progress = progressbar.ProgressBar(maxval=max, widgets=self.widgets)
         for model_class, model_class_data in data.items():
             for geoname_id, geoname_data in model_class_data.items():
                 model = model_class.objects.get(geoname_id=geoname_id)
+                save = False
 
                 if not model.alternate_names:
                     alternate_names = []
@@ -306,16 +305,26 @@ It is possible to force the import of files which weren't downloaded using the
                     alternate_names = model.alternate_names.split(',')
 
                 for lang, names in geoname_data.items():
-                    if lang not in collection:
-                        collection.append(lang)
+                    if lang == 'post':
+                        # we might want to save the postal codes somewhere
+                        # here's where it will all start ...
+                        continue
+
                     for name in names:
                         name = force_unicode(name)
+                        if name == model.name:
+                            continue
+
                         if name not in alternate_names:
                             alternate_names.append(name)
 
                 alternate_names = u','.join(alternate_names)
                 if model.alternate_names != alternate_names:
                     model.alternate_names = alternate_names
+                    save = True
+
+                if save:
                     model.save()
 
-        print collection
+                i += 1
+                progress.update(i)
