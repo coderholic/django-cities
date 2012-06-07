@@ -19,6 +19,11 @@ from ...settings import *
 from ...geonames import Geonames
 
 
+class MemoryUsageWidget(progressbar.ProgressBarWidget):
+    def update(self, pbar):
+        return '%s kB' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+
+
 class Command(BaseCommand):
     args = '''
 [--force-all] [--force-import-all \\]
@@ -81,7 +86,17 @@ It is possible to force the import of files which weren't downloaded using the
                 self.logger.info('Importing %s' % destination_file_name)
 
                 i = 0
-                progress = progressbar.ProgressBar(maxval=geonames.num_lines())
+                widgets = [
+                    'RAM used: ',
+                    MemoryUsageWidget(),
+                    ' ',
+                    progressbar.ETA(),
+                    ' Done: ',
+                    progressbar.Percentage(),
+                    progressbar.Bar(),
+                ]
+                progress = progressbar.ProgressBar(maxval=geonames.num_lines(),
+                    widgets=widgets)
 
                 for items in geonames.parse():
                     if url in CITY_SOURCES:
