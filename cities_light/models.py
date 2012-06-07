@@ -21,6 +21,12 @@ CONTINENT_CHOICES = (
     ('AS', _(u'Asia')),
 )
 
+def to_ascii(value):
+    if isinstance(value, str):
+        value = force_unicode(value)
+
+    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+
 
 def set_name_ascii(sender, instance=None, **kwargs):
     """
@@ -28,12 +34,7 @@ def set_name_ascii(sender, instance=None, **kwargs):
 
     Ascii versions of names are often useful for autocompletes and search.
     """
-
-    if isinstance(instance.name, str):
-        instance.name = force_unicode(instance.name)
-
-    instance.name_ascii = unicodedata.normalize('NFKD', instance.name
-        ).encode('ascii', 'ignore')
+    instance.name_ascii = to_ascii(instance.name)
 
 
 class Base(models.Model):
@@ -95,6 +96,7 @@ class City(Base):
     name = models.CharField(max_length=200, db_index=True)
     geoname_id = models.IntegerField(null=True, blank=True)
 
+    alternate_names = models.TextField(null=True, blank=True)
     search_names = models.TextField(max_length=4000, db_index=True, blank=True,
         default='')
 

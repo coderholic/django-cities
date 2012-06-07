@@ -185,13 +185,6 @@ It is possible to force the import of files which weren't downloaded using the
             country.tld = items[9][1:]  # strip the leading dot
             country.save()
 
-    def _normalize_search_names(self, search_names):
-        if isinstance(search_names, str):
-            search_names = force_unicode(search_names)
-
-        return unicodedata.normalize('NFKD', search_names).encode(
-             'ascii', 'ignore')
-
     def region_import(self, file_path):
         for items in self.parse(file_path):
             try:
@@ -238,17 +231,9 @@ It is possible to force the import of files which weren't downloaded using the
                 city.longitude = items[5]
                 save = True
 
-            if not city.search_names:
-                # remove commas for names that are empty after normalization
-                search_names = []
-                for name in self._normalize_search_names(items[3]).split(','):
-                    name = name.strip()
-                    if name:
-                        search_names.append(name)
-                search_names = ','.join(search_names)
-                if search_names:
-                    city.search_names = search_names
-                    save = True
+            if not city.alternate_names:
+                city.alternate_names = items[3]
+                save = True
 
             if not city.geoname_id:
                 # city may have been added manually
