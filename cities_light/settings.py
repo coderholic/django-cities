@@ -27,8 +27,8 @@ import os.path
 
 from django.conf import settings
 
-__all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES', 'SOURCES',
-    'DATA_DIR']
+__all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
+    'TRANSLATION_SOURCES', 'SOURCES','DATA_DIR']
 
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
@@ -36,8 +36,11 @@ REGION_SOURCES = getattr(settings, 'CITIES_LIGHT_REGION_SOURCES',
     ['http://download.geonames.org/export/dump/admin1CodesASCII.txt'])
 CITY_SOURCES = getattr(settings, 'CITIES_LIGHT_CITY_SOURCES',
     ['http://download.geonames.org/export/dump/cities15000.zip'])
+TRANSLATION_SOURCES = getattr(settings, 'CITIES_LIGHT_TRANSLATION_SOURCES',
+    ['http://download.geonames.org/export/dump/alternateNames.zip'])
 
 SOURCES = list(COUNTRY_SOURCES) + list(REGION_SOURCES) + list(CITY_SOURCES)
+SOURCES += TRANSLATION_SOURCES
 
 DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
     os.path.normpath(os.path.join(

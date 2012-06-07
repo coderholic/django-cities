@@ -6,6 +6,12 @@ import logging
 import zipfile
 import optparse
 import unicodedata
+import resource
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 import progressbar
 
@@ -63,12 +69,18 @@ It is possible to force the import of files which weren't downloaded using the
         optparse.make_option('--force', action='append', default=[],
             help='Download and import even if matching files are up-to-date'
         ),
+        optparse.make_option('--hack-translations', action='store_true',
+            default=False,
+            help='Set this if you intend to import translations a lot'
+        ),
     )
 
     def handle(self, *args, **options):
         if not os.path.exists(DATA_DIR):
             self.logger.info('Creating %s' % DATA_DIR)
             os.mkdir(DATA_DIR)
+
+        translation_hack_path = os.path.join(DATA_DIR, 'translation_hack')
 
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
@@ -84,6 +96,13 @@ It is possible to force the import of files which weren't downloaded using the
 
             if downloaded or force_import:
                 self.logger.info('Importing %s' % destination_file_name)
+
+                if url in TRANSLATION_SOURCES:
+                    if options['hack_translations']:
+                        if os.path.exists(translation_hack_path):
+                            self.logger.debug('Using translation parsed data: %s' %
+                                translation_hack_path)
+                            continue
 
                 i = 0
                 widgets = [
@@ -106,12 +125,22 @@ It is possible to force the import of files which weren't downloaded using the
                     elif url in COUNTRY_SOURCES:
                         self.country_import(items)
                     elif url in TRANSLATION_SOURCES:
-                        self.translation_import(items)
+                        self.translation_parse(items)
 
                     i += 1
                     progress.update(i)
 
                 progress.finish()
+
+                if options['hack_translations']:
+                    with open(translation_hack_path, 'w+') as f:
+                        pickle.dump(self.translation_data, f)
+
+        if options['hack_translations']:
+            with open(translation_hack_path, 'r') as f:
+                self.translation_data = pickle.load(f)
+
+        self.translation_import()
 
     def _get_country(self, code2):
         '''
@@ -213,3 +242,80 @@ It is possible to force the import of files which weren't downloaded using the
         if save:
             city.save()
 
+    def translation_parse(self, items):
+        if not hasattr(self, 'translation_data'):
+            self.country_ids = Country.objects.values_list('geoname_id', flat=True)
+            self.region_ids = Region.objects.values_list('geoname_id', flat=True)
+            self.city_ids = City.objects.values_list('geoname_id', flat=True)
+            self.translation_data = {
+                Country: {},
+                Region: {},
+                City: {},
+            }
+
+        if len(items) > 4:
+            # avoid shortnames, colloquial, and historic
+            return
+
+        if items[2] == 'link':
+            # skip links like wikipedia etc ...
+            return
+
+        if items[2] == 'post':
+            # skip postal codes ... for now !!
+            return
+
+        if items[2] == 'fr_1793':
+            # as much as i like revolutions, skip revolutionary names
+            return
+
+        # arg optimisation code kills me !!!
+        items[1] = int(items[1])
+
+        if items[1] in self.country_ids:
+            model_class = Country
+        elif items[1] in self.region_ids:
+            model_class = Region
+        elif items[1] in self.city_ids:
+            model_class = City
+        else:
+            return
+
+        if items[1] not in self.translation_data[model_class]:
+            self.translation_data[model_class][items[1]] = {}
+
+        if items[2] not in self.translation_data[model_class][items[1]]:
+            self.translation_data[model_class][items[1]][items[2]] = []
+
+        self.translation_data[model_class][items[1]][items[2]].append(items[3])
+
+    def translation_import(self):
+        data = getattr(self, 'translation_data', None)
+        collection = []
+
+        if not data:
+            return
+
+        for model_class, model_class_data in data.items():
+            for geoname_id, geoname_data in model_class_data.items():
+                model = model_class.objects.get(geoname_id=geoname_id)
+
+                if not model.alternate_names:
+                    alternate_names = []
+                else:
+                    alternate_names = model.alternate_names.split(',')
+
+                for lang, names in geoname_data.items():
+                    if lang not in collection:
+                        collection.append(lang)
+                    for name in names:
+                        name = force_unicode(name)
+                        if name not in alternate_names:
+                            alternate_names.append(name)
+
+                alternate_names = u','.join(alternate_names)
+                if model.alternate_names != alternate_names:
+                    model.alternate_names = alternate_names
+                    model.save()
+
+        print collection
