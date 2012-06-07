@@ -9,8 +9,10 @@ TRANSLATION_LANGUAGES
     which use a rather ascii-compatible alphabet. It also contains 'abbr' which
     stands for 'abbreviation', you might want to include this one as well.
 
-    See the source: http://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers
-    See the list: http://download.geonames.org/export/dump/iso-languagecodes.txt
+See:
+
+ - http://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers
+ - http://download.geonames.org/export/dump/iso-languagecodes.txt
 
 COUNTRY_SOURCES
     A list of urls to download country info from. Default is countryInfo.txt

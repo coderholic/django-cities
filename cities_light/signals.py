@@ -21,10 +21,13 @@ city_items_pre_import
     reasons.
 
 region_items_pre_import
-    Same as city_items_pre_import, note that you should get the country code
-    like this:
+    Same as city_items_pre_import, for example::
 
-        code2, geoname_id = items[0].split('.')
+        def filter_region_import(sender, items, **kwargs):
+            if items[0].split('.')[0] not in ('FR', 'US', 'BE'):
+                raise cities_light.InvalidItems()
+        cities_light.signals.region_items_pre_import.connect(
+            filter_region_import)
 
 filter_non_cities()
     By default, this reciever is connected to city_items_pre_import, it raises
@@ -36,13 +39,17 @@ import django.dispatch
 
 from exceptions import *
 
-__all__ = ['city_items_pre_import', 'region_items_pre_import']
+__all__ = ['city_items_pre_import', 'region_items_pre_import',
+    'filter_non_cities']
 
 city_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 region_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 
 
 def filter_non_cities(sender, items, **kwargs):
+    """
+    Reports non populated places as invalid.
+    """
     if 'PPL' not in items[7]:
         raise InvalidItems()
 city_items_pre_import.connect(filter_non_cities)

@@ -54,8 +54,8 @@ admin.site.register(Region, RegionAdmin)
 
 class CityChangeList(ChangeList):
     def get_query_set(self, request):
-        return City.objects.filter(search_names__icontains=
-            to_search(self.params.get('q', '')))
+        return City.objects.filter(search_names__icontains=to_search(
+            self.params.get('q', '')))
 
 
 class CityAdmin(admin.ModelAdmin):

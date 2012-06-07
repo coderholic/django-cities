@@ -7,6 +7,7 @@ import logging
 
 from .settings import *
 
+
 class Geonames(object):
     logger = logging.getLogger('cities_light')
 

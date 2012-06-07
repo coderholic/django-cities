@@ -1,11 +1,7 @@
-import urllib
-import time
 import os
 import os.path
 import logging
-import zipfile
 import optparse
-import unicodedata
 import resource
 
 try:
@@ -91,7 +87,6 @@ It is possible to force the import of files which weren't downloaded using the
             progressbar.Bar(),
         ]
 
-
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
 
@@ -110,7 +105,8 @@ It is possible to force the import of files which weren't downloaded using the
                 if url in TRANSLATION_SOURCES:
                     if options['hack_translations']:
                         if os.path.exists(translation_hack_path):
-                            self.logger.debug('Using translation parsed data: %s' %
+                            self.logger.debug(
+                                'Using translation parsed data: %s' %
                                 translation_hack_path)
                             continue
 
@@ -247,8 +243,10 @@ It is possible to force the import of files which weren't downloaded using the
 
     def translation_parse(self, items):
         if not hasattr(self, 'translation_data'):
-            self.country_ids = Country.objects.values_list('geoname_id', flat=True)
-            self.region_ids = Region.objects.values_list('geoname_id', flat=True)
+            self.country_ids = Country.objects.values_list('geoname_id',
+                flat=True)
+            self.region_ids = Region.objects.values_list('geoname_id',
+                flat=True)
             self.city_ids = City.objects.values_list('geoname_id', flat=True)
             self.translation_data = {
                 Country: {},

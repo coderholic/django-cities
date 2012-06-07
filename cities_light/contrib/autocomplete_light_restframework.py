@@ -8,6 +8,9 @@ from ..models import Country, City, Region
 
 from autocomplete_light_channels import CityChannelMixin
 
+__all__ = ['ApiChannelMixin', 'RemoteCountryChannel', 'RemoteRegionChannel',
+    'RemoteCityChannel']
+
 
 class ApiChannelMixin(object):
     """
@@ -30,6 +33,15 @@ class RemoteCityChannel(CityChannelMixin, ApiChannelMixin,
     autocomplete_light.RemoteChannelBase):
     """
     Remote channel for City that is compatible with
+    cities_light.contrib.restframework.
+    """
+    pass
+
+
+class RemoteRegionChannel(ApiChannelMixin,
+    autocomplete_light.RemoteChannelBase):
+    """
+    Remote channel for Region that is compatible with
     cities_light.contrib.restframework.
     """
     pass

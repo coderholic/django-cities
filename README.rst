@@ -3,8 +3,9 @@
 django-cities-light -- *Simple django-cities alternative*
 =========================================================
 
-This add-on provides models and commands to import country/city data into your
-database.
+This add-on provides models and commands to import country, region/state, and
+city data in your database.
+
 The data is pulled from `GeoNames
 <http://www.geonames.org/>`_ and contains cities, regions/states and countries.
 
