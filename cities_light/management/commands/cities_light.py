@@ -78,12 +78,13 @@ It is possible to force the import of files which weren't downloaded using the
             if downloaded or force_import:
                 self.logger.info('Importing %s' % destination_file_name)
 
-                if url in CITY_SOURCES:
-                    self.city_import(geonames)
-                elif url in REGION_SOURCES:
-                    self.region_import(geonames)
-                elif url in COUNTRY_SOURCES:
-                    self.country_import(geonames)
+                for items in geonames.parse():
+                    if url in CITY_SOURCES:
+                        self.city_import(items)
+                    elif url in REGION_SOURCES:
+                        self.region_import(items)
+                    elif url in COUNTRY_SOURCES:
+                        self.country_import(items)
 
     def _get_country(self, code2):
         '''
@@ -114,73 +115,71 @@ It is possible to force the import of files which weren't downloaded using the
 
         return self._region_codes[country.code2][region_id]
 
-    def country_import(self, geonames):
-        for items in geonames.parse():
-            try:
-                country = Country.objects.get(code2=items[0])
-            except Country.DoesNotExist:
-                country = Country(code2=items[0])
+    def country_import(self, items):
+        try:
+            country = Country.objects.get(code2=items[0])
+        except Country.DoesNotExist:
+            country = Country(code2=items[0])
 
-            country.name = items[4]
-            country.code3 = items[1]
-            country.continent = items[8]
-            country.tld = items[9][1:]  # strip the leading dot
-            country.save()
+        country.name = items[4]
+        country.code3 = items[1]
+        country.continent = items[8]
+        country.tld = items[9][1:]  # strip the leading dot
+        country.save()
 
-    def region_import(self, geonames):
-        for items in geonames.parse():
-            try:
-                region_items_pre_import.send(sender=self, items=items)
-            except InvalidItems:
-                continue
+    def region_import(self, items):
+        try:
+            region_items_pre_import.send(sender=self, items=items)
+        except InvalidItems:
+            return
 
-            code2, geoname_id = items[0].split('.')
-            kwargs = dict(geoname_id=geoname_id,
-                country=self._get_country(code2))
+        code2, geoname_id = items[0].split('.')
+        kwargs = dict(geoname_id=geoname_id,
+            country=self._get_country(code2))
 
-            try:
-                region = Region.objects.get(**kwargs)
-            except Region.DoesNotExist:
-                region = Region(**kwargs)
+        try:
+            region = Region.objects.get(**kwargs)
+        except Region.DoesNotExist:
+            region = Region(**kwargs)
 
-            region.name = items[2]
-            region.save()
+        region.name = items[2]
+        region.save()
 
-    def city_import(self, geonames):
-        for items in geonames.parse():
-            try:
-                city_items_pre_import.send(sender=self, items=items)
-            except InvalidItems:
-                continue
+    def city_import(self, items):
+        try:
+            city_items_pre_import.send(sender=self, items=items)
+        except InvalidItems:
+            return
 
-            kwargs = dict(name=items[1], country=self._get_country(items[8]))
+        kwargs = dict(name=items[1], country=self._get_country(items[8]))
 
-            try:
-                city = City.objects.get(**kwargs)
-            except City.DoesNotExist:
-                city = City(**kwargs)
+        try:
+            city = City.objects.get(**kwargs)
+        except City.DoesNotExist:
+            city = City(**kwargs)
 
-            save = False
-            if not city.region:
-                city.region = self._get_region(items[8], items[10])
-                save = True
+        save = False
+        if not city.region:
+            city.region = self._get_region(items[8], items[10])
+            save = True
 
-            if not city.latitude:
-                city.latitude = items[4]
-                save = True
+        if not city.latitude:
+            city.latitude = items[4]
+            save = True
 
-            if not city.longitude:
-                city.longitude = items[5]
-                save = True
+        if not city.longitude:
+            city.longitude = items[5]
+            save = True
 
-            if not city.alternate_names:
-                city.alternate_names = items[3]
-                save = True
+        if not city.alternate_names:
+            city.alternate_names = items[3]
+            save = True
 
-            if not city.geoname_id:
-                # city may have been added manually
-                city.geoname_id = items[0]
-                save = True
+        if not city.geoname_id:
+            # city may have been added manually
+            city.geoname_id = items[0]
+            save = True
 
-            if save:
-                city.save()
+        if save:
+            city.save()
+
