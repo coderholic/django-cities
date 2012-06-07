@@ -6,7 +6,8 @@ TRANSLATION_LANGUAGES
     List of language codes. It is used to generate the alternate_names property
     of cities_light models. You want to keep it as small as possible.
     By default, it includes the most popular languages according to wikipedia,
-    which use a rather ascii-compatible alphabet.
+    which use a rather ascii-compatible alphabet. It also contains 'abbr' which
+    stands for 'abbreviation', you might want to include this one as well.
 
     See the source: http://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers
     See the list: http://download.geonames.org/export/dump/iso-languagecodes.txt
@@ -54,7 +55,7 @@ CITY_SOURCES = getattr(settings, 'CITIES_LIGHT_CITY_SOURCES',
 TRANSLATION_SOURCES = getattr(settings, 'CITIES_LIGHT_TRANSLATION_SOURCES',
     ['http://download.geonames.org/export/dump/alternateNames.zip'])
 TRANSLATION_LANGUAGES = getattr(settings, 'CITIES_LIGHT_TRANSLATION_LANGUAGES',
-    ['es', 'en', 'pt', 'de', 'pl'])
+    ['es', 'en', 'pt', 'de', 'pl', 'abbr'])
 
 SOURCES = list(COUNTRY_SOURCES) + list(REGION_SOURCES) + list(CITY_SOURCES)
 SOURCES += TRANSLATION_SOURCES
