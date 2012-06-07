@@ -4,13 +4,12 @@ Channels that couple autocomplete_light and cities_light.
 
 import autocomplete_light
 
+from ..models import to_search
+
 
 class CityChannelMixin(object):
     """
     Defines city-specific channel traits.
-
-    search_field
-        Set to 'search_names'.
     """
     search_field = 'search_names'
 
@@ -19,15 +18,10 @@ class CityChannelMixin(object):
         In addition to filter by search_names, filter with request GET
         variables 'country__name' and 'country__pk'.
         """
-        results = super(CityChannelMixin, self).query_filter(results)
+        q = self.request.GET.get('q', None)
 
-        country_name = self.request.GET.get('country__name', False)
-        if country_name:
-            results = results.filter(country__name=country_name)
-
-        country_pk = self.request.GET.get('country__pk', False)
-        if country_pk:
-            results = results.filter(country__pk=country_pk)
+        if q:
+            results = results.filter(search_names__icontains=to_search(q))
 
         return results
 

@@ -6,10 +6,7 @@ django-cities-light -- *Simple django-cities alternative*
 This add-on provides models and commands to import country/city data into your
 database.
 The data is pulled from `GeoNames
-<http://www.geonames.org/>`_ and contains:
-
-  - country names
-  - city names
+<http://www.geonames.org/>`_ and contains cities, regions/states and countries.
 
 Spatial query support is not required by this application.
 
@@ -22,7 +19,7 @@ database, you should use
 Upgrade
 -------
 
-Se CHANGELOG.
+See CHANGELOG.
 
 Installation
 ------------
@@ -41,7 +38,8 @@ Now, run syncdb, it will only create tables for models that are not disabled::
 
     ./manage.py syncdb
 
-Note that this project supports django-south.
+Note that this project supports django-south. It is recommended that you use
+south too else you're on your own for migrations/upgrades.
 
 Data update
 -----------

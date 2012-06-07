@@ -23,19 +23,6 @@ settings.configure()
 
 autoclass_content = "both"
 
-project_root = os.path.abspath('../../')
-static_root = os.path.abspath('_static')
-import pycco
-for script in ('autocomplete_light', ):
-    html = pycco.generate_documentation(
-        os.path.join(project_root, 'cities_light/static/cities_light/%s.js' % script),
-        static_root
-    )
-    html = html.replace('../../../docs/source/_static/pycco.css', 'pycco.css')
-    f = open(os.path.join(static_root, '%s.html' % script), 'w+')
-    f.write(html)
-    f.close()
-
 import os
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:

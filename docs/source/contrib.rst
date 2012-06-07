@@ -15,13 +15,9 @@ For djangorestframework
 For django-autocomplete-light
 -----------------------------
 
-.. _double-widget:
-
-Widgets
-~~~~~~~
-
-.. automodule:: cities_light.contrib.autocomplete_light_widgets
-   :members:
+For autocomplete-light, we propose an autocomplete channel that attempts to
+behave like google map's autocomplete. We did some research and it turns out
+every user is apparently able to use it without problems.
 
 .. _basic-channel:
 
@@ -48,5 +44,4 @@ Ideas for contributions
 - templatetag to render a city's map using some external service
 - flag images, maybe with django-countryflags
 - currencies
-- alternate names with something like django-modeltranslation
-- more geonames models, they must be optionnal
+- generate po files when parsing alternate names

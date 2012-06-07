@@ -104,6 +104,10 @@ class Region(Base):
         unique_together = (('country', 'name'), )
         verbose_name = _('region/state')
         verbose_name_plural = _('regions/states')
+
+    def __unicode__(self):
+        return u'%s, %s' % (self.name, self.country.name)
+
 signals.pre_save.connect(set_name_ascii, sender=Region)
 
 
@@ -128,6 +132,13 @@ class City(Base):
     class Meta:
         unique_together = (('region', 'name'),)
         verbose_name_plural = _(u'cities')
+
+    def __unicode__(self):
+        if self.region_id:
+            return u'%s, %s, %s' % (self.name, self.region.name,
+                self.country.name)
+        else:
+            return u'%s, %s' % (self.name, self.country.name)
 signals.pre_save.connect(set_name_ascii, sender=City)
 
 
@@ -152,7 +163,6 @@ def city_search_names(sender, instance, **kwargs):
         region_names = [instance.region.name]
         if instance.region.alternate_names:
             region_names += instance.region.alternate_names.split(',')
-
 
     for city_name in city_names:
         for country_name in country_names:

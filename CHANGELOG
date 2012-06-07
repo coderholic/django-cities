@@ -1,3 +1,26 @@
+2012-06-07 1.9 Added Regions/states
+
+    I was in charge of importing contact data, and I was wondering why the
+    postal codes were prefixed by the state code in the data. It turned out
+    that the user did that as a workaround because the crappy app he was using
+    didn't support american states. Then I found out that he would have to use
+    the same workaround in *my* crappy hack.
+
+    As a result, Region was added. Migrations should take care of everything,
+    including setting the region for cities which are already in your database.
+
+    Another major change is that the double autocomplete is gone. Instead, we
+    propose an autocomplete like google maps - which required a great
+    improvement of search_names.
+
+    We also now have a very performant implementation of alternateNames parser,
+    which opens possibilities:
+
+    - we parse postal codes
+    - we know how a country/region/city is called in any language
+
+    I hope we can find good use for that for 2.0 !
+
 2012-05-24 1.3+ to 1.5.1
 
     We had to fix migration 0003 for mysql. So to upgrade from 1.3, 1.4, or 1.5
