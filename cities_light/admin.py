@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 
+from .forms import *
 from .models import *
 from .settings import *
 
@@ -27,6 +28,7 @@ class CountryAdmin(admin.ModelAdmin):
     list_filter = (
         'continent',
     )
+    form = CountryForm
 admin.site.register(Country, CountryAdmin)
 
 
@@ -46,6 +48,7 @@ class RegionAdmin(admin.ModelAdmin):
         'name',
         'country',
     )
+    form = RegionForm
 admin.site.register(Region, RegionAdmin)
 
 
@@ -71,6 +74,7 @@ class CityAdmin(admin.ModelAdmin):
         'country__continent',
         'country',
     )
+    form = CityForm
 
     def get_changelist(self, request, **kwargs):
         return CityChangeList

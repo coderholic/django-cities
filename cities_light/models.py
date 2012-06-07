@@ -10,7 +10,8 @@ import autoslug
 
 from settings import *
 
-__all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search']
+__all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search',
+    'to_ascii']
 
 ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
 
@@ -23,6 +24,7 @@ CONTINENT_CHOICES = (
     ('SA', _(u'South America')),
     ('AS', _(u'Asia')),
 )
+
 
 def to_ascii(value):
     if isinstance(value, str):

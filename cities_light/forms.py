@@ -1,6 +1,8 @@
 from django import forms
 
-from .models import Country, City
+from .models import Country, Region, City
+
+__all__ = ['CountryForm', 'RegionForm', 'CityForm']
 
 
 class CountryForm(forms.ModelForm):
@@ -9,7 +11,16 @@ class CountryForm(forms.ModelForm):
     """
     class Meta:
         model = Country
-        exclude = ('name_ascii', 'slug')
+        fields = ('name', 'continent', 'alternate_names')
+
+
+class RegionForm(forms.ModelForm):
+    """
+    Region model form.
+    """
+    class Meta:
+        model = Region
+        fields = ('name', 'country', 'alternate_names')
 
 
 class CityForm(forms.ModelForm):
@@ -18,4 +29,4 @@ class CityForm(forms.ModelForm):
     """
     class Meta:
         model = City
-        exclude = ('name_ascii', 'search_names', 'slug')
+        fields = ('name', 'region', 'country', 'alternate_names')
