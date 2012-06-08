@@ -2,8 +2,8 @@
 
     - Run migrations: added Region, for USA state support because for example
       there is a city called "Greenville" in almost every state.
-    - Remove CountryCityWidget, in favor of a google-maps-like autocomplete
-      channel.
+    - Remove CityAutocompleteWidget, in favor of a google-maps-like
+      autocomplete channel, which you can use with the normal widget.
     - Update your querysets using search_names__icontains=some_value to do
       search_names__icontains=cities_light.models.to_ascii(some_value).
     - Run: ./manage.py cities_light --noinsert to regenerate search_names.
