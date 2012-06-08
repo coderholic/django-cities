@@ -1,25 +1,28 @@
 2012-06-07 1.9 Added Regions/states
 
-    I was in charge of importing contact data, and I was wondering why the
-    postal codes were prefixed by the state code in the data. It turned out
-    that the user did that as a workaround because the crappy app he was using
-    didn't support american states. Then I found out that he would have to use
-    the same workaround in *my* crappy hack.
+    - Run migrations: added Region, for USA state support because for example
+      there is a city called "Greenville" in almost every state.
+    - Remove CountryCityWidget, in favor of a google-maps-like autocomplete
+      channel.
+    - Update your querysets using search_names__icontains=some_value to do
+      search_names__icontains=cities_light.models.to_ascii(some_value).
+    - Run: ./manage.py cities_light --noinsert to regenerate search_names.
 
-    As a result, Region was added. Migrations should take care of everything,
-    including setting the region for cities which are already in your database.
+    Note that the cities_light command now has very performant implementation
+    of alternateNames parser, which opens possibilities:
 
-    Another major change is that the double autocomplete is gone. Instead, we
-    propose an autocomplete like google maps - which required a great
-    improvement of search_names.
+    - it parses postal codes, but doesn't do anything with them yet
+    - it parses the name of every country/region/city in any language, used
+      only for search_names in this version
 
-    We also now have a very performant implementation of alternateNames parser,
-    which opens possibilities:
+    For 2.0, we aim at:
 
-    - we parse postal codes
-    - we know how a country/region/city is called in any language
+    - including cities_light.contrib.postal_codes,
+    - including po files with the translation for every country/region/city
+      name
 
-    I hope we can find good use for that for 2.0 !
+    Contributions are really welcome so please if you need any of these
+    features don't hesitate to implement and do pull requests !
 
 2012-05-24 1.3+ to 1.5.1
 
