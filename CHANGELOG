@@ -23,6 +23,7 @@
                     raise cities_light.InvalidItems()
             cities_light.signals.region_items_pre_import.connect(filter_region_import)
 
+    Also there is now a progress bar in the cities_light command.
 
     Note that the cities_light command now has very performant implementation
     of alternateNames parser, which opens possibilities:
