@@ -65,6 +65,10 @@ It is possible to force the import of files which weren't downloaded using the
         optparse.make_option('--force', action='append', default=[],
             help='Download and import even if matching files are up-to-date'
         ),
+        optparse.make_option('--noinsert', action='store_true',
+            default=False,
+            help='Update existing data only'
+        ),
         optparse.make_option('--hack-translations', action='store_true',
             default=False,
             help='Set this if you intend to import translations a lot'
@@ -77,6 +81,8 @@ It is possible to force the import of files which weren't downloaded using the
             os.mkdir(DATA_DIR)
 
         translation_hack_path = os.path.join(DATA_DIR, 'translation_hack')
+
+        self.noinsert = options['noinsert']
         self.widgets = [
             'RAM used: ',
             MemoryUsageWidget(),
@@ -173,6 +179,8 @@ It is possible to force the import of files which weren't downloaded using the
         try:
             country = Country.objects.get(code2=items[0])
         except Country.DoesNotExist:
+            if self.noinsert:
+                return
             country = Country(code2=items[0])
 
         country.name = force_unicode(items[4])
@@ -190,12 +198,20 @@ It is possible to force the import of files which weren't downloaded using the
             return
 
         code2, geoname_code = items[0].split('.')
-        kwargs = dict(geoname_code=geoname_code,
-            country=self._get_country(code2))
+        try:
+            kwargs = dict(geoname_code=geoname_code,
+                country=self._get_country(code2))
+        except Country.DoesNotExist:
+            if self.noinsert:
+                return
+            else:
+                raise
 
         try:
             region = Region.objects.get(**kwargs)
         except Region.DoesNotExist:
+            if self.noinsert:
+                return
             region = Region(**kwargs)
 
         region.name = force_unicode(items[1])
@@ -208,12 +224,20 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
-        kwargs = dict(name=force_unicode(items[1]),
-            country=self._get_country(items[8]))
+        try:
+            kwargs = dict(name=force_unicode(items[1]),
+                country=self._get_country(items[8]))
+        except Country.DoesNotExist:
+            if self.noinsert:
+                return
+            else:
+                raise
 
         try:
             city = City.objects.get(**kwargs)
         except City.DoesNotExist:
+            if self.noinsert:
+                return
             city = City(**kwargs)
 
         save = False
