@@ -76,11 +76,16 @@ class Migration(DataMigration):
                     try:
                         city.region = self._get_region(items[8], items[10])
                     except orm['cities_light.Region'].DoesNotExist:
-                        orm['cities_light.Region'](
-                            geoname_id=items[10],
-                            country=self._get_country(items[8]),
-                            name=self.regions[items[8]][items[10]][2],
-                        ).save()
+                        try:
+                            orm['cities_light.Region'](
+                                geoname_id=items[10],
+                                country=self._get_country(items[8]),
+                                name=self.regions[items[8]][items[10]][2],
+                            ).save()
+                        except KeyError:
+                            # Some regions might not be in REGION_SOURCES like
+                            # for Anguilla regions
+                            continue
                         city.region = self._get_region(items[8], items[10])
 
                     city.save()
