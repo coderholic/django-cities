@@ -1,3 +1,5 @@
+from copy import copy
+
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 
@@ -54,8 +56,10 @@ admin.site.register(Region, RegionAdmin)
 
 class CityChangeList(ChangeList):
     def get_query_set(self, request):
-        return City.objects.filter(search_names__icontains=to_search(
-            self.params.get('q', '')))
+        if 'q' in request.GET.keys():
+            request.GET = copy(request.GET)
+            request.GET['q'] = to_search(request.GET['q'])
+        return super(CityChangeList, self).get_query_set(request)
 
 
 class CityAdmin(admin.ModelAdmin):
