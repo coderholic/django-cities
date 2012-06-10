@@ -126,6 +126,20 @@ signals.pre_save.connect(set_name_ascii, sender=Region)
 signals.pre_save.connect(set_display_name, sender=Region)
 
 
+class ToSearchTextField(models.TextField):
+    """
+    Trivial TextField subclass that passes values through to_search
+    automatically.
+    """
+    def get_prep_lookup(self, lookup_type, value):
+        """
+        Return the value passed through to_search().
+        """
+        value = super(ToSearchTextField, self).get_prep_lookup(lookup_type,
+            value)
+        return to_search(value)
+
+
 class City(Base):
     """
     City model.
@@ -134,8 +148,8 @@ class City(Base):
     name = models.CharField(max_length=200, db_index=True)
     display_name = models.CharField(max_length=200)
 
-    search_names = models.TextField(max_length=4000, db_index=True, blank=True,
-        default='')
+    search_names = ToSearchTextField(max_length=4000, db_index=True, 
+        blank=True, default='')
 
     latitude = models.DecimalField(max_digits=8, decimal_places=5,
         null=True, blank=True)
