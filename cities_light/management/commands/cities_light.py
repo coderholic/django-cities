@@ -215,6 +215,11 @@ It is possible to force the import of files which weren't downloaded using the
             region = Region(**kwargs)
 
         region.name = force_unicode(items[1])
+
+        if not region.name:
+            # use ascii name
+            region.name = items[2]
+
         region.geoname_id = items[3]
         region.save()
 
