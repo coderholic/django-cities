@@ -250,6 +250,10 @@ It is possible to force the import of files which weren't downloaded using the
             city.region = self._get_region(items[8], items[10])
             save = True
 
+        if not city.name_ascii:
+            # useful for cities with chinese names
+            city.name_ascii = items[2]
+
         if not city.latitude:
             city.latitude = items[4]
             save = True

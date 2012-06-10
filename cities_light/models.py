@@ -50,7 +50,9 @@ def set_name_ascii(sender, instance=None, **kwargs):
 
     Ascii versions of names are often useful for autocompletes and search.
     """
-    instance.name_ascii = to_ascii(instance.name)
+    name_ascii = to_ascii(instance.name)
+    if name_ascii and not instance.name_ascii:
+        instance.name_ascii = to_ascii(instance.name)
 
 
 def set_display_name(sender, instance=None, **kwargs):
