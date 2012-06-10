@@ -1,4 +1,22 @@
-2012-06-07 1.9 Added Regions/states
+2012-06-10 1.9.1
+
+    - Fixed chinese city name_ascii support
+    - Fixed support for regions without names
+    - to_search() now automatically called when filtering on
+      search_names
+
+    In 1.9.0, you had to query like::
+
+        City.objects.filter(search_names__icontains=to_search('Paris, Fra'))
+   
+    In 1.9.1, passing the value through to_search() is automatic::
+
+        City.objects.filter(search_names__icontains='Paris, Fra')
+
+    Keep in mind that 'Paris, Fra' will be converted in 'parisfra',
+    which is useable against search_names column.
+
+2012-06-07 1.9.0 Added Regions/states
 
     - Run migrations: added Region, for USA state support because for example
       there is a city called "Greenville" in almost every state.
