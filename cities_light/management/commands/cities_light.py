@@ -247,8 +247,12 @@ It is possible to force the import of files which weren't downloaded using the
 
         save = False
         if not city.region:
-            city.region = self._get_region(items[8], items[10])
-            save = True
+            try:
+                city.region = self._get_region(items[8], items[10])
+            except Region.DoesNotExist:
+                pass
+            else:
+                save = True
 
         if not city.name_ascii:
             # useful for cities with chinese names
