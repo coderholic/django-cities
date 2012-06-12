@@ -1,17 +1,38 @@
+import resource
 import time
 import urllib
 import os
 import os.path
 import zipfile
 import logging
+import sys
+
+import progressbar
 
 from .settings import *
+
+
+class MemoryUsageWidget(progressbar.ProgressBarWidget):
+    def update(self, pbar):
+        return '%s kB' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 
 
 class Geonames(object):
     logger = logging.getLogger('cities_light')
 
-    def __init__(self, url, force=False):
+    def __init__(self, url, force=False, show_progressbar=False):
+        self.show_progressbar = show_progressbar
+        self.widgets = [
+            'RAM used: ',
+            MemoryUsageWidget(),
+            ' ',
+            progressbar.ETA(),
+            ' Done: ',
+            progressbar.Percentage(),
+            progressbar.Bar(),
+        ]
+
+
         if not os.path.exists(DATA_DIR):
             self.logger.info('Creating %s' % DATA_DIR)
             os.mkdir(DATA_DIR)
@@ -70,11 +91,19 @@ class Geonames(object):
                 destination_file.write(zip_file.read(file_name))
 
     def parse(self):
+        if self.show_progressbar:
+            self.parse_bar = progressbar.ProgressBar(
+                maxval=self.num_lines(), widgets=self.widgets)
+            self.parse_i = 0
+
         file = open(self.file_path, 'r')
         line = True
 
-        while line:
-            line = file.readline().strip()
+        for line in file:
+            self.parse_bar.update(self.parse_i)
+            self.parse_i += 1
+
+            line = line.strip()
 
             if len(line) < 1 or line[0] == '#':
                 continue

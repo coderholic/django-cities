@@ -25,7 +25,7 @@ from djangorestframework.views import ModelView, ListModelView
 from djangorestframework.mixins import InstanceMixin, ReadModelMixin
 from djangorestframework.resources import ModelResource
 
-from ..models import Country, Region, City, to_search
+from ..models import Country, Region, City
 
 
 class CityResource(ModelResource):
@@ -38,8 +38,9 @@ class CityResource(ModelResource):
         """
         Return the region detail API url.
         """
-        return urlresolvers.reverse('cities_light_api_region_detail',
-            args=(instance.region.pk,))
+        if instance.region_id:
+            return urlresolvers.reverse('cities_light_api_region_detail',
+                args=(instance.region.pk,))
 
     def country(self, instance):
         """
@@ -110,7 +111,7 @@ class CityListModelView(LimitListModelView):
             **kwargs)
 
         if 'q' in request.GET.keys():
-            kwargs['search_names__icontains'] = to_search(request.GET['q'])
+            kwargs['search_names__icontains'] = request.GET['q']
 
         return kwargs
 

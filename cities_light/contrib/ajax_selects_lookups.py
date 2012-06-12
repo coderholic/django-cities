@@ -43,6 +43,20 @@ class CountryLookup(StandardLookupChannel):
         ).distinct()
 
 
+class RegionLookup(StandardLookupChannel):
+    """
+    Lookup channel for Region, hits name and name_ascii.
+    """
+
+    model = Region
+
+    def get_query(self, q, request):
+        return Region.objects.filter(
+            Q(name__icontains=q) |
+            Q(name_ascii__icontains=q)
+        ).distinct()
+
+
 class CityLookup(StandardLookupChannel):
     """
     Lookup channel for City, hits name and search_names.
@@ -50,13 +64,5 @@ class CityLookup(StandardLookupChannel):
     model = City
 
     def get_query(self, q, request):
-        return City.objects.filter(
-            Q(name__icontains=q) |
-            Q(search_names__icontains=q)
-        ).select_related('country').distinct()
-
-    def get_result(self, obj):
-        """
-        City name is not unique, for example there are many Paris.
-        """
-        return u'%s (%s)' % (obj.name, obj.country.name)
+        return City.objects.filter(search_names__icontains=q
+            ).select_related('country').distinct()
