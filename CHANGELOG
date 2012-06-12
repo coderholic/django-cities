@@ -1,3 +1,7 @@
+2012-06-10 1.9.2
+
+    Fixed region import for malta.
+
 2012-06-10 1.9.1
 
     - Fixed chinese city name_ascii support
@@ -8,7 +12,7 @@
     In 1.9.0, you had to query like::
 
         City.objects.filter(search_names__icontains=to_search('Paris, Fra'))
-   
+
     In 1.9.1, passing the value through to_search() is automatic::
 
         City.objects.filter(search_names__icontains='Paris, Fra')
