@@ -197,9 +197,15 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
+        items = [force_unicode(x) for x in items]
+
+        name = items[1]
+        if not items[1]:
+            name = items[2]
+
         code2, geoname_code = items[0].split('.')
         try:
-            kwargs = dict(geoname_code=geoname_code,
+            kwargs = dict(name=name,
                 country=self._get_country(code2))
         except Country.DoesNotExist:
             if self.noinsert:
@@ -214,11 +220,11 @@ It is possible to force the import of files which weren't downloaded using the
                 return
             region = Region(**kwargs)
 
-        region.name = force_unicode(items[1])
+        if not region.geoname_code:
+            region.geoname_code = geoname_code
 
-        if not region.name:
-            # use ascii name
-            region.name = items[2]
+        if not region.name_ascii:
+            region.name_ascii = items[2]
 
         region.geoname_id = items[3]
         region.save()
