@@ -1,33 +1,26 @@
 """
-Channels that couple autocomplete_light and cities_light.
+Classes that couple autocomplete_light and cities_light.
 """
 
 import autocomplete_light
 
-from ..models import to_search
 
-
-class CityChannelMixin(object):
+class CityChannel(autocomplete_light.ChannelBase):
     """
-    Defines city-specific channel traits.
+    Sample City channel.
     """
-    search_field = 'search_names'
-
-    def query_filter(self, results):
-        """
-        In addition to filter by search_names, filter with request GET
-        variables 'country__name' and 'country__pk'.
-        """
-        q = self.request.GET.get('q', None)
-
-        if q:
-            results = results.filter(search_names__icontains=to_search(q))
-
-        return results
+    search_fields = ('search_names',)
 
 
-class CityChannel(CityChannelMixin, autocomplete_light.ChannelBase):
+class RegionChannel(autocomplete_light.ChannelBase):
     """
-    Basic Channel for city.
+    Sample Region channel.
     """
-    pass
+    search_fields = ('name', 'name__ascii')
+
+
+class CountryChannel(autocomplete_light.ChannelBase):
+    """
+    Sample Country channel.
+    """
+    search_field = ('name', 'name__ascii')

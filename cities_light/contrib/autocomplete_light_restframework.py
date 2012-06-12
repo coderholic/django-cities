@@ -1,25 +1,24 @@
 """
-Couples djangorestframework and cities_light.
+Channels that couple autocomplete_light and cities_light.
 """
 
 import autocomplete_light
 
-from ..models import Country, City, Region
-
-from autocomplete_light_channels import CityChannelMixin
-
-__all__ = ['ApiChannelMixin', 'RemoteCountryChannel', 'RemoteRegionChannel',
-    'RemoteCityChannel']
+from ..models import Country, Region, City
 
 
-class ApiChannelMixin(object):
+class RemoteCitiesLightChannel(autocomplete_light.RemoteChannelBase):
     """
-    Defines model_for_source_url for cities_light.contrib.restframework.
+    Define model_for_source_url based on urls from
+    cities_light.contrib.restframework.urlpatterns.
     """
+
     def model_for_source_url(self, url):
         """
         Return the appropriate model for the urls defined by
         cities_light.contrib.restframework.urlpatterns.
+
+        Used by RemoteChannel.
         """
         if 'cities_light/city/' in url:
             return City
@@ -29,28 +28,18 @@ class ApiChannelMixin(object):
             return Country
 
 
-class RemoteCityChannel(CityChannelMixin, ApiChannelMixin,
-    autocomplete_light.RemoteChannelBase):
+class RemoteCityChannel(RemoteCitiesLightChannel):
     """
-    Remote channel for City that is compatible with
-    cities_light.contrib.restframework.
+
     """
-    pass
+    search_fields = ('search_names',)
 
 
-class RemoteRegionChannel(ApiChannelMixin,
-    autocomplete_light.RemoteChannelBase):
-    """
-    Remote channel for Region that is compatible with
-    cities_light.contrib.restframework.
-    """
-    pass
+class RemoteRegionChannel(RemoteCitiesLightChannel):
+    search_fields = ('name', 'name__ascii')
 
 
-class RemoteCountryChannel(ApiChannelMixin,
-    autocomplete_light.RemoteChannelBase):
-    """
-    Remote channel for Country that is compatible with
-    cities_light.contrib.restframework.
-    """
-    pass
+class RemoteCountryChannel(RemoteCitiesLightChannel):
+    search_fields = ('name', 'name__ascii')
+
+
