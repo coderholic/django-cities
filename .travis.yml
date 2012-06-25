@@ -9,7 +9,7 @@ install:
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install -q -e . --use-mirrors
 before_script:
-  - "pep8 --exclude=tests,migrations cities_light"
+  - "pep8 --ignore=E124,E128 --exclude=tests,migrations cities_light"
   - pyflakes -x W src
 script:
   - python setup.py test
