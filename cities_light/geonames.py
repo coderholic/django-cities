@@ -32,7 +32,6 @@ class Geonames(object):
             progressbar.Bar(),
         ]
 
-
         if not os.path.exists(DATA_DIR):
             self.logger.info('Creating %s' % DATA_DIR)
             os.mkdir(DATA_DIR)

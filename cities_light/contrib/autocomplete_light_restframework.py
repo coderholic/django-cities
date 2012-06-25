@@ -41,5 +41,3 @@ class RemoteRegionChannel(RemoteCitiesLightChannel):
 
 class RemoteCountryChannel(RemoteCitiesLightChannel):
     search_fields = ('name', 'name__ascii')
-
-
