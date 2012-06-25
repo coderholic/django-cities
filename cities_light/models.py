@@ -166,7 +166,7 @@ class City(Base):
     longitude = models.DecimalField(max_digits=8, decimal_places=5,
         null=True, blank=True)
 
-    region = models.ForeignKey(Region, null=True)
+    region = models.ForeignKey(Region, blank=True, null=True)
     country = models.ForeignKey(Country)
 
     class Meta:
