@@ -1,6 +1,7 @@
 2012-06-25 1.9.4
 
-    Fixed south migration and PEP8.
+    - Fixed south migration and PEP8.
+    - Some code for 2.0 accidently was in the previous release.
 
 2012-06-12 1.9.3
 
