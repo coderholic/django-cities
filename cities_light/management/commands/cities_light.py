@@ -2,7 +2,9 @@ import os
 import os.path
 import logging
 import optparse
-import resource
+import sys
+if sys.platform != 'win32':
+    import resource
 
 try:
     import cPickle as pickle
@@ -23,7 +25,9 @@ from ...geonames import Geonames
 
 class MemoryUsageWidget(progressbar.ProgressBarWidget):
     def update(self, pbar):
-        return '%s kB' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        if sys.platform != 'win32':
+            return '%s kB' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        return '?? kB'
 
 
 class Command(BaseCommand):
