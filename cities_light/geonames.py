@@ -1,4 +1,3 @@
-import resource
 import time
 import urllib
 import os
