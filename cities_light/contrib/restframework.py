@@ -78,7 +78,7 @@ class DetailView(InstanceMixin, ReadModelMixin, ModelView):
     pass
 
 
-class LimitListModelView(ListModelView):
+class CitiesLightListModelView(ListModelView):
     """
     ListModelView that supports a limit GET request argument.
     """
@@ -89,7 +89,7 @@ class LimitListModelView(ListModelView):
         argument.
         """
         limit = request.GET.get('limit', None)
-        queryset = super(LimitListModelView, self).get(
+        queryset = super(CitiesLightListModelView, self).get(
             request, *args, **kwargs)
 
         if limit:
@@ -97,8 +97,19 @@ class LimitListModelView(ListModelView):
         else:
             return queryset
 
+    def get_query_kwargs(self, request, *args, **kwargs):
+        """
+        Allows a GET param, 'q', to be used against name_ascii.
+        """
+        kwargs = super(ListModelView, self).get_query_kwargs(request, *args,
+            **kwargs)
+        if 'q' in request.GET.keys():
+            kwargs['name_ascii__icontains'] = request.GET['q']
 
-class CityListModelView(LimitListModelView):
+        return kwargs
+
+
+class CityListModelView(CitiesLightListModelView):
     """
     ListModelView for City.
     """
@@ -128,7 +139,7 @@ urlpatterns = patterns('',
     ),
     url(
         r'^region/$',
-        ListModelView.as_view(resource=RegionResource),
+        CitiesLightListModelView.as_view(resource=RegionResource),
         name='cities_light_api_region_list',
     ),
     url(
@@ -138,7 +149,7 @@ urlpatterns = patterns('',
     ),
     url(
         r'^country/$',
-        ListModelView.as_view(resource=CountryResource),
+        CitiesLightListModelView.as_view(resource=CountryResource),
         name='cities_light_api_country_list',
     ),
     url(
