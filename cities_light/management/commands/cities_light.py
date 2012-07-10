@@ -208,14 +208,20 @@ It is possible to force the import of files which weren't downloaded using the
             name = items[2]
 
         code2, geoname_code = items[0].split('.')
-        try:
-            kwargs = dict(name=name,
-                country=self._get_country(code2))
-        except Country.DoesNotExist:
-            if self.noinsert:
-                return
-            else:
-                raise
+
+        country = self._get_country(code2)
+
+        if items[3]:
+            kwargs = dict(geoname_id=items[3])
+        else:
+            try:
+                kwargs = dict(name=name,
+                    country=country)
+            except Country.DoesNotExist:
+                if self.noinsert:
+                    return
+                else:
+                    raise
 
         try:
             region = Region.objects.get(**kwargs)
@@ -223,6 +229,12 @@ It is possible to force the import of files which weren't downloaded using the
             if self.noinsert:
                 return
             region = Region(**kwargs)
+
+        if not region.name:
+            region.name = name
+
+        if not region.country_id:
+            region.country = country
 
         if not region.geoname_code:
             region.geoname_code = geoname_code
@@ -240,6 +252,14 @@ It is possible to force the import of files which weren't downloaded using the
             return
 
         try:
+            country = self._get_country(items[8])
+        except Country.DoesNotExist:
+            if self.noinsert:
+                return
+            else:
+                raise
+
+        try:
             kwargs = dict(name=force_unicode(items[1]),
                 country=self._get_country(items[8]))
         except Country.DoesNotExist:
@@ -251,9 +271,15 @@ It is possible to force the import of files which weren't downloaded using the
         try:
             city = City.objects.get(**kwargs)
         except City.DoesNotExist:
-            if self.noinsert:
-                return
-            city = City(**kwargs)
+            try:
+                city = City.objects.get(geoname_id=items[0])
+                city.name = force_unicode(items[1])
+                city.country = self._get_country(items[8])
+            except City.DoesNotExist:
+                if self.noinsert:
+                    return
+
+                city = City(**kwargs)
 
         save = False
         if not city.region:
