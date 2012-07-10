@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name='django-cities-light',
-    version='1.9.4',
+    version='2.0.0',
     description='Simple alternative to django-cities',
     author='James Pic',
     author_email='jamespic@gmail.com',
