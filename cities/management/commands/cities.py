@@ -25,7 +25,7 @@ from optparse import make_option
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
-from django.db import connection
+from django.db import connection, transaction
 from django.contrib.gis.gdal.envelope import Envelope
 from ...conf import *
 from ...models import *
@@ -49,6 +49,7 @@ class Command(BaseCommand):
         ),
     )
 
+    @transaction.commit_on_success
     def handle(self, *args, **options):
         self.download_cache = {}
         self.options = options
