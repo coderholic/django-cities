@@ -8,10 +8,11 @@ install:
   - pip install pep8 --use-mirrors
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install -q -e . --use-mirrors
+  - pip install south
 before_script:
   - "pep8 --ignore=E124,E128 --exclude=tests,migrations cities_light"
 script:
   - python setup.py test
   - rm -rf test_project/db.sqlite
-  - python test_project/manage.py syncdb
+  - python test_project/manage.py syncdb --noinput
   - python test_project/manage.py migrate
