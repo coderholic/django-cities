@@ -10,6 +10,8 @@ install:
   - pip install -q -e . --use-mirrors
 before_script:
   - "pep8 --ignore=E124,E128 --exclude=tests,migrations cities_light"
-  - pyflakes -x W src
+  - rm -rf test_project/db.sqlite
+  - python test_project/manage.py syncdb
+  - python test_project/manage.py migrate
 script:
   - python setup.py test
