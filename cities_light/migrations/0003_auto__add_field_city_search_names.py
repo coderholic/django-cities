@@ -7,7 +7,37 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+        if not db.dry_run:
+            print """
+
+            BIG FAT WARNING
+
+            This migration adds a TextField (search_names), with an index.
+            MySQL does not support indexing TEXT/BLOB columns.
+
+            On MySQL, this migration should fail like:
+
+            FATAL ERROR - The following SQL query failed: CREATE INDEX `cities_light_city_cd532746` ON `cities_light_city` (`search_names`);
+            The error was: (1170, "BLOB/TEXT column 'search_names' used in key specification without a key length")
+
+            Since the search_names column should be created anyway, you can get
+            past this with:
+
+            ./manage.py migrate cities_light --fake 0003
+            # continue migrating
+            ./manage.py migrate cities_light
+
+
+            If you can think of any better solution, please report it to
+            GitHub's project page:
+
+            https://github.com/yourlabs/django-cities-light/issues/
+
+
+            If you are on anything else than MySQL, you can ignore this message
+            and enjoy indexing on search_names.
+            """
+
         # Adding field 'City.search_names'
         db.add_column('cities_light_city', 'search_names', self.gf('django.db.models.fields.TextField')(default='', max_length=4000, db_index=True, blank=True), keep_default=False)
 
