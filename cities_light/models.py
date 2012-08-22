@@ -158,8 +158,8 @@ class City(Base):
     name = models.CharField(max_length=200, db_index=True)
     display_name = models.CharField(max_length=200)
 
-    search_names = ToSearchTextField(max_length=4000, db_index=True,
-        blank=True, default='')
+    search_names = ToSearchTextField(max_length=4000,
+        db_index=INDEX_SEARCH_NAMES, blank=True, default='')
 
     latitude = models.DecimalField(max_digits=8, decimal_places=5,
         null=True, blank=True)
