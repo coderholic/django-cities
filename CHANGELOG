@@ -1,3 +1,7 @@
+2012-08-22 2.0.4
+
+    - Avoid indexing of search_names on MySQL
+
 2012-08-22 2.0.3
 
     - Hint the user about MySQL's issue with migration 0003
