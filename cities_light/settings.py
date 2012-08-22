@@ -52,7 +52,7 @@ from django.conf import settings
 
 __all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
     'TRANSLATION_LANGUAGES', 'TRANSLATION_SOURCES', 'SOURCES', 'DATA_DIR',
-    'INDEX_SEARCH_NAMES',]
+    'INDEX_SEARCH_NAMES', ]
 
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
