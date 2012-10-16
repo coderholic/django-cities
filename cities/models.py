@@ -142,17 +142,17 @@ for type in [Country, Region, Subregion, City, District]:
     geo_alt_names[type] = create_geo_alt_names(type)
 
 class PostalCode(Place):
-    code = models.CharField(max_length=20, primary_key=True)
+    code = models.CharField(max_length=20)
     location = models.PointField()
 
     country = models.ForeignKey(Country, related_name = 'postal_codes')
-    region = models.ForeignKey(Region, null=True, blank=True, related_name = 'postal_codes')
-    subregion = models.ForeignKey(Subregion, null=True, blank=True, related_name = 'postal_codes')
+
+    # Region names for each admin level, region may not exist in DB
+    region_name = models.CharField(max_length=100, db_index=True)
+    subregion_name = models.CharField(max_length=100, db_index=True)
+    district_name = models.CharField(max_length=100, db_index=True)
 
     objects = models.GeoManager()
-
-    class Meta:
-        unique_together = [('code', 'country')]
 
     @property
     def parent(self):

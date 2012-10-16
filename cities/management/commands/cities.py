@@ -19,7 +19,6 @@ import urllib
 import logging
 import zipfile
 import time
-from collections import defaultdict
 from itertools import chain
 from optparse import make_option
 from django.core.management.base import BaseCommand
@@ -437,21 +436,22 @@ class Command(BaseCommand):
             pc.country = country
             pc.code = code
             pc.name = items[2]
-            try:
-                pc.region = country.region_set.get(name=items[3])
-                pc.subregion = pc.region.subregion_set.get(name=items[5])
-            except:
-                pass
+            pc.region_name = items[3]
+            pc.subregion_name = items[5]
+            pc.district_name = items[7]
 
             try:
                 pc.location = Point(float(items[10]), float(items[9]))
             except:
                 self.logger.warning("Postal code: {}, {}: Invalid location ({}, {})".format(pc.country, pc.code, items[10], items[9]))
-                pc.location = Point(0,0)
+                continue
 
             if not self.call_hook('postal_code_post', pc, items): continue
-            pc.save()
-            self.logger.debug("Added postal code: {}, {}".format(pc.country, pc))
+            self.logger.debug("Adding postal code: {}, {}".format(pc.country, pc))
+            try:
+                pc.save()
+            except Exception, e:
+                print e
 
     def flush_country(self):
         self.logger.info("Flushing country data")
@@ -480,4 +480,3 @@ class Command(BaseCommand):
     def flush_postal_code(self):
         self.logger.info("Flushing postal code data")
         [postal_code.objects.all().delete() for postal_code in postal_codes.values()]
-    
