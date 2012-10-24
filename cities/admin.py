@@ -4,36 +4,36 @@ from models import *
 class CountryAdmin(admin.ModelAdmin):
     list_display = ['name', 'code', 'tld', 'population']
     search_fields = ['name', 'code', 'tld']
-    
+
 admin.site.register(Country, CountryAdmin)
 
 class RegionBaseAdmin(admin.ModelAdmin):
     ordering = ['name_std']
     list_display = ['name_std', 'parent', 'code']
     search_fields = ['name', 'name_std', 'code']
-    
+
 class RegionAdmin(RegionBaseAdmin): pass
 
 admin.site.register(Region, RegionAdmin)
 
 class SubregionAdmin(RegionBaseAdmin):
     raw_id_fields = ['region']
-    
+
 admin.site.register(Subregion, SubregionAdmin)
 
 class CityBaseAdmin(admin.ModelAdmin):
     ordering = ['name_std']
     list_display = ['name_std', 'parent', 'population']
     search_fields = ['name', 'name_std']
-    
+
 class CityAdmin(CityBaseAdmin):
     raw_id_fields = Region.levels
-    
+
 admin.site.register(City, CityAdmin)
 
 class DistrictAdmin(CityBaseAdmin):
     raw_id_fields = ['city']
-    
+
 admin.site.register(District, DistrictAdmin)
 
 class GeoAltNameAdmin(admin.ModelAdmin):
@@ -47,8 +47,7 @@ class GeoAltNameAdmin(admin.ModelAdmin):
 
 class PostalCodeAdmin(admin.ModelAdmin):
     ordering = ['code']
-    list_display = ['code', 'country', 'region', 'subregion']
-    search_fields = ['code', 'country__name', 'region__name', 'subregion__name']
-    raw_id_fields = Region.levels
+    list_display = ['code', 'country', 'region_name']
+    search_fields = ['code', 'country__name', 'region_name', 'subregion_name']
 
 admin.site.register(PostalCode, PostalCodeAdmin)
