@@ -11,8 +11,6 @@ try:
 except ImportError:
     import pickle
 
-from pympler.asizeof import asizeof
-
 import progressbar
 
 from django.core.management.base import BaseCommand
