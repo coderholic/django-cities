@@ -90,7 +90,7 @@ It is possible to force the import of files which weren't downloaded using the
 
         translation_hack_path = os.path.join(DATA_DIR, 'translation_hack')
 
-        self.noinsert = options['noinsert']
+        self.noinsert = options.get('noinsert', False)
         self.widgets = [
             'RAM used: ',
             MemoryUsageWidget(),
@@ -104,13 +104,13 @@ It is possible to force the import of files which weren't downloaded using the
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
 
-            force = options['force_all'] or \
-                destination_file_name in options['force']
+            force = options.get('force_all', False) or \
+                destination_file_name in options.get('force', [])
 
             geonames = Geonames(url, force=force)
             downloaded = geonames.downloaded
 
-            force_import = options['force_import_all']
+            force_import = options.get('force_import_all', False)
 
             if not force_import:
                 for f in options['force_import']:
@@ -122,7 +122,7 @@ It is possible to force the import of files which weren't downloaded using the
                 self.logger.info('Importing %s' % destination_file_name)
 
                 if url in TRANSLATION_SOURCES:
-                    if options['hack_translations']:
+                    if options.get('hack_translations', False):
                         if os.path.exists(translation_hack_path):
                             self.logger.debug(
                                 'Using translation parsed data: %s' %
@@ -150,11 +150,11 @@ It is possible to force the import of files which weren't downloaded using the
 
                 progress.finish()
 
-                if url in TRANSLATION_SOURCES and options['hack_translations']:
+                if url in TRANSLATION_SOURCES and options.get('hack_translations', False):
                     with open(translation_hack_path, 'w+') as f:
                         pickle.dump(self.translation_data, f)
 
-        if options['hack_translations']:
+        if options.get('hack_translations', False):
             with open(translation_hack_path, 'r') as f:
                 self.translation_data = pickle.load(f)
 
