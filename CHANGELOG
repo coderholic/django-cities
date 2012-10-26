@@ -1,3 +1,8 @@
+2012-10-26 2.0.5
+
+    - Optimized cities_light command, from 400M of RAM used to 30M on
+      django-autocomplete-light's test project. Thanks sandino for reporting.
+
 2012-08-22 2.0.4
 
     - Avoid indexing of search_names on MySQL
