@@ -67,8 +67,7 @@ class Geonames(object):
 
         zip_file = zipfile.ZipFile(zip_path)
         if zip_file:
-            with open(destination, 'wb') as destination_file:
-                destination_file.write(zip_file.read(file_name))
+            zip_file.extract(file_name, DATA_DIR)
 
     def parse(self):
         file = open(self.file_path, 'r')
