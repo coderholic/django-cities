@@ -23,16 +23,16 @@ class Geonames(object):
 
         self.downloaded = self.download(url, self.file_path, force)
 
-        if self.downloaded and destination_file_name.split('.')[-1] == 'zip':
-            # extract the destination file, use the extracted file as new
-            # destination
-            destination_file_name = destination_file_name.replace(
-                'zip', 'txt')
+        # extract the destination file, use the extracted file as new
+        # destination
+        destination_file_name = destination_file_name.replace(
+            'zip', 'txt')
 
+        if self.downloaded and destination_file_name.split('.')[-1] == 'zip':
             self.extract(self.file_path, destination_file_name)
 
-            self.file_path = os.path.join(
-                DATA_DIR, destination_file_name)
+        self.file_path = os.path.join(
+            DATA_DIR, destination_file_name)
 
     def download(self, url, path, force=False):
         remote_file = urllib.urlopen(url)
