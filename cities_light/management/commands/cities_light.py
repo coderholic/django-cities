@@ -144,6 +144,7 @@ It is possible to force the import of files which weren't downloaded using the
                         # free some memory
                         if getattr(self, '_country_codes', False):
                             del self._country_codes
+                        if getattr(self, '_region_codes', False):
                             del self._region_codes
                         self.translation_parse(items)
 
