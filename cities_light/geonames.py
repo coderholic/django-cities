@@ -28,7 +28,10 @@ class Geonames(object):
         destination_file_name = destination_file_name.replace(
             'zip', 'txt')
 
-        if self.downloaded and destination_file_name.split('.')[-1] == 'zip':
+        destination = os.path.join(DATA_DIR, destination_file_name)
+        exists = os.path.exists(destination)
+
+        if url.split('.')[-1] == 'zip' and not exists:
             self.extract(self.file_path, destination_file_name)
 
         self.file_path = os.path.join(
