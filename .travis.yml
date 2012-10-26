@@ -8,12 +8,11 @@ install:
   - pip install pep8 --use-mirrors
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - pip install -q -e . --use-mirrors
-  - pip install south mysql-python
-services:
-  - mysql
+  - pip install south mysql-python psycopg2
 before_script:
   - "pep8 --ignore=E124,E128 --exclude=tests,migrations cities_light"
   - mysql -e 'create database cities_light_test;'
+  - psql -c 'create database cities_light_test;' -U postgres
 script:
   - python setup.py test
   - rm -rf test_project/db.sqlite
@@ -21,3 +20,5 @@ script:
   - python test_project/manage.py migrate
   - python test_project/manage.py syncdb --noinput --settings test_project.settings_mysql
   - python test_project/manage.py migrate --settings test_project.settings_mysql
+  - python test_project/manage.py syncdb --noinput --settings test_project.settings_postgres
+  - python test_project/manage.py migrate --settings test_project.settings_postgres
