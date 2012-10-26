@@ -49,12 +49,12 @@ Same goes for CITIES_LIGHT_CITY_SOURCES.
 It is possible to force the download of some files which have not been updated
 on the server:
 
-    manage.py --force cities15000.txt countryInfo.txt
+    manage.py --force cities15000 --force countryInfo
 
 It is possible to force the import of files which weren't downloaded using the
 --force-import option:
 
-    manage.py --force-import cities15000.txt countryInfo.txt
+    manage.py --force-import cities15000 --force-import country
     '''.strip()
 
     logger = logging.getLogger('cities_light')
@@ -110,8 +110,13 @@ It is possible to force the import of files which weren't downloaded using the
             geonames = Geonames(url, force=force)
             downloaded = geonames.downloaded
 
-            force_import = options['force_import_all'] or \
-                destination_file_name in options['force_import']
+            force_import = options['force_import_all']
+
+            if not force_import:
+                for f in options['force_import']:
+                    if f in destination_file_name or f in url:
+                        force_import = True
+
 
             if downloaded or force_import:
                 self.logger.info('Importing %s' % destination_file_name)
