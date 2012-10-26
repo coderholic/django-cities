@@ -141,6 +141,10 @@ It is possible to force the import of files which weren't downloaded using the
                     elif url in COUNTRY_SOURCES:
                         self.country_import(items)
                     elif url in TRANSLATION_SOURCES:
+                        # free some memory
+                        if getattr(self, '_country_codes', False):
+                            del self._country_codes
+                            del self._region_codes
                         self.translation_parse(items)
 
                     reset_queries()
@@ -326,16 +330,13 @@ It is possible to force the import of files which weren't downloaded using the
             city.save()
 
     def translation_parse(self, items):
-        # free some memory
-        self._country_codes = None
-        self._region_codes = None
-
         if not hasattr(self, 'translation_data'):
             self.country_ids = Country.objects.values_list('geoname_id',
                 flat=True)
             self.region_ids = Region.objects.values_list('geoname_id',
                 flat=True)
             self.city_ids = City.objects.values_list('geoname_id', flat=True)
+
             self.translation_data = {
                 Country: {},
                 Region: {},
