@@ -23,7 +23,7 @@ class Geonames(object):
 
         self.downloaded = self.download(url, self.file_path, force)
 
-        if destination_file_name.split('.')[-1] == 'zip':
+        if self.downloaded and destination_file_name.split('.')[-1] == 'zip':
             # extract the destination file, use the extracted file as new
             # destination
             destination_file_name = destination_file_name.replace(
