@@ -102,8 +102,11 @@ It is possible to force the import of files which weren't downloaded using the
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
 
-            force = options.get('force_all', False) or \
-                destination_file_name in options.get('force', [])
+            force = options.get('force_all', False)
+            if not force:
+                for f in options['force']:
+                    if f in destination_file_name or f in url:
+                        force = True
 
             geonames = Geonames(url, force=force)
             downloaded = geonames.downloaded
