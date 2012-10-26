@@ -1,7 +1,17 @@
+2012-10-26 2.0.6
+
+    - Don't re-extract downloaded files over and over again,
+    - Bugfix: removed import of pympler
+    - Setup travis to test that database installation works on both postgres
+      and mysql. It was working indeed but we just have it continuously tested
+      now.
+    - Made --force less picky on arguments
+
 2012-10-26 2.0.5
 
     - Optimized cities_light command, from 400M of RAM used to 30M on
       django-autocomplete-light's test project. Thanks sandino for reporting.
+    - Made --force-import less picky on arguments
 
 2012-08-22 2.0.4
 
