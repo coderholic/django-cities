@@ -1,3 +1,7 @@
+2012-10-26 2.0.7
+
+    - Bugfix: zips were not imported anymore because of a bug introduced in 2.0.6
+
 2012-10-26 2.0.6
 
     - Don't re-extract downloaded files over and over again,
