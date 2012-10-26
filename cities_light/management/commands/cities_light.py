@@ -11,10 +11,12 @@ try:
 except ImportError:
     import pickle
 
+from pympler.asizeof import asizeof
+
 import progressbar
 
 from django.core.management.base import BaseCommand
-from django.db import transaction
+from django.db import transaction, reset_queries
 from django.utils.encoding import force_unicode
 
 from ...exceptions import *
@@ -136,6 +138,8 @@ It is possible to force the import of files which weren't downloaded using the
                     elif url in TRANSLATION_SOURCES:
                         self.translation_parse(items)
 
+                    reset_queries()
+
                     i += 1
                     progress.update(i)
 
@@ -152,7 +156,7 @@ It is possible to force the import of files which weren't downloaded using the
         self.logger.info('Importing parsed translation in the database')
         self.translation_import()
 
-    def _get_country(self, code2):
+    def _get_country_id(self, code2):
         '''
         Simple lazy identity map for code2->country
         '''
@@ -160,26 +164,26 @@ It is possible to force the import of files which weren't downloaded using the
             self._country_codes = {}
 
         if code2 not in self._country_codes.keys():
-            self._country_codes[code2] = Country.objects.get(code2=code2)
+            self._country_codes[code2] = Country.objects.get(code2=code2).pk
 
         return self._country_codes[code2]
 
-    def _get_region(self, country_code2, region_id):
+    def _get_region_id(self, country_code2, region_id):
         '''
         Simple lazy identity map for (country_code2, region_id)->region
         '''
         if not hasattr(self, '_region_codes'):
             self._region_codes = {}
 
-        country = self._get_country(country_code2)
-        if country.code2 not in self._region_codes:
-            self._region_codes[country.code2] = {}
+        country_id = self._get_country_id(country_code2)
+        if country_id not in self._region_codes:
+            self._region_codes[country_id] = {}
 
-        if region_id not in self._region_codes[country.code2]:
-            self._region_codes[country.code2][region_id] = Region.objects.get(
-                country=country, geoname_code=region_id)
+        if region_id not in self._region_codes[country_id]:
+            self._region_codes[country_id][region_id] = Region.objects.get(
+                country_id=country_id, geoname_code=region_id).pk
 
-        return self._region_codes[country.code2][region_id]
+        return self._region_codes[country_id][region_id]
 
     def country_import(self, items):
         try:
@@ -211,14 +215,14 @@ It is possible to force the import of files which weren't downloaded using the
 
         code2, geoname_code = items[0].split('.')
 
-        country = self._get_country(code2)
+        country_id = self._get_country_id(code2)
 
         if items[3]:
             kwargs = dict(geoname_id=items[3])
         else:
             try:
                 kwargs = dict(name=name,
-                    country=country)
+                    country_id=country_id)
             except Country.DoesNotExist:
                 if self.noinsert:
                     return
@@ -236,7 +240,7 @@ It is possible to force the import of files which weren't downloaded using the
             region.name = name
 
         if not region.country_id:
-            region.country = country
+            region.country_id = country_id
 
         if not region.geoname_code:
             region.geoname_code = geoname_code
@@ -254,7 +258,7 @@ It is possible to force the import of files which weren't downloaded using the
             return
 
         try:
-            country = self._get_country(items[8])
+            country_id = self._get_country_id(items[8])
         except Country.DoesNotExist:
             if self.noinsert:
                 return
@@ -263,7 +267,7 @@ It is possible to force the import of files which weren't downloaded using the
 
         try:
             kwargs = dict(name=force_unicode(items[1]),
-                country=self._get_country(items[8]))
+                country_id=self._get_country_id(items[8]))
         except Country.DoesNotExist:
             if self.noinsert:
                 return
@@ -276,7 +280,7 @@ It is possible to force the import of files which weren't downloaded using the
             try:
                 city = City.objects.get(geoname_id=items[0])
                 city.name = force_unicode(items[1])
-                city.country = self._get_country(items[8])
+                city.country_id = self._get_country_id(items[8])
             except City.DoesNotExist:
                 if self.noinsert:
                     return
@@ -284,9 +288,9 @@ It is possible to force the import of files which weren't downloaded using the
                 city = City(**kwargs)
 
         save = False
-        if not city.region:
+        if not city.region_id:
             try:
-                city.region = self._get_region(items[8], items[10])
+                city.region_id = self._get_region_id(items[8], items[10])
             except Region.DoesNotExist:
                 pass
             else:
@@ -317,6 +321,10 @@ It is possible to force the import of files which weren't downloaded using the
             city.save()
 
     def translation_parse(self, items):
+        # free some memory
+        self._country_codes = None
+        self._region_codes = None
+
         if not hasattr(self, 'translation_data'):
             self.country_ids = Country.objects.values_list('geoname_id',
                 flat=True)
