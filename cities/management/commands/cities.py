@@ -91,7 +91,7 @@ class Command(BaseCommand):
                 web_file = None
                 continue
         else:
-            self.logger.error("Web file not found: {}. Tried URLs:\n{}".format(filename, '\n'.join(urls)))
+            self.logger.error("Web file not found: {0}. Tried URLs:\n{1}".format(filename, '\n'.join(urls)))
             
         uptodate = False
         filepath = os.path.join(self.data_dir, filename)
@@ -165,7 +165,7 @@ class Command(BaseCommand):
             
             if not self.call_hook('country_post', country, items): continue 
             country.save()
-            self.logger.debug("Added country: {}, {}".format(country.code, country))
+            self.logger.debug("Added country: {0}, {1}".format(country.code, country))
         
     def import_region_common(self, region, items):
         class_ = region.__class__
@@ -179,7 +179,7 @@ class Command(BaseCommand):
         country_code = region.code.split('.')[0]
         try: region.country = self.country_index[country_code]
         except:
-            self.logger.warning("{}: {}: Cannot find country: {} -- skipping".format(class_.__name__, region.name, country_code))
+            self.logger.warning("{0}: {1}: Cannot find country: {2} -- skipping".format(class_.__name__, region.name, country_code))
             return None
             
         return region
@@ -208,7 +208,7 @@ class Command(BaseCommand):
             
             if not self.call_hook('region_post', region, items): continue
             region.save()
-            self.logger.debug("Added region: {}, {}".format(region.code, region))
+            self.logger.debug("Added region: {0}, {1}".format(region.code, region))
         
     def build_region_index(self):
         if hasattr(self, 'region_index'): return
@@ -238,12 +238,12 @@ class Command(BaseCommand):
             region_code = '.'.join(subregion.code.split('.')[:level+2])
             try: subregion.region = self.region_index[region_code]
             except:
-                self.logger.warning("Subregion: {}: Cannot find region: {}".format(subregion.name, region_code))
+                self.logger.warning("Subregion: {0}: Cannot find region: {1}".format(subregion.name, region_code))
                 continue
                 
             if not self.call_hook('subregion_post', subregion, items): continue
             subregion.save()
-            self.logger.debug("Added subregion: {}, {}".format(subregion.code, subregion))
+            self.logger.debug("Added subregion: {0}, {1}".format(subregion.code, subregion))
             
         del self.region_index
         
@@ -261,7 +261,7 @@ class Command(BaseCommand):
         country_code = items[8]
         try: country = self.country_index[country_code]
         except:
-            self.logger.warning("{}: {}: Cannot find country: {} -- skipping".format(class_.__name__, city.name, country_code))
+            self.logger.warning("{0}: {1}: Cannot find country: {2} -- skipping".format(class_.__name__, city.name, country_code))
             return None
         if class_ is City: city.country = country
         
@@ -276,7 +276,7 @@ class Command(BaseCommand):
                     setattr(city, level_name, region)
             except:
                 self.logger.log(logging.DEBUG if level else logging.WARNING, # Escalate if level 0 failed
-                                "{}: {}: Cannot find {}: {}".format(class_.__name__, city.name, level_name, code))
+                                "{0}: {1}: Cannot find {2}: {3}".format(class_.__name__, city.name, level_name, code))
         
         
         return city
@@ -301,7 +301,7 @@ class Command(BaseCommand):
             
             if not self.call_hook('city_post', city, items): continue
             city.save()
-            self.logger.debug("Added city: {}".format(city))
+            self.logger.debug("Added city: {0}".format(city))
         
     def build_hierarchy(self):
         if hasattr(self, 'hierarchy'): return
@@ -344,7 +344,7 @@ class Command(BaseCommand):
             city = None
             try: city = city_index[self.hierarchy[district.id]]
             except:
-                self.logger.warning("District: {}: Cannot find city in hierarchy, using nearest".format(district.name))
+                self.logger.warning("District: {0}: Cannot find city in hierarchy, using nearest".format(district.name))
                 city_pop_min = 100000
                 if connection.ops.mysql:
                     # mysql doesn't have distance function, get nearest city within 2 degrees
@@ -360,13 +360,13 @@ class Command(BaseCommand):
                 else:
                     city = City.objects.filter(population__gt=city_pop_min).distance(district.location).order_by('distance')[0]
             if not city:
-                self.logger.warning("District: {}: Cannot find city -- skipping".format(district.name))
+                self.logger.warning("District: {0}: Cannot find city -- skipping".format(district.name))
                 continue
             district.city = city
             
             if not self.call_hook('district_post', district, items): continue
             district.save()
-            self.logger.debug("Added district: {}".format(district))
+            self.logger.debug("Added district: {0}".format(district))
         
     def import_alt_name(self):
         uptodate = self.download('alt_name')
@@ -406,7 +406,7 @@ class Command(BaseCommand):
 
             if not self.call_hook('alt_name_post', alt, items): continue
             alt.save()
-            self.logger.debug("Added alt name: {}, {} ({})".format(locale, alt, alt.geo))
+            self.logger.debug("Added alt name: {0}, {1} ({2})".format(locale, alt, alt.geo))
 
     def import_postal_code(self):
         uptodate = self.download('postal_code')
@@ -429,7 +429,7 @@ class Command(BaseCommand):
             try:
                 country = self.country_index[country_code]
             except:
-                self.logger.warning("Postal code: {}: Cannot find country: {} -- skipping".format(code, country_code))
+                self.logger.warning("Postal code: {0}: Cannot find country: {1} -- skipping".format(code, country_code))
                 continue
 
             pc = PostalCode()
@@ -443,11 +443,11 @@ class Command(BaseCommand):
             try:
                 pc.location = Point(float(items[10]), float(items[9]))
             except:
-                self.logger.warning("Postal code: {}, {}: Invalid location ({}, {})".format(pc.country, pc.code, items[10], items[9]))
+                self.logger.warning("Postal code: {0}, {1}: Invalid location ({2}, {3})".format(pc.country, pc.code, items[10], items[9]))
                 continue
 
             if not self.call_hook('postal_code_post', pc, items): continue
-            self.logger.debug("Adding postal code: {}, {}".format(pc.country, pc))
+            self.logger.debug("Adding postal code: {0}, {1}".format(pc.country, pc))
             try:
                 pc.save()
             except Exception, e:
