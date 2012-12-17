@@ -56,7 +56,7 @@ class RegionBase(Place):
         abstract = True
 
     def __unicode__(self):
-        return u'{}, {}'.format(force_unicode(self.name_std), self.parent)
+        return u'{0}, {1}'.format(force_unicode(self.name_std), self.parent)
 
 class Region(RegionBase):
     @property
@@ -79,7 +79,7 @@ class CityBase(Place):
         abstract = True 
 
     def __unicode__(self):
-        return u'{}, {}'.format(force_unicode(self.name_std), self.parent)
+        return u'{0}, {1}'.format(force_unicode(self.name_std), self.parent)
 
 class City(CityBase):
     region = models.ForeignKey(Region, null=True, blank=True)
@@ -114,7 +114,7 @@ class GeoAltNameManager(models.GeoManager):
 def create_geo_alt_names(geo_type):
     geo_alt_names = {}
     for locale in settings.locales:
-        name_format = geo_type.__name__ + '{}' + locale.capitalize()
+        name_format = geo_type.__name__ + '{0}' + locale.capitalize()
         name = name_format.format('AltName')
         geo_alt_names[locale] = create_model(
             name = name,
