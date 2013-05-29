@@ -346,8 +346,13 @@ class Command(BaseCommand):
             except:
                 self.logger.warning("District: {0}: Cannot find city in hierarchy, using nearest".format(district.name))
                 city_pop_min = 100000
-                if connection.ops.mysql:
-                    # mysql doesn't have distance function, get nearest city within 2 degrees
+                # we are going to try to find closet city using native database .distance(...) query but if that fails
+                # then we fall back to degree search, MYSQL has no support and Spatialite with SRID 4236. 
+                try:
+                    city = City.objects.filter(population__gt=city_pop_min).distance(district.location).order_by('distance')[0]
+                except:
+                    self.logger.warning("District: {0}: DB backend does not support native '.distance(...)' query " \
+                                        "falling back to two degree search".format(district.name))
                     search_deg = 2
                     min_dist = float('inf')
                     bounds = Envelope(  district.location.x-search_deg, district.location.y-search_deg,
@@ -357,8 +362,7 @@ class Command(BaseCommand):
                         if dist < min_dist:
                             min_dist = dist
                             city = e
-                else:
-                    city = City.objects.filter(population__gt=city_pop_min).distance(district.location).order_by('distance')[0]
+                    
             if not city:
                 self.logger.warning("District: {0}: Cannot find city -- skipping".format(district.name))
                 continue
