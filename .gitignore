@@ -3,3 +3,8 @@
 *.egg-info
 build
 dist
+cities/data
+
+# WebDAV file system cache
+.DAV/
+
