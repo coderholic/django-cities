@@ -1,3 +1,9 @@
+2013-06-26 2.0.8
+
+    - Merge #22: ugettext_lazy instead of ugettext. 
+    - Added Aaron VanDerlip to AUTHORS.
+    - Promoted dev status to 5 Stable.
+
 2012-10-26 2.0.7
 
     - Bugfix: zips were not imported anymore because of a bug introduced in 2.0.6
