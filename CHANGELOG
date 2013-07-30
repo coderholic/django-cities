@@ -1,3 +1,19 @@
+2013-07-30 2.0.9
+
+Awesome contributions were merged:
+
+    - Fixed bug in city migration where if there were two cities in the same
+      country with the same name only the first would be imported. This was due
+      to not taking into account the region checking for the records existence
+      before creating a new one.
+    - Increase performance by caching region_id and country_id in migration
+      function variables.
+    - Added debugging flag '--verify-city-import' which cerifies city import
+      and print out missing cities. For debug purposes only.
+    - Fixed bug in city migration where if the name_ascii field is null it
+      would set the slug name as 'city.' It now sets it to the geoname_id.
+    - Added to AUTHORS: Mike Mepham, Jeff Rudokas
+
 2013-06-26 2.0.8
 
     - Merge #22: ugettext_lazy instead of ugettext. 
