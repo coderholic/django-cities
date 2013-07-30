@@ -80,9 +80,9 @@ It is possible to force the import of files which weren't downloaded using the
         ),
         optparse.make_option('--verify-city-import', action='store_true',
             default=False,
-            help='Verify city import and print out missing cities. For debug purposes only.'
+            help='Verify city import and print out missing cities.'
         ),
-        )
+    )
 
     @transaction.commit_on_success
     def handle(self, *args, **options):
@@ -101,7 +101,7 @@ It is possible to force the import of files which weren't downloaded using the
             ' Done: ',
             progressbar.Percentage(),
             progressbar.Bar(),
-            ]
+        ]
 
         for url in SOURCES:
             destination_file_name = url.split('/')[-1]
@@ -160,11 +160,12 @@ It is possible to force the import of files which weren't downloaded using the
                 progress.finish()
 
                 if url in TRANSLATION_SOURCES and options.get(
-                    'hack_translations', False):
+                        'hack_translations', False):
                     with open(translation_hack_path, 'w+') as f:
                         pickle.dump(self.translation_data, f)
 
-                if options.get('verify_city_import', False) and url in CITY_SOURCES:
+                if (options.get('verify_city_import', False) and
+                        url in CITY_SOURCES):
                     self.logger.info('Verifying city import')
                     self.verify_city_import(geonames)
 
@@ -290,9 +291,11 @@ It is possible to force the import of files which weren't downloaded using the
             except City.DoesNotExist:
                 self.logger.info(items)
                 for duplicate_items in geonames.parse():
-                    if items[0] != duplicate_items[0] and items[1] == duplicate_items[1] and items[8] == duplicate_items[8] and items[10] == duplicate_items[10]:
+                    if (items[0] != duplicate_items[0] and
+                            items[1] == duplicate_items[1] and
+                            items[8] == duplicate_items[8] and
+                            items[10] == duplicate_items[10]):
                         self.logger.info(duplicate_items)
-
 
     def city_import(self, items):
         try:
@@ -314,12 +317,12 @@ It is possible to force the import of files which weren't downloaded using the
                 raise
 
         try:
-            region_id=self._get_region_id(country_code2, region_geoname_code)
+            region_id = self._get_region_id(country_code2, region_geoname_code)
         except Region.DoesNotExist:
             if self.noinsert:
                 return
             else:
-                region_id=None
+                region_id = None
 
         try:
             kwargs = dict(name=force_unicode(name),
@@ -389,7 +392,7 @@ It is possible to force the import of files which weren't downloaded using the
                 Country: {},
                 Region: {},
                 City: {},
-                }
+            }
 
         if len(items) > 4:
             # avoid shortnames, colloquial, and historic
