@@ -9,12 +9,12 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name='sonic-cities-light',
-    version='1.0.0',
-    description='Sonicbids fork of the simple alternative to django-cities',
+    name='django-cities-light',
+    version='2.0.8',
+    description='Simple alternative to django-cities',
     author='James Pic',
-    author_email='it@sonicbids.com',
-    url='https://github.com/Sonicbids/django-cities-light',
+    author_email='jamespic@gmail.com',
+    url='https://github.com/yourlabs/django-cities-light',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
