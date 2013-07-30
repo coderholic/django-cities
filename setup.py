@@ -6,8 +6,6 @@ import os
 extra = {}
 if sys.version_info >= (3,):
     extra['use_2to3'] = True
-    extra['convert_2to3_doctests'] = ['src/your/module/README.txt']
-    extra['use_2to3_fixers'] = ['your.fixers']
 
 # Utility function to read the README file.
 # Used for the long_description. It's nice, because now 1) we have a top level
