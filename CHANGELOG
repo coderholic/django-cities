@@ -1,3 +1,7 @@
+2013-07-30 2.1.0
+
+    - Added experimental Python3 support using 2to3
+
 2013-07-30 2.0.9
 
 Awesome contributions were merged:
