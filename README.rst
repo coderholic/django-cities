@@ -1,4 +1,9 @@
 .. image:: https://secure.travis-ci.org/yourlabs/django-cities-light.png?branch=master
+    :target: http://travis-ci.org/yourlabs/django-cities-light
+.. image:: https://pypip.in/d/django-cities-light/badge.png
+    :target: https://crate.io/packages/django-cities-light
+.. image:: https://pypip.in/v/django-cities-light/badge.png   
+    :target: https://crate.io/packages/django-cities-light
 
 django-cities-light -- *Simple django-cities alternative*
 =========================================================
