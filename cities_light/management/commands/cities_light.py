@@ -78,10 +78,6 @@ It is possible to force the import of files which weren't downloaded using the
             default=False,
             help='Set this if you intend to import translations a lot'
         ),
-        optparse.make_option('--verify-city-import', action='store_true',
-            default=False,
-            help='Verify city import and print out missing cities.'
-        ),
     )
 
     @transaction.commit_on_success
@@ -164,11 +160,6 @@ It is possible to force the import of files which weren't downloaded using the
                     with open(translation_hack_path, 'w+') as f:
                         pickle.dump(self.translation_data, f)
 
-                if (options.get('verify_city_import', False) and
-                        url in CITY_SOURCES):
-                    self.logger.info('Verifying city import')
-                    self.verify_city_import(geonames)
-
         if options.get('hack_translations', False):
             with open(translation_hack_path, 'r') as f:
                 self.translation_data = pickle.load(f)
@@ -206,14 +197,12 @@ It is possible to force the import of files which weren't downloaded using the
         return self._region_codes[country_id][region_id]
 
     def country_import(self, items):
-        code2 = items[0]
-
         try:
-            country = Country.objects.get(code2=code2)
+            country = Country.objects.get(code2=items[0])
         except Country.DoesNotExist:
             if self.noinsert:
                 return
-            country = Country(code2=code2)
+            country = Country(code2=items[0])
 
         country.name = force_unicode(items[4])
         country.code3 = items[1]
@@ -234,68 +223,44 @@ It is possible to force the import of files which weren't downloaded using the
         name = items[1]
         if not items[1]:
             name = items[2]
-        ascii_name = items[2]
-        geoname_id = items[3]
 
-        country_code2, geoname_code = items[0].split('.')
+        code2, geoname_code = items[0].split('.')
 
-        try:
-            country_id = self._get_country_id(country_code2)
-        except Country.DoesNotExist:
-            if self.noinsert:
-                return
-            else:
-                raise
+        country_id = self._get_country_id(code2)
 
-        if geoname_id:
-            kwargs = dict(geoname_id=geoname_id)
+        if items[3]:
+            kwargs = dict(geoname_id=items[3])
         else:
-            kwargs = dict(name=name,
-                country_id=country_id)
+            try:
+                kwargs = dict(name=name,
+                    country_id=country_id)
+            except Country.DoesNotExist:
+                if self.noinsert:
+                    return
+                else:
+                    raise
 
-        save = False
         try:
             region = Region.objects.get(**kwargs)
         except Region.DoesNotExist:
             if self.noinsert:
                 return
-            else:
-                region = Region(**kwargs)
-                save = True
+            region = Region(**kwargs)
 
         if not region.name:
             region.name = name
-            save = True
 
         if not region.country_id:
             region.country_id = country_id
-            save = True
 
         if not region.geoname_code:
             region.geoname_code = geoname_code
-            save = True
 
         if not region.name_ascii:
-            region.name_ascii = ascii_name
-            save = True
+            region.name_ascii = items[2]
 
-        region.geoname_id = geoname_id
-
-        if save:
-            region.save()
-
-    def verify_city_import(self, geonames):
-        for items in geonames.parse():
-            try:
-                City.objects.get(geoname_id=items[0])
-            except City.DoesNotExist:
-                self.logger.info(items)
-                for duplicate_items in geonames.parse():
-                    if (items[0] != duplicate_items[0] and
-                            items[1] == duplicate_items[1] and
-                            items[8] == duplicate_items[8] and
-                            items[10] == duplicate_items[10]):
-                        self.logger.info(duplicate_items)
+        region.geoname_id = items[3]
+        region.save()
 
     def city_import(self, items):
         try:
@@ -303,13 +268,8 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
-        geoname_id = items[0]
-        country_code2 = items[8]
-        region_geoname_code = items[10]
-        name = items[1]
-
         try:
-            country_id = self._get_country_id(country_code2)
+            country_id = self._get_country_id(items[8])
         except Country.DoesNotExist:
             if self.noinsert:
                 return
@@ -317,48 +277,39 @@ It is possible to force the import of files which weren't downloaded using the
                 raise
 
         try:
-            region_id = self._get_region_id(country_code2, region_geoname_code)
-        except Region.DoesNotExist:
-            if self.noinsert:
-                return
-            else:
-                region_id = None
-
-        try:
-            kwargs = dict(name=force_unicode(name),
-                region_id=region_id,
-                country_id=country_id)
+            kwargs = dict(name=force_unicode(items[1]),
+                country_id=self._get_country_id(items[8]))
         except Country.DoesNotExist:
             if self.noinsert:
                 return
             else:
                 raise
 
-        save = False
         try:
             city = City.objects.get(**kwargs)
         except City.DoesNotExist:
             try:
-                city = City.objects.get(geoname_id=geoname_id)
-                city.name = force_unicode(name)
-                city.country_id = country_id
-                city.region_id = region_id
-                save = True
+                city = City.objects.get(geoname_id=items[0])
+                city.name = force_unicode(items[1])
+                city.country_id = self._get_country_id(items[8])
             except City.DoesNotExist:
                 if self.noinsert:
                     return
 
                 city = City(**kwargs)
 
+        save = False
+        if not city.region_id:
+            try:
+                city.region_id = self._get_region_id(items[8], items[10])
+            except Region.DoesNotExist:
+                pass
+            else:
+                save = True
+
         if not city.name_ascii:
             # useful for cities with chinese names
-            name_ascii = items[2]
-
-            if name_ascii:
-                city.name_ascii = name_ascii
-            else:
-                city.slug = geoname_id
-            save = True
+            city.name_ascii = items[2]
 
         if not city.latitude:
             city.latitude = items[4]
@@ -374,7 +325,7 @@ It is possible to force the import of files which weren't downloaded using the
 
         if not city.geoname_id:
             # city may have been added manually
-            city.geoname_id = geoname_id
+            city.geoname_id = items[0]
             save = True
 
         if save:
