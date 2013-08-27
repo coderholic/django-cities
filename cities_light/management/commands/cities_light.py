@@ -231,14 +231,7 @@ It is possible to force the import of files which weren't downloaded using the
         if items[3]:
             kwargs = dict(geoname_id=items[3])
         else:
-            try:
-                kwargs = dict(name=name,
-                    country_id=country_id)
-            except Country.DoesNotExist:
-                if self.noinsert:
-                    return
-                else:
-                    raise
+            kwargs = dict(name=name, country_id=country_id)
 
         try:
             region = Region.objects.get(**kwargs)
