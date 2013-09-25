@@ -14,7 +14,8 @@ from south.modelsinspector import add_introspection_rules
 
 import autoslug
 
-from settings import *
+from .settings import *
+
 
 __all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search',
     'to_ascii']
