@@ -3,8 +3,14 @@ matrix:
   exclude:
     - python: "3.3"
       env: DJANGO="1.4.2"
+      script:
+        - python test_project/manage.py syncdb --noinput --settings test_project.settings_mysql
+        - python test_project/manage.py migrate --settings test_project.settings_mysql
     - python: "3.2"
       env: DJANGO="1.4.2"
+      script:
+        - python test_project/manage.py syncdb --noinput --settings test_project.settings_mysql
+        - python test_project/manage.py migrate --settings test_project.settings_mysql
 python:
   - "2.6"
   - "2.7"
