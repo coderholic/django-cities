@@ -131,7 +131,7 @@ It is possible to force the import of files which weren't downloaded using the
 
                 i = 0
                 progress = progressbar.ProgressBar(maxval=geonames.num_lines(),
-                    widgets=self.widgets)
+                    widgets=self.widgets).start()
 
                 for items in geonames.parse():
                     if url in CITY_SOURCES:
