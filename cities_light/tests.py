@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from __future__ import unicode_literals
 
 from django.utils import unittest
 
@@ -22,15 +23,15 @@ class FormTestCase(unittest.TestCase):
 
 class SaveTestCase(unittest.TestCase):
     def testCountryAsciiAndSlug(self):
-        country = Country(name=u'áó éú')
+        country = Country(name='áó éú')
         country.save()
 
-        self.assertEqual(country.name_ascii, u'ao eu')
-        self.assertEqual(country.slug, u'ao-eu')
+        self.assertEqual(country.name_ascii, 'ao e')
+        self.assertEqual(country.slug, 'ao-e')
 
     def testCityAsciiAndSlug(self):
-        city = City(name=u'áó éú', country_id=1)
+        city = City(name='áó éú', country_id=1)
         city.save()
 
-        self.assertEqual(city.name_ascii, u'ao eu')
-        self.assertEqual(city.slug, u'ao-eu')
+        self.assertEqual(city.name_ascii, 'ao e')
+        self.assertEqual(city.slug, 'ao-e')

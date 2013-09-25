@@ -34,6 +34,7 @@ filter_non_cities()
     InvalidItems if the row doesn't have PPL in its features (it's not a
     populated place).
 """
+from __future__ import unicode_literals
 
 import django.dispatch
 

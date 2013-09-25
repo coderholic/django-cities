@@ -45,6 +45,7 @@ INDEX_SEARCH_NAMES
     it is **not** MySQL), then this should be set to True. You might have to
     override this setting if using several databases for your project.
 """
+from __future__ import unicode_literals
 
 import os.path
 

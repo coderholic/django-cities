@@ -1,7 +1,11 @@
+from __future__ import unicode_literals
+
 import unicodedata
 import re
 
-from django.utils.encoding import force_unicode
+from django.utils.encoding import python_2_unicode_compatible
+
+from django.utils.encoding import force_text
 from django.db.models import signals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -18,19 +22,19 @@ __all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search',
 ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
 
 CONTINENT_CHOICES = (
-    ('OC', _(u'Oceania')),
-    ('EU', _(u'Europe')),
-    ('AF', _(u'Africa')),
-    ('NA', _(u'North America')),
-    ('AN', _(u'Antarctica')),
-    ('SA', _(u'South America')),
-    ('AS', _(u'Asia')),
+    ('OC', _('Oceania')),
+    ('EU', _('Europe')),
+    ('AF', _('Africa')),
+    ('NA', _('North America')),
+    ('AN', _('Antarctica')),
+    ('SA', _('South America')),
+    ('AS', _('Asia')),
 )
 
 
 def to_ascii(value):
     if isinstance(value, str):
-        value = force_unicode(value)
+        value = force_text(value)
 
     return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
@@ -60,11 +64,12 @@ def set_name_ascii(sender, instance=None, **kwargs):
 def set_display_name(sender, instance=None, **kwargs):
     """
     Set instance.display_name to instance.get_display_name(), avoid spawning
-    queries during __unicode__().
+    queries during __str__().
     """
     instance.display_name = instance.get_display_name()
 
 
+@python_2_unicode_compatible
 class Base(models.Model):
     """
     Base model with boilerplate for all models.
@@ -79,13 +84,14 @@ class Base(models.Model):
         abstract = True
         ordering = ['name']
 
-    def __unicode__(self):
+    def __str__(self):
         display_name = getattr(self, 'display_name', None)
         if display_name:
             return display_name
         return self.name
 
 
+@python_2_unicode_compatible
 class Country(Base):
     """
     Country model.
@@ -100,10 +106,11 @@ class Country(Base):
     tld = models.CharField(max_length=5, blank=True, db_index=True)
 
     class Meta:
-        verbose_name_plural = _(u'countries')
+        verbose_name_plural = _('countries')
 signals.pre_save.connect(set_name_ascii, sender=Country)
 
 
+@python_2_unicode_compatible
 class Region(Base):
     """
     Region/State model.
@@ -122,7 +129,7 @@ class Region(Base):
         verbose_name_plural = _('regions/states')
 
     def get_display_name(self):
-        return u'%s, %s' % (self.name, self.country.name)
+        return '%s, %s' % (self.name, self.country.name)
 
 signals.pre_save.connect(set_name_ascii, sender=Region)
 signals.pre_save.connect(set_display_name, sender=Region)
@@ -150,6 +157,7 @@ class ToSearchTextField(models.TextField):
         return (field_class, args, kwargs)
 
 
+@python_2_unicode_compatible
 class City(Base):
     """
     City model.
@@ -171,14 +179,14 @@ class City(Base):
 
     class Meta:
         unique_together = (('region', 'name'),)
-        verbose_name_plural = _(u'cities')
+        verbose_name_plural = _('cities')
 
     def get_display_name(self):
         if self.region_id:
-            return u'%s, %s, %s' % (self.name, self.region.name,
+            return '%s, %s, %s' % (self.name, self.region.name,
                 self.country.name)
         else:
-            return u'%s, %s' % (self.name, self.country.name)
+            return '%s, %s' % (self.name, self.country.name)
 signals.pre_save.connect(set_name_ascii, sender=City)
 signals.pre_save.connect(set_display_name, sender=City)
 

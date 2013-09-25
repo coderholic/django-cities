@@ -8,16 +8,16 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         for region in orm['cities_light.Region'].objects.all():
-            region.display_name = u'%s, %s' % (
+            region.display_name = '%s, %s' % (
                 region.name, region.country.name)
             region.save()
 
         for city in orm['cities_light.City'].objects.all():
             if city.region_id:
-                city.display_name = u'%s, %s, %s' % (
+                city.display_name = '%s, %s, %s' % (
                     city.name, city.region.name, city.country.name)
             else:
-                city.display_name = u'%s, %s' % (
+                city.display_name = '%s, %s' % (
                     city.name, city.country.name)
             city.save()
 

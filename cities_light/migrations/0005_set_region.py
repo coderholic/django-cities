@@ -5,7 +5,7 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 from ..settings import *
 from ..geonames import Geonames
@@ -15,7 +15,7 @@ class Migration(DataMigration):
         if not hasattr(self, '_country_codes'):
             self._country_codes = {}
 
-        if code2 not in self._country_codes.keys():
+        if code2 not in list(self._country_codes.keys()):
             self._country_codes[code2] = self.orm['cities_light.Country'].objects.get(code2=code2)
 
         return self._country_codes[code2]
@@ -59,7 +59,7 @@ class Migration(DataMigration):
             if url in REGION_SOURCES:
                 for items in geonames.parse():
                     code2, geoname_id = items[0].split('.')
-                    if code2 in self.regions.keys():
+                    if code2 in list(self.regions.keys()):
                         self.regions[code2][geoname_id] = items
 
             elif url in CITY_SOURCES:
@@ -79,11 +79,11 @@ class Migration(DataMigration):
                     except orm['cities_light.Region'].DoesNotExist:
                             
                         try:
-                            print repr(self.regions[items[8]][items[10]])
+                            print(repr(self.regions[items[8]][items[10]]))
                             orm['cities_light.Region'](
                                 geoname_id=items[10],
                                 country=self._get_country(items[8]),
-                                name=force_unicode(self.regions[items[8]][items[10]][1]),
+                                name=force_text(self.regions[items[8]][items[10]][1]),
                             ).save()
                         except KeyError:
                             # Some regions might not be in REGION_SOURCES like

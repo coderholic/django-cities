@@ -1,6 +1,7 @@
 2013-07-30 2.1.0
 
-    - Added experimental Python3 support using 2to3
+    - Added Python 3 support using
+      https://docs.djangoproject.com/en/dev/topics/python3/
 
 2013-07-30 2.0.9
 
