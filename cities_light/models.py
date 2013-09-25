@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import unicodedata
 import re
 
 from django.utils.encoding import python_2_unicode_compatible
@@ -9,6 +8,8 @@ from django.utils.encoding import force_text
 from django.db.models import signals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
+from unidecode import unidecode
 
 from south.modelsinspector import add_introspection_rules
 
@@ -37,8 +38,7 @@ def to_ascii(value):
     if isinstance(value, str):
         value = force_text(value)
 
-    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-
+    return unidecode(value)
 
 def to_search(value):
     """
@@ -80,18 +80,8 @@ class Base(models.Model):
     Base model with boilerplate for all models.
     """
 
-    @staticmethod
-    def slug_source(instance):
-        """
-        Return source value for slug
-        """
-        if instance.name_ascii:
-            return instance.name_ascii
-
-        return instance.geoname_id
-
     name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
-    slug = autoslug.AutoSlugField(populate_from=slug_source)
+    slug = autoslug.AutoSlugField(populate_from='name_ascii')
     geoname_id = models.IntegerField(null=True, blank=True, unique=True)
     alternate_names = models.TextField(null=True, blank=True, default='')
 
