@@ -35,7 +35,7 @@ setup(
     dependency_links=(
        'https://github.com/coagulant/progressbar-python3/archive/master.zip#egg=progressbar-2.3dev',
     ),
-    classifiers
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
