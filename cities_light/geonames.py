@@ -79,7 +79,7 @@ class Geonames(object):
         line = True
 
         for line in file:
-            line = line.strip()
+            line = line.decode('utf8').strip()
 
             if len(line) < 1 or line[0] == '#':
                 continue
