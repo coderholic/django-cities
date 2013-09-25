@@ -58,6 +58,10 @@ def set_name_ascii(sender, instance=None, **kwargs):
     Ascii versions of names are often useful for autocompletes and search.
     """
     name_ascii = to_ascii(instance.name)
+
+    if not name_ascii.strip():
+        return
+
     if name_ascii and not instance.name_ascii:
         instance.name_ascii = to_ascii(instance.name)
 
@@ -76,8 +80,18 @@ class Base(models.Model):
     Base model with boilerplate for all models.
     """
 
+    @staticmethod
+    def slug_source(instance):
+        """
+        Return source value for slug
+        """
+        if instance.name_ascii:
+            return instance.name_ascii
+
+        return instance.geoname_id
+
     name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
-    slug = autoslug.AutoSlugField(populate_from='name_ascii')
+    slug = autoslug.AutoSlugField(populate_from=slug_source)
     geoname_id = models.IntegerField(null=True, blank=True, unique=True)
     alternate_names = models.TextField(null=True, blank=True, default='')
 

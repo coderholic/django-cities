@@ -24,7 +24,7 @@ from ...settings import *
 from ...geonames import Geonames
 
 
-class MemoryUsageWidget(progressbar.ProgressBarWidget):
+class MemoryUsageWidget(progressbar.Widget):
     def update(self, pbar):
         if sys.platform != 'win32':
             return '%s kB' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
@@ -303,6 +303,7 @@ It is possible to force the import of files which weren't downloaded using the
         if not city.name_ascii:
             # useful for cities with chinese names
             city.name_ascii = items[2]
+            save = True
 
         if not city.latitude:
             city.latitude = items[4]

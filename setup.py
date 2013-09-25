@@ -30,6 +30,7 @@ setup(
     install_requires=[
         'django',
         'progressbar==2.3dev',
+        'unidecode>=0.04.13',
         'django_autoslug',
     ],
     dependency_links=(
