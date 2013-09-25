@@ -6,11 +6,13 @@ matrix:
       script:
         - python test_project/manage.py syncdb --noinput --settings test_project.settings_mysql
         - python test_project/manage.py migrate --settings test_project.settings_mysql
+      install: pip install mysql-python
     - python: "3.2"
       env: DJANGO="1.4.2"
       script:
         - python test_project/manage.py syncdb --noinput --settings test_project.settings_mysql
         - python test_project/manage.py migrate --settings test_project.settings_mysql
+      install: pip install mysql-python
 python:
   - "2.6"
   - "2.7"
@@ -24,7 +26,9 @@ install:
   - pip install pep8 --use-mirrors
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - python setup.py install
-  - pip install south mysql-python psycopg2
+  - pip install south 
+  - pip install mysql-python 
+  - pip install psycopg2
 before_script:
   - "pep8 --ignore=E124,E128 --exclude=tests,migrations cities_light"
   - mysql -e 'create database cities_light_test;'
