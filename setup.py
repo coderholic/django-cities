@@ -29,10 +29,13 @@ setup(
     keywords = 'django cities countries postal codes',
     install_requires=[
         'django',
+        'progressbar==2.3dev',
         'django_autoslug',
-        'progressbar==2.2',
     ],
-    classifiers = [
+    dependency_links=(
+       'https://github.com/coagulant/progressbar-python3/archive/master.zip#egg=progressbar-2.3dev',
+    ),
+    classifiers
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
