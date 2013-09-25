@@ -4,11 +4,12 @@ set -x
 function do_db() {
     python test_project/manage.py syncdb --noinput --settings=test_project.$1
     python test_project/manage.py migrate --noinput --settings=test_project.$1
+    python test_project/manage.py cities_light --force-import-all --settings=test_project.$1
 }
 
 pip install south psycopg2
 
-if [[ $TRAVIS_PYTHON_VERSION -eq "2.7" ]]; then
+if [[ ${TRAVIS_PYTHON_VERSION%%.*} -eq "2" ]]; then
     # test on mysql
     pip install mysql-python 
     do_db settings_mysql
