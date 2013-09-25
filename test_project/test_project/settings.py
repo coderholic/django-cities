@@ -6,7 +6,7 @@ import posixpath
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 CITIES_LIGHT_CITY_SOURCES = [
-    'http://download.geonames.org/export/dump/cities1000.zip'])
+    'http://download.geonames.org/export/dump/cities1000.zip']
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
