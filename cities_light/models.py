@@ -40,6 +40,7 @@ def to_ascii(value):
 
     return unidecode(value)
 
+
 def to_search(value):
     """
     Convert a string value into a string that is usable against
