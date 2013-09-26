@@ -2,9 +2,9 @@
 set -x
 
 function do_db() {
-    python test_project/manage.py syncdb --noinput --settings=test_project.$1
-    python test_project/manage.py migrate --noinput --settings=test_project.$1
-    python test_project/manage.py cities_light --force-import-all --settings=test_project.$1
+    python test_project/manage.py syncdb --traceback --noinput --settings=test_project.$1
+    python test_project/manage.py migrate --noinput --traceback --settings=test_project.$1
+    python test_project/manage.py cities_light --force-import-all --traceback --settings=test_project.$1
 }
 
 pip install south psycopg2
