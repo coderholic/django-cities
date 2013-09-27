@@ -2,13 +2,18 @@ language: python
 matrix:
   exclude:
     - python: "3.3"
-      env: DJANGO=1.4.2
+      env: 
+        - DJANGO=1.4.2
+        - TEST_DB=mysql
 python:
   - "2.7"
   - "3.3"
 env:
   - DJANGO=1.4.2
   - DJANGO=1.5
+  - TEST_DB=sqlite
+  - TEST_DB=postgres
+  - TEST_DB=mysql
 install:
   - pip install -q Django==$DJANGO --use-mirrors
   - pip install pep8 --use-mirrors

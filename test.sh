@@ -7,17 +7,19 @@ function do_db() {
     python test_project/manage.py cities_light --force-import-all --traceback --settings=test_project.$1
 }
 
-pip install south psycopg2
+pip install south
 
-if [[ ${TRAVIS_PYTHON_VERSION%%.*} -eq "2" ]]; then
-    # test on mysql
+if [[ $TEST_DB == 'postgres' ]]; then
+    pip install psycopg2
+    do_db settings_postgres
+fi
+
+if [[ $TEST_DB == 'sqlite' ]]; then
+    rm -rf test_project/db.sqlite
+    do_db settings
+fi
+
+if [[ $TEST_DB == 'mysql' && ${TRAVIS_PYTHON_VERSION%%.*} -eq "2" ]]; then
     pip install mysql-python 
     do_db settings_mysql
 fi
-
-# test on postgres
-do_db settings_postgres
-
-# test on sqlite
-rm -rf test_project/db.sqlite
-do_db settings
