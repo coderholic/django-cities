@@ -377,7 +377,8 @@ It is possible to force the import of files which weren't downloaded using the
             max += len(model_class_data.keys())
 
         i = 0
-        progress = progressbar.ProgressBar(maxval=max, widgets=self.widgets)
+        progress = progressbar.ProgressBar(maxval=max,
+                                           widgets=self.widgets).start()
         for model_class, model_class_data in data.items():
             for geoname_id, geoname_data in model_class_data.items():
                 try:
