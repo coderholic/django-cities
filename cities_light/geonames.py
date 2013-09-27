@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import six
 import time
 import urllib
 import os
@@ -79,7 +80,11 @@ class Geonames(object):
         line = True
 
         for line in file:
-            line = line.decode('utf8').strip()
+            if six.PY2:
+                # in python3 this is already an unicode
+                line = line.decode('utf8')
+
+            line = line.strip()
 
             if len(line) < 1 or line[0] == '#':
                 continue
