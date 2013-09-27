@@ -1,5 +1,6 @@
-from __future__ import unicode_literals
 
+
+import six
 import re
 
 from django.utils.encoding import python_2_unicode_compatible
@@ -21,7 +22,7 @@ from .settings import *
 __all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search',
     'to_ascii']
 
-ALPHA_REGEXP = re.compile(b'[\W_]+')
+ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
 
 CONTINENT_CHOICES = (
     ('OC', _('Oceania')),
@@ -35,7 +36,7 @@ CONTINENT_CHOICES = (
 
 
 def to_ascii(value):
-    if isinstance(value, str):
+    if not six.PY3 and isinstance(value, str):
         value = force_text(value)
 
     return unidecode(value)
@@ -49,7 +50,7 @@ def to_search(value):
     For example, 'Paris Texas' would become 'paristexas'.
     """
 
-    return ALPHA_REGEXP.sub(b'', to_ascii(value)).lower()
+    return ALPHA_REGEXP.sub('', to_ascii(value)).lower()
 
 
 def set_name_ascii(sender, instance=None, **kwargs):

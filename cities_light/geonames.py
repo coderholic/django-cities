@@ -2,12 +2,15 @@ from __future__ import unicode_literals
 
 import six
 import time
-import urllib
 import os
 import os.path
 import zipfile
 import logging
-import sys
+
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib import urlopen
 
 from .settings import *
 
@@ -41,7 +44,7 @@ class Geonames(object):
             DATA_DIR, destination_file_name)
 
     def download(self, url, path, force=False):
-        remote_file = urllib.urlopen(url)
+        remote_file = urlopen(url)
         remote_time = time.strptime(remote_file.headers['last-modified'],
             '%a, %d %b %Y %H:%M:%S %Z')
         remote_size = int(remote_file.headers['content-length'])

@@ -77,6 +77,6 @@ DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
 INDEX_SEARCH_NAMES = getattr(settings, 'CITIES_LIGHT_INDEX_SEARCH_NAMES', None)
 if INDEX_SEARCH_NAMES is None:
     INDEX_SEARCH_NAMES = True
-    for database in settings.DATABASES.values():
+    for database in list(settings.DATABASES.values()):
         if 'mysql' in database['ENGINE'].lower():
             INDEX_SEARCH_NAMES = False

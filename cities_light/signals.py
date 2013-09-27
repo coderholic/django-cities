@@ -38,7 +38,7 @@ from __future__ import unicode_literals
 
 import django.dispatch
 
-from exceptions import *
+from .exceptions import *
 
 __all__ = ['city_items_pre_import', 'region_items_pre_import',
     'filter_non_cities']

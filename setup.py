@@ -3,10 +3,6 @@ import sys
 import os
 
 
-extra = {}
-if sys.version_info >= (3,):
-    extra['use_2to3'] = True
-
 # Utility function to read the README file.
 # Used for the long_description. It's nice, because now 1) we have a top level
 # README file and 2) it's easier to type in the README file than to put a raw
@@ -49,6 +45,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    **extra
 )
 
