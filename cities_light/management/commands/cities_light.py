@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import os
+import time
 import os.path
 import logging
 import optparse
@@ -82,6 +83,17 @@ It is possible to force the import of files which weren't downloaded using the
         ),
     )
 
+    def _travis(self):
+        if not os.environ.get('TRAVIS', False):
+            return
+
+        now = time.time()
+        last_output = getattr(self, '_travis_last_output', None)
+
+        if last_output is None or now - last_output >= 530:
+            print('Do not kill me !')
+            self._travis_last_output = now
+
     @transaction.commit_on_success
     def handle(self, *args, **options):
         if not os.path.exists(DATA_DIR):
@@ -154,6 +166,8 @@ It is possible to force the import of files which weren't downloaded using the
 
                     i += 1
                     progress.update(i)
+
+                    self._travis()
 
                 progress.finish()
 
