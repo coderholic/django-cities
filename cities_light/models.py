@@ -21,7 +21,7 @@ from .settings import *
 __all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search',
     'to_ascii']
 
-ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
+ALPHA_REGEXP = re.compile(b'[\W_]+')
 
 CONTINENT_CHOICES = (
     ('OC', _('Oceania')),
