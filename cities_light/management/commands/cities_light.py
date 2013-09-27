@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import os
 import os.path
 import logging
@@ -15,7 +17,7 @@ import progressbar
 
 from django.core.management.base import BaseCommand
 from django.db import transaction, reset_queries
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 from ...exceptions import *
 from ...signals import *
@@ -204,7 +206,7 @@ It is possible to force the import of files which weren't downloaded using the
                 return
             country = Country(code2=items[0])
 
-        country.name = force_unicode(items[4])
+        country.name = force_text(items[4])
         country.code3 = items[1]
         country.continent = items[8]
         country.tld = items[9][1:]  # strip the leading dot
@@ -218,7 +220,7 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
-        items = [force_unicode(x) for x in items]
+        items = [force_text(x) for x in items]
 
         name = items[1]
         if not items[1]:
@@ -270,7 +272,7 @@ It is possible to force the import of files which weren't downloaded using the
                 raise
 
         try:
-            kwargs = dict(name=force_unicode(items[1]),
+            kwargs = dict(name=force_text(items[1]),
                 country_id=self._get_country_id(items[8]))
         except Country.DoesNotExist:
             if self.noinsert:
@@ -283,7 +285,7 @@ It is possible to force the import of files which weren't downloaded using the
         except City.DoesNotExist:
             try:
                 city = City.objects.get(geoname_id=items[0])
-                city.name = force_unicode(items[1])
+                city.name = force_text(items[1])
                 city.country_id = self._get_country_id(items[8])
             except City.DoesNotExist:
                 if self.noinsert:
@@ -314,7 +316,7 @@ It is possible to force the import of files which weren't downloaded using the
             save = True
 
         if not TRANSLATION_SOURCES and not city.alternate_names:
-            city.alternate_names = force_unicode(items[3])
+            city.alternate_names = force_text(items[3])
             save = True
 
         if not city.geoname_id:
@@ -399,7 +401,7 @@ It is possible to force the import of files which weren't downloaded using the
                         continue
 
                     for name in names:
-                        name = force_unicode(name)
+                        name = force_text(name)
                         if name == model.name:
                             continue
 
