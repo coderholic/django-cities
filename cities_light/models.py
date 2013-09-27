@@ -183,6 +183,8 @@ class City(Base):
 
     region = models.ForeignKey(Region, blank=True, null=True)
     country = models.ForeignKey(Country)
+    population = models.BigIntegerField(null=True, blank=True, db_index=True)
+    feature_code = models.CharField(max_length=10, null=True, blank=True, db_index=True)
 
     class Meta:
         unique_together = (('region', 'name'),)

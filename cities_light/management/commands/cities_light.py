@@ -329,6 +329,14 @@ It is possible to force the import of files which weren't downloaded using the
             city.longitude = items[5]
             save = True
 
+        if not city.population:
+            city.population = items[14]
+            save = True
+
+        if not city.feature_code:
+            city.feature_code = items[7]
+            save = True
+
         if not TRANSLATION_SOURCES and not city.alternate_names:
             city.alternate_names = force_text(items[3])
             save = True
