@@ -2,6 +2,7 @@
 
     - Added Python 3 support using
       https://docs.djangoproject.com/en/dev/topics/python3/
+    - Added featurecode and population, contributed by Chris Vigelius (@chrisv2)
     - Fixed ascii slug generation based on advice by Max Arnolds
     - Import of cities1000.zip now tested automatically on sqlite, postgres and
       mysql (python2 only) by travis.
