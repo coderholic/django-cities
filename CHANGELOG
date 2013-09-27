@@ -7,6 +7,11 @@
     - Import of cities1000.zip now tested automatically on sqlite, postgres and
       mysql (python2 only) by travis.
 
+Upgrade instructions:
+
+    pip install -U django-cities-light
+    ./manage.py migrate cities_light
+
 2013-07-30 2.0.9
 
 Awesome contributions were merged:
