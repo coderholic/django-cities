@@ -49,7 +49,7 @@ def to_search(value):
     For example, 'Paris Texas' would become 'paristexas'.
     """
 
-    return ALPHA_REGEXP.sub('', to_ascii(value)).lower()
+    return ALPHA_REGEXP.sub(b'', to_ascii(value)).lower()
 
 
 def set_name_ascii(sender, instance=None, **kwargs):
