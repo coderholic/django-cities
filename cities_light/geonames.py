@@ -80,7 +80,7 @@ class Geonames(object):
         line = True
 
         for line in file:
-            if six.PY2:
+            if not six.PY3:
                 # in python3 this is already an unicode
                 line = line.decode('utf8')
 
