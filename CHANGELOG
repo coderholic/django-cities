@@ -1,7 +1,10 @@
-2013-07-30 2.1.0
+2013-09-27 2.1.0
 
     - Added Python 3 support using
       https://docs.djangoproject.com/en/dev/topics/python3/
+    - Fixed ascii slug generation based on advice by Max Arnolds
+    - Import of cities1000.zip now tested automatically on sqlite, postgres and
+      mysql (python2 only) by travis.
 
 2013-07-30 2.0.9
 

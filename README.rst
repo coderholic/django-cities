@@ -22,6 +22,8 @@ database, you should use
 `django-cities
 <https://github.com/coderholic/django-cities>`_.
 
+Supports python3.
+
 Upgrade
 -------
 
