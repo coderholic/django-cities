@@ -24,7 +24,7 @@ setup(
     license = 'MIT',
     keywords = 'django cities countries postal codes',
     install_requires=[
-        'django',
+        'six',
         'progressbar==2.3dev',
         'unidecode>=0.04.13',
         'django_autoslug',
