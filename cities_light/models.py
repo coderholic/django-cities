@@ -117,7 +117,6 @@ class Country(Base):
 signals.pre_save.connect(set_name_ascii, sender=Country)
 
 
-@python_2_unicode_compatible
 class Region(Base):
     """
     Region/State model.
@@ -164,7 +163,6 @@ class ToSearchTextField(models.TextField):
         return (field_class, args, kwargs)
 
 
-@python_2_unicode_compatible
 class City(Base):
     """
     City model.
