@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import os
+import datetime
 import time
 import os.path
 import logging
@@ -100,6 +101,7 @@ It is possible to force the import of files which weren't downloaded using the
             self.logger.info('Creating %s' % DATA_DIR)
             os.mkdir(DATA_DIR)
 
+        install_file_path = os.path.join(DATA_DIR, 'install_datetime')
         translation_hack_path = os.path.join(DATA_DIR, 'translation_hack')
 
         self.noinsert = options.get('noinsert', False)
@@ -131,6 +133,13 @@ It is possible to force the import of files which weren't downloaded using the
                 for f in options['force_import']:
                     if f in destination_file_name or f in url:
                         force_import = True
+
+            if not os.path.exists(install_file_path):
+                self.logger.info('Forced import of %s because data do not seem '
+                        'to have installed successfuly yet, note that this is '
+                        'equivalent to --force-import-all.' %
+                        destination_file_name)
+                force_import = True
 
             if downloaded or force_import:
                 self.logger.info('Importing %s' % destination_file_name)
@@ -182,6 +191,9 @@ It is possible to force the import of files which weren't downloaded using the
 
         self.logger.info('Importing parsed translation in the database')
         self.translation_import()
+
+        with open(install_file_path, 'w+') as f:
+            pickle.dump(datetime.datetime.now(), f)
 
     def _get_country_id(self, code2):
         '''
