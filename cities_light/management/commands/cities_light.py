@@ -192,7 +192,7 @@ It is possible to force the import of files which weren't downloaded using the
         self.logger.info('Importing parsed translation in the database')
         self.translation_import()
 
-        with open(install_file_path, 'w+') as f:
+        with open(install_file_path, 'wb+') as f:
             pickle.dump(datetime.datetime.now(), f)
 
     def _get_country_id(self, code2):
