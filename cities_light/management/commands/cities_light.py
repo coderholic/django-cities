@@ -17,7 +17,7 @@ except ImportError:
 import progressbar
 
 from django.core.management.base import BaseCommand
-from django.db import transaction, reset_queries
+from django.db import transaction, reset_queries, IntegrityError
 from django.utils.encoding import force_text
 
 from ...exceptions import *
@@ -226,7 +226,8 @@ It is possible to force the import of files which weren't downloaded using the
         country.tld = items[9][1:]  # strip the leading dot
         if items[16]:
             country.geoname_id = items[16]
-        country.save()
+
+        self.save(country)
 
     def region_import(self, items):
         try:
@@ -269,7 +270,7 @@ It is possible to force the import of files which weren't downloaded using the
             region.name_ascii = items[2]
 
         region.geoname_id = items[3]
-        region.save()
+        self.save(region)
 
     def city_import(self, items):
         try:
@@ -347,7 +348,7 @@ It is possible to force the import of files which weren't downloaded using the
             save = True
 
         if save:
-            city.save()
+            self.save(city)
 
     def translation_parse(self, items):
         if not hasattr(self, 'translation_data'):
@@ -440,3 +441,9 @@ It is possible to force the import of files which weren't downloaded using the
 
                 i += 1
                 progress.update(i)
+
+    def save(self, model):
+        try:
+            model.save()
+        except IntegrityError as e:
+            self.logger.warning('Saving %s failed: %s' % (model, e))
