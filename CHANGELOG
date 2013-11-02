@@ -1,3 +1,8 @@
+2013-10-02 2.1.2
+
+    - Expect IntegrityErrors as they seem to be caused only by duplicates. A
+      non-blocking warning is logged instead.
+
 2013-09-30 2.1.1
 
     - Do not decorate Base subclasses with @python_2_unicode_compatible. See
