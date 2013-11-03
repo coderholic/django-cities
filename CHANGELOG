@@ -1,3 +1,7 @@
+2013-10-03 2.1.5
+
+    - Removed dead decorator.
+
 2013-10-02 2.1.4
 
     - Restored Python3 support broken by 2.1.2
