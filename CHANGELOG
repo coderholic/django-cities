@@ -1,3 +1,8 @@
+2013-10-02 2.1.4
+
+    - Restored Python3 support broken by 2.1.2
+    - PostgreSQL support for feature introduced in 2.1.2.
+
 2013-10-02 2.1.3
 
     - Automatically force import unless cities_light command has completed
