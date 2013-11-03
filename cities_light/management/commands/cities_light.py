@@ -17,6 +17,7 @@ except ImportError:
 
 import progressbar
 
+from django.db import transaction
 from django.core.management.base import BaseCommand
 from django.db import transaction, reset_queries, IntegrityError
 from django.utils.encoding import force_text
@@ -455,7 +456,12 @@ It is possible to force the import of files which weren't downloaded using the
                 progress.update(i)
 
     def save(self, model):
+        sid = transaction.savepoint()
+
         try:
             model.save()
         except IntegrityError as e:
             self.logger.warning('Saving %s failed: %s' % (model, e))
+            transaction.savepoint_rollback(sid)
+        else:
+            transaction.savepoint_commit(sid)
