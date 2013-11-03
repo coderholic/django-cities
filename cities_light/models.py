@@ -98,7 +98,6 @@ class Base(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class Country(Base):
     """
     Country model.
