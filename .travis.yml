@@ -9,6 +9,7 @@ python:
 env:
   - DJANGO=1.4.2
   - DJANGO=1.5
+  - DJANGO=1.6
 install:
   - pip install -q Django==$DJANGO --use-mirrors
   - pip install pep8 --use-mirrors
