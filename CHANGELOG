@@ -1,3 +1,7 @@
+2013-11-23 2.1.6
+
+    - #34: Greg Gaughan fixed model ordering.
+
 2013-10-03 2.1.5
 
     - Removed dead decorator.
