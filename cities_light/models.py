@@ -111,7 +111,7 @@ class Country(Base):
         choices=CONTINENT_CHOICES)
     tld = models.CharField(max_length=5, blank=True, db_index=True)
 
-    class Meta:
+    class Meta(Base.Meta):
         verbose_name_plural = _('countries')
 signals.pre_save.connect(set_name_ascii, sender=Country)
 
@@ -128,7 +128,7 @@ class Region(Base):
 
     country = models.ForeignKey(Country)
 
-    class Meta:
+    class Meta(Base.Meta):
         unique_together = (('country', 'name'), )
         verbose_name = _('region/state')
         verbose_name_plural = _('regions/states')
@@ -184,7 +184,7 @@ class City(Base):
     feature_code = models.CharField(max_length=10, null=True, blank=True,
                                     db_index=True)
 
-    class Meta:
+    class Meta(Base.Meta):
         unique_together = (('region', 'name'),)
         verbose_name_plural = _('cities')
 
