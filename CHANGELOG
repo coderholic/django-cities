@@ -1,3 +1,7 @@
+2013-12-12 2.1.8
+
+    - Bugfix: a django 1.7 migration from my WC made it in 2.1.7.
+
 2013-12-12 2.1.7
 
     - #37: Richard Barran fixed translation import progress bar.
