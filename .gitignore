@@ -3,3 +3,6 @@
 *.egg-info
 build
 dist
+
+# Ignore the downloaded data.
+cities_light/data
