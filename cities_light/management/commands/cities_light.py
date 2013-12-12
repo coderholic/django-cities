@@ -455,6 +455,8 @@ It is possible to force the import of files which weren't downloaded using the
                 i += 1
                 progress.update(i)
 
+        progress.finish()
+
     def save(self, model):
         sid = transaction.savepoint()
 
