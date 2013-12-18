@@ -107,6 +107,8 @@ class GeoAltNameManager(models.GeoManager):
         Extra keywords can be provided to further filter the names.
         """
         try: return self.get(is_preferred=True, **kwargs)
+        except self.model.MultipleObjectsReturned:
+            return self.filter(is_preferred=True, **kwargs)[0]
         except self.model.DoesNotExist:
             try: return self.filter(**kwargs)[0]
             except IndexError: return default
