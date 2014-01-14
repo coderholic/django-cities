@@ -18,7 +18,11 @@ include::
 And that's all !
 """
 
-from django.conf.urls.defaults import patterns, url
+try:
+    from django.conf.urls.defaults import patterns, url
+except ImportError:
+    from django.conf.urls import patterns, url
+
 from django.core import urlresolvers
 
 from djangorestframework.views import ModelView, ListModelView
