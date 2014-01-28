@@ -36,6 +36,10 @@ Install django-cities-light::
 
     pip install django-cities-light
 
+**Or** with pip >= 1.4::
+
+    pip install --allow-external --allow-unverified progressbar django-cities-light
+
 Or the development version::
 
     pip install -e git+git@github.com:yourlabs/django-cities-light.git#egg=cities_light
