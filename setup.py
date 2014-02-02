@@ -1,6 +1,8 @@
 from setuptools import setup, find_packages
+import shutil
 import sys
 import os
+import os.path
 
 
 # Utility function to read the README file.
@@ -9,6 +11,18 @@ import os
 # string in below ...
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
+
+if 'install' in sys.argv:
+    try:
+        import django
+    except ImportError:
+        pass
+    else:
+        if django.VERSION > (1,6):
+            shutil.rmtree(os.path.join(os.path.dirname(__file__),
+                                       'cities_light', 'migrations'))
+
 
 setup(
     name='django-cities-light',

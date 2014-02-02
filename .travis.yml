@@ -10,6 +10,7 @@ env:
   - REQ="django<1.5"
   - REQ="django<1.6"
   - REQ="django<1.7"
+  - REQ="-e git+https://github.com/django/django.git#egg=django"
 install:
   - pip install -q Django==$DJANGO --use-mirrors
   - pip install pep8 --use-mirrors
