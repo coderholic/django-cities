@@ -124,8 +124,8 @@ def create_geo_alt_names(geo_type):
                 'geo': models.ForeignKey(geo_type,                              # Related geo type
                     related_name = 'alt_names_' + locale),
                 'name': models.CharField(max_length=200, db_index=True),        # Alternate name
-                'is_preferred': models.BooleanField(),                          # True if this alternate name is an official / preferred name
-                'is_short': models.BooleanField(),                              # True if this is a short name like 'California' for 'State of California'
+                'is_preferred': models.BooleanField(default=False),             # True if this alternate name is an official / preferred name
+                'is_short': models.BooleanField(default=False),                 # True if this is a short name like 'California' for 'State of California'
                 'objects': GeoAltNameManager(),
                 '__unicode__': lambda self: force_unicode(self.name),
             },
