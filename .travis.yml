@@ -12,7 +12,7 @@ env:
   - REQ="django<1.7"
   - REQ="-e git+https://github.com/django/django.git#egg=django"
 install:
-  - pip install -q Django==$DJANGO --use-mirrors
+  - pip install -q $REQ --use-mirrors
   - pip install pep8 --use-mirrors
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - python setup.py install
