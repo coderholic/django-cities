@@ -309,6 +309,11 @@ It is possible to force the import of files which weren't downloaded using the
                 raise
 
         try:
+            kwargs['region_id'] = self._get_region_id(items[8], items[10])
+        except Region.DoesNotExist:
+            pass
+
+        try:
             city = City.objects.get(**kwargs)
         except City.DoesNotExist:
             try:
@@ -322,13 +327,9 @@ It is possible to force the import of files which weren't downloaded using the
                 city = City(**kwargs)
 
         save = False
-        if not city.region_id:
-            try:
-                city.region_id = self._get_region_id(items[8], items[10])
-            except Region.DoesNotExist:
-                pass
-            else:
-                save = True
+        if not city.region_id and 'region_id' in kwargs:
+            city.region_id = kwargs['region_id']
+            save = True
 
         if not city.name_ascii:
             # useful for cities with chinese names
