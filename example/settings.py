@@ -9,9 +9,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'HOST': 'localhost',
-        'NAME': 'geomium',
-        'USER': 'geomium',
-        'PASSWORD': 'ge0m1um',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
         'OPTIONS': {
             'autocommit': True,
         }
@@ -28,10 +28,38 @@ SECRET_KEY = 'YOUR_SECRET_KEY'
 MIDDLEWARE_CLASSES = (
 )
 
-ROOT_URLCONF = 'examples.urls'
+ROOT_URLCONF = 'urls'
 
 INSTALLED_APPS = (
     'cities',
 )
 
-CITIES_POSTAL_CODES = ['GB']
+CITIES_POSTAL_CODES = ['ALL']
+
+CITIES_PLUGINS = [
+    'cities.plugin.postal_code_ca.Plugin',  # Canada postal codes need region codes remapped to match geonames
+]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'log_to_stdout': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            },
+        },
+    'loggers': {
+        'cities': {
+            'handlers': ['log_to_stdout'],
+            'level': 'INFO',
+            'propagate': True,
+        }
+    }
+}

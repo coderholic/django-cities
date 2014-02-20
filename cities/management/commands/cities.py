@@ -425,7 +425,7 @@ class Command(BaseCommand):
             if not self.call_hook('postal_code_pre', items): continue
 
             country_code = items[0]
-            if country_code not in settings.postal_codes: continue
+            if country_code not in settings.postal_codes and 'ALL' not in settings.postal_codes: continue
 
             # Find country
             code = items[1]

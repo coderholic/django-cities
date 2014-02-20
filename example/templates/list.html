@@ -15,4 +15,20 @@
         <li><a href="/{{ object.get_absolute_url }}">{{ object.name }}</a></li>
         {% endfor %}
     </ul>
+
+    {% if place.location %}
+    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ place.location.y }},{{ place.location.x }}&zoom=9&size=640x200&sensor=false"/>
+    {% endif %}
+    {% if nearby %}
+        <h2>Nearby Places</h2>
+        {% for near in nearby %}
+        <p><a href="/{{ near.get_absolute_url }}">{{ near.name }}</a> ({{ near.distance.mi }} miles)</p>
+        {% endfor %}
+    {% endif %}
+    {% if postal %}
+        <h2>Postal Codes</h2>
+        {% for near in postal %}
+        <p>{{ near.code }} {{ near.name }} ({{ near.distance.mi }} miles)</p>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

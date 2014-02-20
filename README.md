@@ -49,6 +49,7 @@ CITIES_FILES = {
 CITIES_LOCALES = ['en', 'und', 'LANGUAGES']
 
 # Postal codes will be imported for all ISO 3166-1 alpha-2 country codes below.
+# You can also specificy 'ALL' to import all postal codes.
 # See cities.conf for a full list of country codes.
 # See download.geonames.org/export/dump/countryInfo.txt
 CITIES_POSTAL_CODES = ['US', 'CA']
@@ -87,13 +88,9 @@ This repostitory contains an example project which lets you browse the place hie
 # Use alternate names model to get Vancouver in Japanese
 >>> geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
 
-# Get region objects for US postal code:
->>> Region.objects.filter(postal_codes_US__code='90210')
-[<Region: California, United States>]
-
->>> Subregion.objects.filter(postal_codes_US__code='90210')
-[<Subregion: Los Angeles County, California, United States>]
-
+# Get zip codes near Mountain View, CA
+>>> PostalCode.objects.distance(City.objects.get(name='Mountain View', region__name='California').location).order_by('distance')[:5]
+[<PostalCode: 94040>, <PostalCode: 94041>, <PostalCode: 94043>, <PostalCode: 94024>, <PostalCode: 94022>]
 ```
 
 ### Notes

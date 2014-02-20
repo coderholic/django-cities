@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from django.conf.urls import patterns
 from django.views.generic import ListView
-from cities.models import Country, Region, City, District
+from cities.models import Country, Region, City, District, PostalCode
 
 class PlaceListView(ListView):
     template_name = "list.html"
@@ -29,6 +29,10 @@ class PlaceListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(PlaceListView, self).get_context_data(**kwargs)
         context['place'] = self.place
+
+        if hasattr(self.place, 'location'):
+            context['nearby'] = City.objects.distance(self.place.location).exclude(id=self.place.id).order_by('distance')[:10]
+            context['postal'] = PostalCode.objects.distance(self.place.location).order_by('distance')[:10]
         return context
 
 urlpatterns = patterns('',
