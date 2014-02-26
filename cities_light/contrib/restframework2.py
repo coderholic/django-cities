@@ -30,7 +30,7 @@ from ..models import Country, Region, City
 
 class CitySerializer(HyperlinkedModelSerializer):
     """
-    ModelResource for City.
+    HyperlinkedModelSerializer for City.
     """
     url = relations.HyperlinkedIdentityField(view_name='cities-light-api-region-detail')
     country = relations.HyperlinkedRelatedField(view_name='cities-light-api-country-detail')
@@ -41,7 +41,7 @@ class CitySerializer(HyperlinkedModelSerializer):
 
 class RegionSerializer(HyperlinkedModelSerializer):
     """
-    ModelResource for Region.
+    HyperlinkedModelSerializer for Region.
     """
     url = relations.HyperlinkedIdentityField(view_name='cities-light-api-region-detail')
     country = relations.HyperlinkedRelatedField(view_name='cities-light-api-country-detail')
@@ -49,10 +49,11 @@ class RegionSerializer(HyperlinkedModelSerializer):
         model = Region
 
 
-class CountrySerializer(ModelSerializer):
+class CountrySerializer(HyperlinkedModelSerializer):
     """
-    ModelResource for Country.
+    HyperlinkedModelSerializer for Country.
     """
+    url = relations.HyperlinkedIdentityField(view_name='cities-light-api-country-detail')
     class Meta:
         model = Country
 
