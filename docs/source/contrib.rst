@@ -23,12 +23,12 @@ include::
 
 This will configure six endpoints::
 
-	^cities/$ [name='cities-light-api-city-list']
-	^cities/(?P<pk>[^/]+)/$ [name='cities-light-api-city-detail']
-	^countries/$ [name='cities-light-api-country-list']
-	^countries/(?P<pk>[^/]+)/$ [name='cities-light-api-country-detail']
-	^regions/$ [name='cities-light-api-region-list']
-	^regions/(?P<pk>[^/]+)/$ [name='cities-light-api-region-detail'] 
+    ^cities/$ [name='cities-light-api-city-list']
+    ^cities/(?P<pk>[^/]+)/$ [name='cities-light-api-city-detail']
+    ^countries/$ [name='cities-light-api-country-list']
+    ^countries/(?P<pk>[^/]+)/$ [name='cities-light-api-country-detail']
+    ^regions/$ [name='cities-light-api-region-list']
+    ^regions/(?P<pk>[^/]+)/$ [name='cities-light-api-region-detail'] 
 
 All list endpoints support search with a query parameter q::
     /cities/?q=london
