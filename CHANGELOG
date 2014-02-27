@@ -1,3 +1,12 @@
+2014-02-24 2.2.13
+
+    - Fix #46: south migrations were not installed with django 1.6.
+
+2014-02-24 2.2.12
+
+    - Fixed #43: load cities with the same name from different
+      regions, by @dpoirier
+ 
 2014-02-02 2.1.11
 
     - Django 1.7 support: remove migrations in pre-install.

@@ -26,7 +26,7 @@ if 'install' in sys.argv:
 
 setup(
     name='django-cities-light',
-    version='2.1.12',
+    version='2.1.13',
     description='Simple alternative to django-cities',
     author='James Pic',
     author_email='jamespic@gmail.com',
