@@ -19,7 +19,7 @@ if 'install' in sys.argv:
     except ImportError:
         pass
     else:
-        if django.VERSION > (1,6):
+        if django.VERSION >= (1,7):
             shutil.rmtree(os.path.join(os.path.dirname(__file__),
                                        'cities_light', 'migrations'))
 
