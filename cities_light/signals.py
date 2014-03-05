@@ -29,6 +29,16 @@ region_items_pre_import
         cities_light.signals.region_items_pre_import.connect(
             filter_region_import)
 
+country_items_pre_import
+    Same as region_items_pre_import/city_items_pre_import, for example:
+
+        def filter_country_import(sender, items, **args):
+            if items[0].split('.')[0] not in ('FR', 'US', 'BE'):
+                raise cities_light.InvalidItems()
+
+        cities_light.signals.country_items_pre_import.connect(
+            filter_country_import)
+
 filter_non_cities()
     By default, this reciever is connected to city_items_pre_import, it raises
     InvalidItems if the row doesn't have PPL in its features (it's not a
@@ -41,10 +51,11 @@ import django.dispatch
 from .exceptions import *
 
 __all__ = ['city_items_pre_import', 'region_items_pre_import',
-    'filter_non_cities']
+           'country_items_pre_import', 'filter_non_cities']
 
 city_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 region_items_pre_import = django.dispatch.Signal(providing_args=['items'])
+country_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 
 
 def filter_non_cities(sender, items, **kwargs):
