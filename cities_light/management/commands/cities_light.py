@@ -227,6 +227,10 @@ It is possible to force the import of files which weren't downloaded using the
 
     def country_import(self, items):
         try:
+            country_items_pre_import.send(sender=self, items=items)
+        except InvalidItems:
+            return
+        try:
             country = Country.objects.get(code2=items[0])
         except Country.DoesNotExist:
             if self.noinsert:
