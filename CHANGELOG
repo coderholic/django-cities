@@ -1,3 +1,10 @@
+2014-03-06 2.3.0
+
+    - Fix #50: added country_items_pre_import singal by @mauricioabreu
+
+    Apparently I've slightly messed up version numbers so we're starting over
+    at 2.3.0.
+
 2014-02-24 2.2.13
 
     - Fix #46: south migrations were not installed with django 1.6.
