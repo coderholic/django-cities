@@ -15,33 +15,115 @@ url_bases = {
 }
 
 files = {
-    'country':      {
+    'country': {
         'filename': 'countryInfo.txt',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+        'urls': [url_bases['geonames']['dump']+'{filename}', ],
+        'fields': [
+            'code',
+            'code3',
+            'codeNum',
+            'fips',
+            'name',
+            'capital',
+            'area',
+            'population',
+            'continent',
+            'tld',
+            'currencyCode',
+            'currencyName',
+            'phone',
+            'postalCodeFormat',
+            'postalCodeRegex',
+            'languages',
+            'geonameid',
+            'neighbours',
+            'equivalentFips'
+        ]
     },
     'region':       {
         'filename': 'admin1CodesASCII.txt',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ],
+        'fields': [
+            'code',
+            'name',
+            'asciiName',
+            'geonameid',
+        ]
     },
     'subregion':    {
         'filename': 'admin2Codes.txt',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ],
+        'fields': [
+            'code',
+            'name',
+            'asciiName',
+            'geonameid',
+        ]
     },
     'city':         {
         'filename': 'cities5000.zip',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ],
+        'fields': [
+            'geonameid',
+            'name',
+            'asciiName',
+            'alternateNames',
+            'latitude',
+            'longitude',
+            'featureClass',
+            'featureCode',
+            'countryCode',
+            'cc2',
+            'admin1Code',
+            'admin2Code',
+            'admin3Code',
+            'admin4Code',
+            'population',
+            'elevation',
+            'gtopo30',
+            'timezone',
+            'modificationDate'
+        ]
     },
     'hierarchy':    {
         'filename': 'hierarchy.zip',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ],
+        'fields': [
+            'parent',
+            'child'
+        ]
     },
     'alt_name':     {
         'filename': 'alternateNames.zip',
-        'urls':     [url_bases['geonames']['dump']+'{filename}', ]
+        'urls':     [url_bases['geonames']['dump']+'{filename}', ],
+        'fields': [
+            'nameid',
+            'geonameid',
+            'language',
+            'name',
+            'isPreferred',
+            'isShort',
+            'isColloquial',
+            'isHistoric',
+        ]
     },
     'postal_code':  {
         'filename': 'allCountries.zip',
-        'urls':     [url_bases['geonames']['zip']+'{filename}', ]
+        'urls':     [url_bases['geonames']['zip']+'{filename}', ],
+        'fields': [
+            'countryCode',
+            'postalCode',
+            'placeName',
+            'admin1Name',
+            'admin1Code',
+            'admin2Name',
+            'admin2Code',
+            'admin3Name',
+            'admin3Code',
+            'latitude',
+            'longitude',
+            'accuracy',
+        ]
     }
 }
 

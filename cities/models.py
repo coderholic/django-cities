@@ -2,16 +2,16 @@ from django.utils.encoding import force_unicode
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
 from conf import settings
-from util import create_model, un_camel
 
 __all__ = [
         'Point', 'Country', 'Region', 'Subregion',
-        'City', 'District', 'PostalCode', 'geo_alt_names', 
+        'City', 'District', 'PostalCode', 'AlternativeName', 
 ]
 
 class Place(models.Model):
     name = models.CharField(max_length=200, db_index=True, verbose_name="ascii name")
     slug = models.CharField(max_length=200)
+    alt_names = models.ManyToManyField('AlternativeName')
 
     objects = models.GeoManager()
 
@@ -28,11 +28,22 @@ class Place(models.Model):
     def get_absolute_url(self):
         return "/".join([place.slug for place in self.hierarchy])
 
+    def __unicode__(self):
+        return self.name
+
 class Country(Place):
     code = models.CharField(max_length=2, db_index=True)
+    code3 = models.CharField(max_length=3, db_index=True)
     population = models.IntegerField()
+    area = models.IntegerField(null=True)
+    currency = models.CharField(max_length=3, null=True)
+    currency_name = models.CharField(max_length=50, null=True)
+    languages = models.CharField(max_length=50, null=True)
+    phone = models.CharField(max_length=20)
     continent = models.CharField(max_length=2)
     tld = models.CharField(max_length=5)
+    capital = models.CharField(max_length=100)
+    neighbours = models.ManyToManyField("self")
 
     class Meta:
         ordering = ['name']
@@ -45,46 +56,40 @@ class Country(Place):
     def __unicode__(self):
         return force_unicode(self.name)
 
-class RegionBase(Place):
+class Region(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
     country = models.ForeignKey(Country)
 
-    levels = ['region', 'subregion']
-
-    class Meta:
-        abstract = True
-
-    def __unicode__(self):
-        return u'{0}, {1}'.format(force_unicode(self.name_std), self.parent)
-
-class Region(RegionBase):
     @property
     def parent(self):
         return self.country
 
-class Subregion(RegionBase):
+    def full_code(self):
+        return ".".join([self.parent.code, self.code])
+
+class Subregion(Place):
+    name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
+    code = models.CharField(max_length=200, db_index=True)
     region = models.ForeignKey(Region)
 
     @property
     def parent(self):
         return self.region
 
-class CityBase(Place):
+    def full_code(self):
+        return ".".join([self.parent.parent.code, self.parent.code, self.code])
+
+class City(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     location = models.PointField()
     population = models.IntegerField()
-
-    class Meta:
-        abstract = True 
-
-    def __unicode__(self):
-        return u'{0}, {1}'.format(force_unicode(self.name_std), self.parent)
-
-class City(CityBase):
     region = models.ForeignKey(Region, null=True, blank=True)
     subregion = models.ForeignKey(Subregion, null=True, blank=True)
     country = models.ForeignKey(Country)
+    elevation = models.IntegerField(null=True)
+    kind = models.CharField(max_length=10) # http://www.geonames.org/export/codes.html
+    timezone = models.CharField(max_length=40) 
 
     class Meta:
         verbose_name_plural = "cities"
@@ -93,55 +98,25 @@ class City(CityBase):
     def parent(self):
         return self.region
 
-class District(CityBase):
+class District(Place):
+    name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
+    location = models.PointField()
+    population = models.IntegerField()
     city = models.ForeignKey(City)
 
     @property
     def parent(self):
         return self.city
 
-class GeoAltNameManager(models.GeoManager):
-    def get_preferred(self, default=None, **kwargs):
-        """
-        If multiple names are available, get the preferred, otherwise return any existing or the default.
-        Extra keywords can be provided to further filter the names.
-        """
-        try: return self.get(is_preferred=True, **kwargs)
-        except self.model.MultipleObjectsReturned:
-            return self.filter(is_preferred=True, **kwargs)[0]
-        except self.model.DoesNotExist:
-            try: return self.filter(**kwargs)[0]
-            except IndexError: return default
+class AlternativeName(models.Model):
+    name = models.CharField(max_length=256)
+    language = models.CharField(max_length=100)
+    is_preferred = models.BooleanField(default=False)
+    is_short = models.BooleanField(default=False)
+    is_colloquial = models.BooleanField(default=False)
 
-def create_geo_alt_names(geo_type):
-    geo_alt_names = {}
-    for locale in settings.locales:
-        name_format = geo_type.__name__ + '{0}' + locale.capitalize()
-        name = name_format.format('AltName')
-        geo_alt_names[locale] = create_model(
-            name = name,
-            fields = {
-                'geo': models.ForeignKey(geo_type,                              # Related geo type
-                    related_name = 'alt_names_' + locale),
-                'name': models.CharField(max_length=200, db_index=True),        # Alternate name
-                'is_preferred': models.BooleanField(default=False),             # True if this alternate name is an official / preferred name
-                'is_short': models.BooleanField(default=False),                 # True if this is a short name like 'California' for 'State of California'
-                'objects': GeoAltNameManager(),
-                '__unicode__': lambda self: force_unicode(self.name),
-            },
-            app_label = 'cities',
-            module = 'cities.models',
-            options = {
-                'db_table': 'cities_' + un_camel(name),
-                'verbose_name': un_camel(name).replace('_', ' '),
-                'verbose_name_plural': un_camel(name_format.format('AltNames')).replace('_', ' '),
-            },
-        )
-    return geo_alt_names
-
-geo_alt_names = {}
-for type in [Country, Region, Subregion, City, District]:
-    geo_alt_names[type] = create_geo_alt_names(type)
+    def __unicode__(self):
+        return "%s (%s)" % (self.name, self.language)
 
 class PostalCode(Place):
     code = models.CharField(max_length=20)
@@ -158,15 +133,13 @@ class PostalCode(Place):
 
     @property
     def parent(self):
-        for parent_name in reversed(['country'] + RegionBase.levels):
-            parent_obj = getattr(self, parent_name)
-            if parent_obj: return parent_obj
-        return None
+        return self.country
 
     @property
     def name_full(self):
         """Get full name including hierarchy"""
         return u', '.join(reversed(self.names)) 
+
     @property
     def names(self):
         """Get a hierarchy of non-null names, root first"""

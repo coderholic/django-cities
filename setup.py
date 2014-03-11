@@ -10,7 +10,7 @@ def read(fname):
 
 setup(
     name='django-cities',
-    version='0.3',
+    version='0.4',
     description='Place models and worldwide place data for Django',
     author='Ben Dowling',
     author_email='ben.m.dowling@gmail.com',
@@ -22,7 +22,7 @@ setup(
     license = "MIT",
     keywords = "django cities countries regions postal codes geonames",
     classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Framework :: Django",
     "Intended Audience :: Developers",

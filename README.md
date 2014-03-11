@@ -9,6 +9,26 @@ Authored by [Ben Dowling](http://www.coderholic.com), and some great [contributo
 
 ----
 
+### 0.4 Release notes
+
+** This release of django-cities is not backwards compatible with previous versions **
+
+The country model has some new fields:
+ - elevation
+ - area
+ - currency
+ - currency_name
+ - languages
+ - neighbours
+ - capital
+ - phone
+
+Alternative name support has been completely overhauled. The code and usage should now be much simpler. See the updated examples below.
+
+The code field no longer contains the parent code. Eg. the code for California, US is now "CA". In the previous release it was "US.CA".
+
+These changes mean that upgrading from a previous version isn't simple. All of the place IDs are the same though, so if you do want to upgrade it should be possible.
+
 ### Requirements
 
 Your database must support spatial queries, see the [GeoDjango documentation](https://docs.djangoproject.com/en/dev/ref/contrib/gis/) for details and setup instructions.
@@ -45,12 +65,12 @@ CITIES_FILES = {
 # Localized names will be imported for all ISO 639-1 locale codes below.
 # 'und' is undetermined language data (most alternate names are missing a lang tag).
 # See download.geonames.org/export/dump/iso-languagecodes.txt
-# 'LANGUAGES' will match your language settings
+# 'LANGUAGES' will match your language settings, and 'ALL' will install everything
 CITIES_LOCALES = ['en', 'und', 'LANGUAGES']
 
 # Postal codes will be imported for all ISO 3166-1 alpha-2 country codes below.
 # You can also specificy 'ALL' to import all postal codes.
-# See cities.conf for a full list of country codes.
+# See cities.conf for a full list of country codes. 'ALL' will install everything.
 # See download.geonames.org/export/dump/countryInfo.txt
 CITIES_POSTAL_CODES = ['US', 'CA']
 
@@ -79,14 +99,23 @@ This repostitory contains an example project which lets you browse the place hie
 >>> nearest = City.objects.distance(london.location).exclude(id=london.id).order_by('distance')[:5]
 
 # All cities in a state or county
->>> City.objects.filter(country__name="United States", region__name="Texas")
+>>> City.objects.filter(country__code="US", region__code="TX")
 >>> City.objects.filter(country__name="United States", subregion__name="Orange County")
 
 # Get all countries in Japanese preferring official names if available, fallback on ASCII names:
 >>> [country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
 
-# Use alternate names model to get Vancouver in Japanese
->>> geo_alt_names[City]['ja'].objects.get_preferred(geo__name='Vancouver', default='Vancouver')
+# Alternate names for the US in English, Spanish and German
+>>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language='de')]
+[u'USA', u'Vereinigte Staaten']
+>>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language='es')]
+[u'Estados Unidos']
+>>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language='en')]
+[u'United States of America', u'America', u'United States']
+
+# Alternative names for Vancouver, Canada
+>>> City.objects.get(name='Vancouver', country__code='CA').alt_names.all()
+[<AlternativeName: 溫哥華 (yue)>, <AlternativeName: Vankuver (uz)>, <AlternativeName: Ванкувер (ce)>, <AlternativeName: 溫哥華 (zh)>, <AlternativeName: वैंकूवर (hi)>, <AlternativeName: Ванкувер (tt)>, <AlternativeName: Vankuveris (lt)>, <AlternativeName: Fankoever (fy)>, <AlternativeName: فانكوفر (arz)>, <AlternativeName: Ванкувер (mn)>, <AlternativeName: ဗန်ကူးဗားမ_ (my)>, <AlternativeName: व्हँकूव्हर (mr)>, <AlternternativeName: வான்கூவர் (ta)>, <AlternativeName: فانكوفر (ar)>, <AlternativeName: Vankuver (az)>, <AlternativeName: Горад Ванкувер (be)>, <AlternativeName: ভ্যানকুভার (bn)>, <AlternativeName: แวนคูเวอร์ (th)>, <Al <AlternativeName: Ванкувер (uk)>, <AlternativeName: ਵੈਨਕੂਵਰ (pa)>, '...(remaining elements truncated)...']
 
 # Get zip codes near Mountain View, CA
 >>> PostalCode.objects.distance(City.objects.get(name='Mountain View', region__name='California').location).order_by('distance')[:5]
@@ -94,8 +123,6 @@ This repostitory contains an example project which lets you browse the place hie
 ```
 
 ### Notes
-
-The localized names and postal code models/db-tables are created dynamically based on your settings.
 
 Some datasets are very large (> 100 MB) and take time to download / import, and there's no progress display.
 

@@ -17,8 +17,8 @@ code_map = {
 }
 
 class Plugin:
-    def postal_code_pre(self, parser, items):
-        country_code = items[0]
+    def postal_code_pre(self, parser, item):
+        country_code = item['countryCode']
         if country_code != 'CA': return
-        items[4] = code_map[items[4]]
+        item['admin1Code'] = code_map[item['admin1Code']]
         

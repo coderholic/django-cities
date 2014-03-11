@@ -4,7 +4,6 @@ def rel(path):
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
@@ -35,6 +34,7 @@ INSTALLED_APPS = (
 )
 
 CITIES_POSTAL_CODES = ['ALL']
+CITIES_LOCALES = ['ALL']
 
 CITIES_PLUGINS = [
     'cities.plugin.postal_code_ca.Plugin',  # Canada postal codes need region codes remapped to match geonames
