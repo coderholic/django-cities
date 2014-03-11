@@ -29,7 +29,7 @@ class Place(models.Model):
         return "/".join([place.slug for place in self.hierarchy])
 
     def __unicode__(self):
-        return self.name
+        return force_unicode(self.name)
 
 class Country(Place):
     code = models.CharField(max_length=2, db_index=True)

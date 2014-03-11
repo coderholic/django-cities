@@ -15,7 +15,6 @@ http://download.geonames.org/export/zip/
 """
 
 import os
-import csv
 import sys
 import urllib
 import logging
@@ -30,8 +29,6 @@ from django.contrib.gis.gdal.envelope import Envelope
 from ...conf import *
 from ...models import *
 from ...util import geo_distance
-
-csv.field_size_limit(sys.maxsize)
 
 class Command(BaseCommand):
     app_dir = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../..')
@@ -132,17 +129,15 @@ class Command(BaseCommand):
     def get_data(self, filekey):
         filename = settings.files[filekey]['filename']
         file = open(os.path.join(self.data_dir, filename), 'rb')
-
         name, ext = filename.rsplit('.', 1)
         if (ext == 'zip'):
-            zip = zipfile.ZipFile(file)
-            file = zip.open(name + '.txt')
+            file = zipfile.ZipFile(file).open(name + '.txt')
 
-        data = csv.DictReader(
-            (row for row in file if not row.startswith('#')),
-            delimiter="\t",
-            fieldnames=settings.files[filekey]['fields']
+        data = (
+            dict(zip(settings.files[filekey]['fields'], row.split("\t"))) 
+            for row in file if not row.startswith('#')
         )
+
         return data
 
     def parse(self, data):
@@ -316,7 +311,7 @@ class Command(BaseCommand):
                 region = self.region_index[country_code + "." + region_code]
                 city.region = region
             except:
-                self.logger.warning("{0}: {1}: Cannot find region: {2} -- skipping".format('CITY', city.name, region_code))
+                self.logger.warning("{0}: {1}: Cannot find region: {2} -- skipping".format(country_code, city.name, region_code))
                 continue
             
             subregion_code = item['admin2Code']
@@ -325,7 +320,7 @@ class Command(BaseCommand):
                 city.subregion = subregion
             except:
                 if subregion_code:
-                    self.logger.warning("{0}: {1}: Cannot find subregion: {2} -- skipping".format('CITY', city.name, subregion_code))
+                    self.logger.warning("{0}: {1}: Cannot find subregion: {2} -- skipping".format(country_code, city.name, subregion_code))
                 pass
             
             if not self.call_hook('city_post', city, item): continue

@@ -4,6 +4,7 @@ def rel(path):
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
