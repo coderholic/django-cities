@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 import six
-import codecs
 import time
 import os
 import os.path
@@ -80,7 +79,7 @@ class Geonames(object):
             zip_file.extract(file_name, DATA_DIR)
 
     def parse(self):
-        file = codecs.open(self.file_path, 'r', 'utf-8')
+        file = open(self.file_path, 'r', 'utf-8')
         line = True
 
         for line in file:
