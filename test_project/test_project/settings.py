@@ -18,6 +18,10 @@ FIXTURE_DIRS = [
 
 MANAGERS = ADMINS
 
+CITIES_LIGHT_CITY_SOURCES = [
+    'http://download.geonames.org/export/dump/cities1000.zip'
+]
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
