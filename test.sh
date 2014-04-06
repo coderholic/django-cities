@@ -7,17 +7,19 @@ function do_db() {
     python test_project/manage.py cities_light --force-import-all --traceback --settings=test_project.$1
 }
 
-pip install south psycopg2
+pip install south 
 
 if [[ ${TRAVIS_PYTHON_VERSION%%.*} -eq "2" ]]; then
-    if [[ $DB = 'mysql' ]]; then
-        # test on mysql
-        pip install mysql-python 
-        do_db settings_mysql
-    fi
+    pip install mysql-python 
+fi
+
+if [[ $DB = 'mysql' ]]; then
+    # test on mysql
+    do_db settings_mysql
 fi
 
 if [[ $DB = 'postgresql' ]]; then
+    pip install psycopg2
     do_db settings_postgres
 fi 
 
