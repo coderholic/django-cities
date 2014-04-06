@@ -10,14 +10,18 @@ function do_db() {
 pip install south psycopg2
 
 if [[ ${TRAVIS_PYTHON_VERSION%%.*} -eq "2" ]]; then
-    # test on mysql
-    pip install mysql-python 
-    do_db settings_mysql
+    if [[ $DB = 'mysql' ]]; then
+        # test on mysql
+        pip install mysql-python 
+        do_db settings_mysql
+    fi
 fi
 
-# test on postgres
-do_db settings_postgres
+if [[ $DB = 'postgresql' ]]; then
+    do_db settings_postgres
+fi 
 
-# test on sqlite
-rm -rf test_project/db.sqlite
-do_db settings
+if [[ $DB = 'sqlite' ]]; then
+    rm -rf test_project/db.sqlite
+    do_db settings
+fi
