@@ -238,6 +238,7 @@ It is possible to force the import of files which weren't downloaded using the
             country = Country(code2=items[0])
 
         country.name = force_text(items[4])
+        country.phone = items[12]
         country.code3 = items[1]
         country.continent = items[8]
         country.tld = items[9][1:]  # strip the leading dot
