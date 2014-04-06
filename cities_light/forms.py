@@ -13,7 +13,7 @@ class CountryForm(forms.ModelForm):
     """
     class Meta:
         model = Country
-        fields = ('name', 'continent', 'alternate_names')
+        exclude = ('name_ascii', 'slug', 'geoname_id')
 
 
 class RegionForm(forms.ModelForm):
@@ -22,7 +22,8 @@ class RegionForm(forms.ModelForm):
     """
     class Meta:
         model = Region
-        fields = ('name', 'country', 'alternate_names')
+        exclude = ('name_ascii', 'slug', 'geoname_id', 'display_name',
+                   'geoname_code')
 
 
 class CityForm(forms.ModelForm):
@@ -31,4 +32,5 @@ class CityForm(forms.ModelForm):
     """
     class Meta:
         model = City
-        fields = ('name', 'region', 'country', 'alternate_names')
+        exclude = ('name_ascii', 'search_names', 'slug', 'geoname_id',
+                   'display_name', 'feature_code')

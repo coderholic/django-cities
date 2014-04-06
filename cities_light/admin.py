@@ -81,7 +81,7 @@ class CityAdmin(admin.ModelAdmin):
         'country__continent',
         'country',
     )
-    #form = CityForm
+    form = CityForm
 
     def get_changelist(self, request, **kwargs):
         return CityChangeList
