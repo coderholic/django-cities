@@ -130,7 +130,7 @@ class Region(Base):
     country = models.ForeignKey(Country)
 
     class Meta(Base.Meta):
-        unique_together = (('country', 'name'), )
+        unique_together = (('country', 'name'), ('country', 'slug'))
         verbose_name = _('region/state')
         verbose_name_plural = _('regions/states')
 
@@ -186,7 +186,7 @@ class City(Base):
                                     db_index=True)
 
     class Meta(Base.Meta):
-        unique_together = (('region', 'name'),)
+        unique_together = (('region', 'name'), ('region', 'slug'))
         verbose_name_plural = _('cities')
 
     def get_display_name(self):

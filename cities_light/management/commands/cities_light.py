@@ -321,7 +321,16 @@ It is possible to force the import of files which weren't downloaded using the
             pass
 
         try:
-            city = City.objects.get(**kwargs)
+            try:
+                city = City.objects.get(**kwargs)
+            except City.MultipleObjectsReturned:
+                if 'region_id' not in kwargs:
+                    self.logger.warn(
+                        'Skipping because of invalid region: %s' % items)
+                    return
+                else:
+                    raise
+
         except City.DoesNotExist:
             try:
                 city = City.objects.get(geoname_id=items[0])
