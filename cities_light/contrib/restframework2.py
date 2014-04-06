@@ -18,7 +18,8 @@ include::
 And that's all !
 """
 from rest_framework import viewsets, relations
-from rest_framework.serializers import ModelSerializer, HyperlinkedModelSerializer
+from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework import routers
 
 try:
     from django.conf.urls.defaults import patterns, url, include
@@ -32,9 +33,13 @@ class CitySerializer(HyperlinkedModelSerializer):
     """
     HyperlinkedModelSerializer for City.
     """
-    url = relations.HyperlinkedIdentityField(view_name='cities-light-api-region-detail')
-    country = relations.HyperlinkedRelatedField(view_name='cities-light-api-country-detail')
-    region = relations.HyperlinkedRelatedField(view_name='cities-light-api-region-detail')
+    url = relations.HyperlinkedIdentityField(
+        view_name='cities-light-api-region-detail')
+    country = relations.HyperlinkedRelatedField(
+        view_name='cities-light-api-country-detail')
+    region = relations.HyperlinkedRelatedField(
+        view_name='cities-light-api-region-detail')
+
     class Meta:
         model = City
 
@@ -43,8 +48,11 @@ class RegionSerializer(HyperlinkedModelSerializer):
     """
     HyperlinkedModelSerializer for Region.
     """
-    url = relations.HyperlinkedIdentityField(view_name='cities-light-api-region-detail')
-    country = relations.HyperlinkedRelatedField(view_name='cities-light-api-country-detail')
+    url = relations.HyperlinkedIdentityField(
+        view_name='cities-light-api-region-detail')
+    country = relations.HyperlinkedRelatedField(
+        view_name='cities-light-api-country-detail')
+
     class Meta:
         model = Region
 
@@ -53,21 +61,23 @@ class CountrySerializer(HyperlinkedModelSerializer):
     """
     HyperlinkedModelSerializer for Country.
     """
-    url = relations.HyperlinkedIdentityField(view_name='cities-light-api-country-detail')
+    url = relations.HyperlinkedIdentityField(
+        view_name='cities-light-api-country-detail')
+
     class Meta:
         model = Country
 
 
-
 class CitiesLightListModelViewSet(viewsets.ReadOnlyModelViewSet):
-
     def get_queryset(self):
         """
         Allows a GET param, 'q', to be used against name_ascii.
         """
         queryset = super(CitiesLightListModelViewSet, self).get_queryset()
+
         if self.request.GET.get('q', None):
             return queryset.filter(name_ascii__icontains=self.request.GET['q'])
+
         return queryset
 
 
@@ -93,17 +103,21 @@ class CityModelViewSet(CitiesLightListModelViewSet):
         Allows a GET param, 'q', to be used against search_names.
         """
         queryset = super(CitiesLightListModelViewSet, self).get_queryset()
+
         if self.request.GET.get('q', None):
-            return queryset.filter(search_names__icontains=self.request.GET['q'])
+            return queryset.filter(
+                search_names__icontains=self.request.GET['q'])
+
         return queryset
 
 
-from rest_framework import routers
-
 router = routers.SimpleRouter()
 router.register(r'cities', CityModelViewSet, base_name='cities-light-api-city')
-router.register(r'countries', CountryModelViewSet, base_name='cities-light-api-country')
-router.register(r'regions', RegionModelViewSet, base_name='cities-light-api-region')
+router.register(r'countries', CountryModelViewSet,
+                base_name='cities-light-api-country')
+router.register(r'regions', RegionModelViewSet,
+                base_name='cities-light-api-region')
+
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),
