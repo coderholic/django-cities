@@ -1,13 +1,9 @@
 .idea/
 .Python
 *.pyc
-bin/
-lib/
-include/
 *.egg-info
 build
 dist
-test_project/db.sqlite
 
 # Ignore the downloaded data.
 cities_light/data
