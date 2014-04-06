@@ -7,11 +7,7 @@ python:
   - "2.7"
   - "3.3"
 env:
-  - REQ="django<1.5" DB=mysql
-  - REQ="django<1.5" DB=sqlite
   - REQ="django<1.5" DB=postgresql
-  - REQ="django<1.6" DB=mysql
-  - REQ="django<1.6" DB=sqlite
   - REQ="django<1.6" DB=postgresql
   - REQ="django<1.7" DB=mysql
   - REQ="django<1.7" DB=sqlite
