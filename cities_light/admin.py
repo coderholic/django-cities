@@ -21,6 +21,7 @@ class CountryAdmin(admin.ModelAdmin):
         'code3',
         'continent',
         'tld',
+        'phone',
     )
     search_fields = (
         'name',
