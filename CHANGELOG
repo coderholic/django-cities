@@ -1,3 +1,16 @@
+2014-04-06 2.3.1
+
+    - #42 added FAQ: Some data fail to import or don't import like I want, how
+      to skip them ?
+    - #45 django-rest-framework support update by @almalki.
+    - #49 Added country_items_pre_import and region_items_pre_import by
+      @mauricioabreu
+    - #51 Slug should be used in unique_together along with name.
+    - #51 Skip duplicate cities with no regions
+    - #52 Added FAQ on MySQL and UTF-8
+    - #53 Country phone prefix support by @csarcom
+    - Forms update.
+
 2014-03-06 2.3.0
 
     - Fix #50: added country_items_pre_import singal by @mauricioabreu
