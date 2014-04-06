@@ -22,7 +22,12 @@ database, you should use
 `django-cities
 <https://github.com/coderholic/django-cities>`_.
 
-Supports python3.
+Requirements: 
+
+- Python 2.7 or 3.3, 
+- Django 1.4 or 1.5 or 1.6, 
+- MySQL or PostgreSQL or SQLite.
+- django-south is optionnal, but recommended.
 
 Upgrade
 -------
