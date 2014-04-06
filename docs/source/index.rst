@@ -16,7 +16,7 @@ MySQL errors with special characters, how to fix it ?
 -----------------------------------------------------
 
 The ``cities_light`` command is `continuously tested on travis-ci
-<http://travis-ci.org/yourlabs/django-cities-light>` on all supported
+<http://travis-ci.org/yourlabs/django-cities-light>`_ on all supported
 databases: if it works there then it should work for you.
 
 If you're new to development in general, you might not be familiar with the
