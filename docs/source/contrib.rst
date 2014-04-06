@@ -13,7 +13,7 @@ For djangorestframework
 The contrib contains support for both v1 and v2 of django restframework.
 
 Django REST framework 2
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 This contrib package defines list and detail endpoints for City, Region and
 Country. If rest_framework (v2) is installed, all you have to do is add this url

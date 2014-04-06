@@ -15,6 +15,8 @@ This command is well documented, consult the help with::
     
     ./manage.py help cities_light
 
+.. _signals:
+
 Signals
 -------
 
