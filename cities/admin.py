@@ -1,53 +1,56 @@
 from django.contrib import admin
 from models import *
 
-class CountryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'code', 'tld', 'population']
-    search_fields = ['name', 'code', 'tld']
+class CitiesAdmin(admin.ModelAdmin):
+    raw_id_fields = ['alt_names']
+
+class CountryAdmin(CitiesAdmin):
+    list_display = ['name', 'code', 'code3', 'tld', 'phone', 'continent', 'area', 'population']
+    search_fields = ['name', 'code', 'code3', 'tld', 'phone']
 
 admin.site.register(Country, CountryAdmin)
 
-class RegionBaseAdmin(admin.ModelAdmin):
+class RegionAdmin(CitiesAdmin):
     ordering = ['name_std']
-    list_display = ['name_std', 'parent', 'code']
+    list_display = ['name_std', 'code', 'country']
     search_fields = ['name', 'name_std', 'code']
-
-class RegionAdmin(RegionBaseAdmin): pass
 
 admin.site.register(Region, RegionAdmin)
 
-class SubregionAdmin(RegionBaseAdmin):
-    raw_id_fields = ['region']
+class SubregionAdmin(CitiesAdmin):
+    ordering = ['name_std']
+    list_display = ['name_std', 'code', 'region']
+    search_fields = ['name', 'name_std', 'code']
+    raw_id_fields = ['alt_names', 'region']
 
 admin.site.register(Subregion, SubregionAdmin)
 
-class CityBaseAdmin(admin.ModelAdmin):
+class CityAdmin(CitiesAdmin):
     ordering = ['name_std']
-    list_display = ['name_std', 'parent', 'population']
+    list_display = ['name_std', 'subregion', 'region', 'country', 'population']
     search_fields = ['name', 'name_std']
-
-class CityAdmin(CityBaseAdmin):
-    raw_id_fields = Region.levels
+    raw_id_fields = ['alt_names', 'region', 'subregion']
 
 admin.site.register(City, CityAdmin)
 
-class DistrictAdmin(CityBaseAdmin):
-    raw_id_fields = ['city']
+class DistrictAdmin(CitiesAdmin):
+    raw_id_fields = ['alt_names', 'city']
+    list_display = ['name_std', 'city']
+    search_fields = ['name', 'name_std']
 
 admin.site.register(District, DistrictAdmin)
 
-class GeoAltNameAdmin(admin.ModelAdmin):
+class AltNameAdmin(admin.ModelAdmin):
     ordering = ['name']
-    list_display = ['name', 'geo', 'is_preferred', 'is_short']
-    list_filter = ['is_preferred', 'is_short']
+    list_display = ['name', 'language', 'is_preferred', 'is_short']
+    list_filter = ['is_preferred', 'is_short', 'language']
     search_fields = ['name']
-    raw_id_fields = ['geo']
 
-[admin.site.register(geo_alt_name, GeoAltNameAdmin) for locales in geo_alt_names.values() for geo_alt_name in locales.values()]
+admin.site.register(AlternativeName, AltNameAdmin)
 
-class PostalCodeAdmin(admin.ModelAdmin):
+class PostalCodeAdmin(CitiesAdmin):
     ordering = ['code']
-    list_display = ['code', 'country', 'region_name']
+    list_display = ['code', 'subregion_name', 'region_name', 'country']
     search_fields = ['code', 'country__name', 'region_name', 'subregion_name']
 
 admin.site.register(PostalCode, PostalCodeAdmin)

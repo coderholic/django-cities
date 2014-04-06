@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf.urls import patterns
+from django.contrib import admin
 from django.views.generic import ListView
 from cities.models import Country, Region, City, District, PostalCode
 
@@ -35,6 +36,8 @@ class PlaceListView(ListView):
             context['postal'] = PostalCode.objects.distance(self.place.location).order_by('distance')[:10]
         return context
 
+admin.autodiscover()
 urlpatterns = patterns('',
+    (r'^admin/', include(admin.site.urls)),
     (r'^(.*)$', PlaceListView.as_view()),
 )

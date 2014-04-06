@@ -176,13 +176,14 @@ class Command(BaseCommand):
             country.currency = item['currencyCode']
             country.currency_name = item['currencyName']
             country.capital = item['capital']
+            country.area = int(float(item['area'])) if item['area'] else None
+            country.languages = item['languages']
 
             neighbours[country] = item['neighbours'].split(",")
             countries[country.code] = country
             
             if not self.call_hook('country_post', country, item): continue 
             country.save()
-            self.logger.info("Added country: {0}, {1}".format(country.code, country))
 
         for country, neighbour_codes in neighbours.items():
             neighbours = [x for x in [countries.get(x) for x in neighbour_codes if x] if x]
@@ -256,7 +257,7 @@ class Command(BaseCommand):
             country_code, region_code, subregion_code = item['code'].split(".")
             subregion.code = subregion_code
             try: 
-                subregion.region = self.region_index[region_code]
+                subregion.region = self.region_index[country_code + "." + region_code]
             except:
                 self.logger.warning("Subregion: {0}: Cannot find region: {1}".format(subregion.name, region_code))
                 continue

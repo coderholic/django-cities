@@ -25,12 +25,15 @@ LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 
 SECRET_KEY = 'YOUR_SECRET_KEY'
-MIDDLEWARE_CLASSES = (
-)
 
 ROOT_URLCONF = 'urls'
 
 INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.admin',
     'cities',
 )
 

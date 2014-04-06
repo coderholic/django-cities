@@ -38,7 +38,7 @@ class Country(Place):
     area = models.IntegerField(null=True)
     currency = models.CharField(max_length=3, null=True)
     currency_name = models.CharField(max_length=50, null=True)
-    languages = models.CharField(max_length=50, null=True)
+    languages = models.CharField(max_length=250, null=True)
     phone = models.CharField(max_length=20)
     continent = models.CharField(max_length=2)
     tld = models.CharField(max_length=5)
@@ -116,7 +116,7 @@ class AlternativeName(models.Model):
     is_colloquial = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.language)
+        return "%s (%s)" % (force_unicode(self.name), force_unicode(self.language))
 
 class PostalCode(Place):
     code = models.CharField(max_length=20)
