@@ -4,6 +4,8 @@ import sys
 import os
 import os.path
 
+import cities_light
+
 
 # Utility function to read the README file.
 # Used for the long_description. It's nice, because now 1) we have a top level
@@ -26,7 +28,7 @@ if 'install' in sys.argv:
 
 setup(
     name='django-cities-light',
-    version='2.3.1',
+    version=cities_light.__version__,
     description='Simple alternative to django-cities',
     author='James Pic',
     author_email='jamespic@gmail.com',
