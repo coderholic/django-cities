@@ -1,3 +1,7 @@
+2014-04-27 2.4.1
+
+    - setup.py was rm'ing cities_light/migrations.
+
 2014-04-27 2.4.0
 
     - Use django migrations by default (support django 1.7). To upgrade adjust
