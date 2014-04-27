@@ -63,6 +63,8 @@ class CityChangeList(ChangeList):
             request.GET = copy(request.GET)
             request.GET['q'] = to_search(request.GET['q'])
         return super(CityChangeList, self).get_query_set(request)
+    # Django 1.8 compat
+    get_queryset = get_query_set
 
 
 class CityAdmin(admin.ModelAdmin):
