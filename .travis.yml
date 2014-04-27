@@ -19,7 +19,7 @@ install:
   - pip install https://github.com/dcramer/pyflakes/tarball/master
   - python setup.py install
 before_script:
-  - "pep8 --ignore=E124,E128 --exclude=tests,migrations,vendor cities_light"
+  - "pep8 --ignore=E124,E128 --exclude=tests,south_migrations,migrations,vendor cities_light"
   - mysql -e 'create database cities_light_test;'
   - psql -c 'create database cities_light_test;' -U postgres
 script:
