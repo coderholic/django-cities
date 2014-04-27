@@ -2,7 +2,7 @@ language: python
 matrix:
   exclude:
     - python: "3.3"
-      env: REQ="django<1.5"
+      env: REQ="django<1.5" DB=postgresql
 python:
   - "2.7"
   - "3.3"
