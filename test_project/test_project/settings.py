@@ -25,7 +25,7 @@ MANAGERS = ADMINS
 
 CITIES_LIGHT_CITY_SOURCES = [
     'http://download.geonames.org/export/dump/%s.zip' %
-    os.environ.get('CITIES_LIGHT_CITY_SOURCE', 'cities1000'),
+    os.environ.get('CITIES_LIGHT_CITY_SOURCE', 'cities15000'),
 ]
 
 DATABASES = {
