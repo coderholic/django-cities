@@ -2,7 +2,7 @@ from .settings import *
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.django', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': os.environ.get('DJANGO_ENGINE', 'django.db.backends.mysql'),
         'NAME': 'cities_light_test',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
