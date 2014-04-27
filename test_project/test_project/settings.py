@@ -4,7 +4,7 @@ import os.path
 import posixpath
 import django
 
-SOUTH_MIGRATIONS_MODULES = {
+SOUTH_MIGRATION_MODULES = {
     'cities_light': 'cities_light.south_migrations',
 }
 
