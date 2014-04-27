@@ -10,13 +10,11 @@ function do_db() {
 
 pip install south 
 
-if [[ ${TRAVIS_PYTHON_VERSION%%.*} -eq "2" ]]; then
+if [[ ${TRAVIS_PYTHON_VERSION%%.*} -eq "2" && $DB = 'mysql' ]]; then
     pip install mysql-python 
 
-    if [[ $DB = 'mysql' ]]; then
-        # mysql / python 2: way too slow for travis
-        export CITIES_LIGHT_CITY_SOURCE=cities15000
-    fi
+    # mysql / python 2: way too slow for travis
+    export CITIES_LIGHT_CITY_SOURCE=cities15000
 fi
 
 if [[ $DB = 'mysql' ]]; then
