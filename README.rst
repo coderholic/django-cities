@@ -60,7 +60,7 @@ south too else you're on your own for migrations/upgrades.
    migrations by default. This means that django-south users
    should add to settings::
 
-       SOUTH_MIGRATIONS_MODULES = {
+       SOUTH_MIGRATION_MODULES = {
            'cities_light': 'cities_light.south_migrations',
        }
 
