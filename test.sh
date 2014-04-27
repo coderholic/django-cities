@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -x
+set -e
 
 function do_db() {
     python test_project/manage.py syncdb --traceback --noinput --settings=test_project.$1
