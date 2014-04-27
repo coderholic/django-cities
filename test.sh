@@ -13,7 +13,7 @@ pip install south
 if [[ $DB = 'mysql' ]]; then
     export CITIES_LIGHT_CITY_SOURCE=cities15000
 
-    pip install mysql-connector-python
+    pip install mysql-connector-repackaged 
 
     # test on mysql
     do_db settings_mysql
