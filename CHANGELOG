@@ -1,3 +1,9 @@
+2014-04-27 2.4.0
+
+    - Use django migrations by default (support django 1.7). To upgrade adjust
+      SOUTH_MIGRATIONS_MODULES.
+    - PEP0396 cities_light.__version__.
+
 2014-04-06 2.3.1
 
     - #42 added FAQ: Some data fail to import or don't import like I want, how
