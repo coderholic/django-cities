@@ -13,17 +13,6 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-if 'install' in sys.argv:
-    try:
-        import django
-    except ImportError:
-        pass
-    else:
-        if django.VERSION >= (1,7):
-            shutil.rmtree(os.path.join(os.path.dirname(__file__),
-                                       'cities_light', 'migrations'))
-
-
 setup(
     name='django-cities-light',
     version='2.4.0',
