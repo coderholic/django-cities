@@ -54,6 +54,16 @@ Now, run syncdb, it will only create tables for models that are not disabled::
 Note that this project supports django-south. It is recommended that you use
 south too else you're on your own for migrations/upgrades.
 
+.. danger:: 
+
+   Since version 2.4.0, django-cities-light uses django
+   migrations by default. This means that django-south users
+   should add to settings::
+
+       SOUTH_MIGRATIONS_MODULES = {
+           'cities_light': 'cities_light.south_migrations',
+       }
+
 Data update
 -----------
 
