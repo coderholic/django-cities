@@ -11,6 +11,11 @@ pip install south
 
 if [[ ${TRAVIS_PYTHON_VERSION%%.*} -eq "2" ]]; then
     pip install mysql-python 
+
+    if [[ $DB = 'mysql' ]]; then
+        # mysql / python 2: way too slow for travis
+        export CITIES_LIGHT_CITY_SOURCE=cities15000
+    fi
 fi
 
 if [[ $DB = 'mysql' ]]; then

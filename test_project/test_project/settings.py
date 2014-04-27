@@ -25,7 +25,8 @@ FIXTURE_DIRS = [
 MANAGERS = ADMINS
 
 CITIES_LIGHT_CITY_SOURCES = [
-    'http://download.geonames.org/export/dump/cities1000.zip'
+    'http://download.geonames.org/export/dump/%s.zip' %
+    os.environ.get('CITIES_LIGHT_CITY_SOURCE', 'cities1000'),
 ]
 
 DATABASES = {
