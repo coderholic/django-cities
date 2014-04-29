@@ -19,13 +19,13 @@ if [[ $DB = 'mysql' ]]; then
 fi
 
 if [[ $DB = 'postgresql' ]]; then
-    export CITIES_LIGHT_CITY_SOURCE=cities1000
-
     pip install psycopg2
     do_db settings_postgres
 fi 
 
 if [[ $DB = 'sqlite' ]]; then
+    export CITIES_LIGHT_CITY_SOURCE=cities1000
+
     rm -rf test_project/db.sqlite
-    do_db settings
+    do_db settings_sqlite
 fi
