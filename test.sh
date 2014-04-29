@@ -11,7 +11,11 @@ function do_db() {
 pip install south 
 
 if [[ $DB = 'mysql' ]]; then
-    pip install mysql-python
+    if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then
+        pip install mysql-python
+    else
+        pip install -e git+https://github.com/clelland/MySQL-for-Python-3.git#egg=mysql-python
+    fi
 
     # test on mysql
     do_db settings_mysql
