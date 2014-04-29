@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 (b'name', models.CharField(max_length=200, db_index=True)),
                 (b'display_name', models.CharField(max_length=200)),
                 (b'geoname_code', models.CharField(db_index=True, max_length=50, null=True, blank=True)),
-                (b'country', models.ForeignKey(to=b'cities_light.Country', to_field='id')),
+                (b'country', models.ForeignKey(to='cities_light.Country', to_field='id')),
             ],
             options={
                 'ordering': [b'name'],
