@@ -11,12 +11,8 @@ function do_db() {
 pip install south 
 
 if [[ $DB = 'mysql' ]]; then
-    if [[ $TRAVIS_PYTHON_VERSION -eq "2.7" ]]; then
-        pip install mysql-python
-    else
-        pip install 'http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-1.1.6.zip#md5=026e4a4b8731da33d73f0542349594fd'
-        export DJANGO_ENGINE="mysql.connector.django"
-    fi
+    pip install 'http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-1.1.6.zip#md5=026e4a4b8731da33d73f0542349594fd'
+    export DJANGO_ENGINE="mysql.connector.django"
 
     # test on mysql
     do_db settings_mysql
