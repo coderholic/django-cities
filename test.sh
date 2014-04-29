@@ -27,8 +27,6 @@ if [[ $DB = 'postgresql' ]]; then
 fi 
 
 if [[ $DB = 'sqlite' ]]; then
-    export CITIES_LIGHT_CITY_SOURCE=cities1000
-
     rm -rf test_project/db.sqlite
     do_db settings
 fi
