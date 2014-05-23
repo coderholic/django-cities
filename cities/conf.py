@@ -188,8 +188,9 @@ def create_settings():
     
     res.files = files.copy()
     if hasattr(django_settings, "CITIES_FILES"):
-        res.files.update(django_settings.CITIES_FILES)
-    
+        for key in django_settings.CITIES_FILES.keys():
+            res.files[key].update(django_settings.CITIES_FILES[key])
+
     if hasattr(django_settings, "CITIES_LOCALES"):
         locales = django_settings.CITIES_LOCALES[:]
     else:
