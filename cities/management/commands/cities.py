@@ -514,8 +514,8 @@ class Command(BaseCommand):
     
     def flush_alt_name(self):
         self.logger.info("Flushing alternate name data")
-        [geo_alt_name.objects.all().delete() for locales in geo_alt_names.values() for geo_alt_name in locales.values()]
+        AlternativeName.objects.all().delete()
         
     def flush_postal_code(self):
         self.logger.info("Flushing postal code data")
-        [postal_code.objects.all().delete() for postal_code in postal_codes.values()]
+        PostalCode.objects.all().delete()
