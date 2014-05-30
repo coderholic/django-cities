@@ -394,7 +394,7 @@ It is possible to force the import of files which weren't downloaded using the
                 City: {},
             }
 
-        if len(items) > 4:
+        if len(items) > 5:
             # avoid shortnames, colloquial, and historic
             return
 
