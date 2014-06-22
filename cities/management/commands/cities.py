@@ -219,7 +219,7 @@ class Command(BaseCommand):
             try: 
                 region.country = self.country_index[country_code]
             except:
-                self.logger.warning("{0}: {1}: Cannot find country: {2} -- skipping".format(class_.__name__, region.name, country_code))
+                self.logger.warning("{0}: {1}: Cannot find country: {2} -- skipping".format("COUNTRY", region.name, country_code))
                 continue
             
             if not self.call_hook('region_post', region, item): continue
