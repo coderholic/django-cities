@@ -82,7 +82,7 @@ CITIES_PLUGINS = [
 
 ### Examples
 
-This repostitory contains an example project which lets you browse the place hierarchy. See the ```example``` directory. Below are some small snippets to show you the kind of things that are possible:
+This repository contains an example project which lets you browse the place hierarchy. See the ```example``` directory. Below are some small snippets to show you the kind of things that are possible:
 
 
 ```python
