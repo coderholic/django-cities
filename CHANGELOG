@@ -1,3 +1,7 @@
+2014-10-01 2.4.3
+
+    - #63: Django 1.7 support
+
 2014-04-30 2.4.2
 
     - #55: Warn users about SOUTH_MIGRATION_MODULES in migrations/__init__.py
