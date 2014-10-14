@@ -1,7 +1,10 @@
-from django.utils.encoding import force_unicode
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
-from conf import settings
+from .conf import settings
 
 __all__ = [
         'Point', 'Country', 'Region', 'Subregion',
@@ -31,6 +34,9 @@ class Place(models.Model):
     def __unicode__(self):
         return force_unicode(self.name)
 
+    def __repr__(self):
+        return force_unicode(self.name)
+
 class Country(Place):
     code = models.CharField(max_length=2, db_index=True)
     code3 = models.CharField(max_length=3, db_index=True)
@@ -55,6 +61,10 @@ class Country(Place):
 
     def __unicode__(self):
         return force_unicode(self.name)
+
+    def __repr__(self):
+        return force_unicode(self.name)
+
 
 class Region(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
@@ -118,6 +128,9 @@ class AlternativeName(models.Model):
     def __unicode__(self):
         return "%s (%s)" % (force_unicode(self.name), force_unicode(self.language))
 
+    def __repr__(self):
+        return "%s (%s)" % (force_unicode(self.name), force_unicode(self.language))
+
 class PostalCode(Place):
     code = models.CharField(max_length=20)
     location = models.PointField()
@@ -138,7 +151,7 @@ class PostalCode(Place):
     @property
     def name_full(self):
         """Get full name including hierarchy"""
-        return u', '.join(reversed(self.names)) 
+        return ', '.join(reversed(self.names)) 
 
     @property
     def names(self):
@@ -152,4 +165,7 @@ class PostalCode(Place):
         ] if e]
 
     def __unicode__(self):
+        return force_unicode(self.code)
+
+    def __repr__(self):
         return force_unicode(self.code)
