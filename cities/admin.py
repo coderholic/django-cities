@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import *
+from .models import *
 
 class CitiesAdmin(admin.ModelAdmin):
     raw_id_fields = ['alt_names']
