@@ -15,13 +15,9 @@ try:
 except ImportError:
     import pickle
 
-try:
-    from django.db.transaction import atomic
-except ImportError:
-    from cities_light.backport import atomic
-
+from django.db import transaction, connection
 from django.core.management.base import BaseCommand
-from django.db import connection, reset_queries, IntegrityError
+from django.db import transaction, reset_queries, IntegrityError
 from django.utils.encoding import force_text
 
 from ...vendor import progressbar
