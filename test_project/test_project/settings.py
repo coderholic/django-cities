@@ -4,9 +4,11 @@ import os.path
 import posixpath
 import django
 
-SOUTH_MIGRATION_MODULES = {
-    'cities_light': 'cities_light.south_migrations',
-}
+
+if django.VERSION < (1, 7):
+    SOUTH_MIGRATION_MODULES = {
+        'cities_light': 'cities_light.south_migrations',
+    }
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
