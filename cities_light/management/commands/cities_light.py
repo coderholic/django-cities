@@ -477,7 +477,7 @@ It is possible to force the import of files which weren't downloaded using the
 
     def save(self, model):
         try:
-            with atomic():
+            with transaction.atomic():
                 model.save()
         except IntegrityError as e:
             self.logger.warning('Saving %s failed: %s' % (model, e))
