@@ -25,9 +25,14 @@ database, you should use
 Requirements: 
 
 - Python 2.7 or 3.3, 
-- Django 1.4 or 1.5 or 1.6, 
-- MySQL or PostgreSQL or SQLite.
-- django-south is optionnal, but recommended.
+- **Django >= 1.6 for django-cities-light 3.x.x**
+- or Django >= 1.4 <= 1.6 for django-cities-light 2.x.x
+- MySQL (better in 3.x.x) or PostgreSQL or SQLite.
+- django-south is optionnal, but recommended, for django <= 1.6
+
+Yes, for some reason, code that used to work on MySQL (not without pain xD)
+does not work anymore. So we're now using django.db.transaction.atomic which
+comes from Django 1.6 just to support MySQL quacks.
 
 Upgrade
 -------
