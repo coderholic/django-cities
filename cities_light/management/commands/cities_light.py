@@ -15,9 +15,13 @@ try:
 except ImportError:
     import pickle
 
-from django.db import transaction, connection
+try:
+    from django.db.transaction import atomic
+except ImportError:
+    from cities_light.backport import atomic
+
 from django.core.management.base import BaseCommand
-from django.db import transaction, reset_queries, IntegrityError
+from django.db import connection, reset_queries, IntegrityError
 from django.utils.encoding import force_text
 
 from ...vendor import progressbar
@@ -475,7 +479,7 @@ It is possible to force the import of files which weren't downloaded using the
 
         progress.finish()
 
-    @transaction.atomic
+    @atomic
     def save(self, model):
         try:
             model.save()
