@@ -96,7 +96,7 @@ It is possible to force the import of files which weren't downloaded using the
             print('Do not kill me !')
             self._travis_last_output = now
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def handle(self, *args, **options):
         if not os.path.exists(DATA_DIR):
             self.logger.info('Creating %s' % DATA_DIR)
@@ -474,13 +474,9 @@ It is possible to force the import of files which weren't downloaded using the
 
         progress.finish()
 
+    @transaction.atomic
     def save(self, model):
-        sid = transaction.savepoint()
-
         try:
             model.save()
         except IntegrityError as e:
             self.logger.warning('Saving %s failed: %s' % (model, e))
-            transaction.savepoint_rollback(sid)
-        else:
-            transaction.savepoint_commit(sid)
