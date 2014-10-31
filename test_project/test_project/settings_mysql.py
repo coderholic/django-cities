@@ -1,3 +1,4 @@
+import sys
 import django
 from .settings import *
 
@@ -9,8 +10,10 @@ DATABASES = {
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-        'OPTIONS': {
-            'autocommit': True,
-        }
     }
 }
+
+if sys.version_info[0] < 3:
+    DATABASES['default']['OPTIONS'] = {
+        'autocommit': True,
+    }
