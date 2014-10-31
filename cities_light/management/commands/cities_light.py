@@ -96,7 +96,6 @@ It is possible to force the import of files which weren't downloaded using the
             print('Do not kill me !')
             self._travis_last_output = now
 
-    @transaction.atomic
     def handle(self, *args, **options):
         if not os.path.exists(DATA_DIR):
             self.logger.info('Creating %s' % DATA_DIR)
