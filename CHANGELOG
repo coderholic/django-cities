@@ -1,9 +1,13 @@
 2014-10-31 3.0.0
 
     - #63: Django 1.7 support,
-    - Use of django.db.transaction.atomic (Django >= 1.6), which provides
-      proper MySQL support. (Yes MySQL, we're dropping support for Django < 1.6
-      just for your quacks !).
+    - Require Django >= 1.6 for django.db.transaction.atomic,
+    - Apparently stable MySQL support.
+
+MySQL users should use 3.0.0. 
+
+PostgreSQL and SQLite users are free to keep on using 2.x.x which supports
+Django >= 1.4.
 
 2014-04-30 2.4.2
 
