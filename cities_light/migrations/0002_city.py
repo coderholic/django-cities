@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('alternate_names', models.TextField(default='', null=True, blank=True)),
                 ('name', models.CharField(max_length=200, db_index=True)),
                 ('display_name', models.CharField(max_length=200)),
-                ('search_names', models.ToSearchTextField(default='', max_length=4000, db_index=INDEX_SEARCH_NAMES, blank=True)),
+                ('search_names', models.TextField(default='', max_length=4000, db_index=INDEX_SEARCH_NAMES, blank=True)),
                 ('latitude', models.DecimalField(null=True, max_digits=8, decimal_places=5, blank=True)),
                 ('longitude', models.DecimalField(null=True, max_digits=8, decimal_places=5, blank=True)),
                 ('region', models.ForeignKey(to_field='id', blank=True, to='cities_light.Region', null=True)),
