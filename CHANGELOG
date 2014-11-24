@@ -1,3 +1,8 @@
+2014-11-24 3.0.2
+
+    Make db_index optional on City table. It generates the missing migration
+    files that was added in your current project.
+
 2014-11-06 3.0.1
 
     Fixed MySQL Django 1.7 migrations support.
