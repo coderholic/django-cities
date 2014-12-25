@@ -15,17 +15,17 @@ def read(fname):
 
 setup(
     name='django-cities-light',
-    version='3.0.1',
+    version='3.0.2',
     description='Simple alternative to django-cities',
-    author='James Pic',
-    author_email='jamespic@gmail.com',
+    author='James Pic,Dominick Rivard',
+    author_email='jamespic@gmail.com, dominick.rivard@gmail.com',
     url='https://github.com/yourlabs/django-cities-light',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.rst'),
-    license = 'MIT',
-    keywords = 'django cities countries postal codes',
+    license='MIT',
+    keywords='django cities countries postal codes',
     install_requires=[
         'six',
         'unidecode>=0.04.13',
