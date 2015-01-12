@@ -12,6 +12,15 @@ Contents:
 FAQ
 ===
 
+Recommended RDBMS
+-----------------
+
+The recommended RDBMS is PostgreSQL, it's faster, safer, saner, more robust and
+simpler than MySQL.
+
+You can see on travis that build jobs with MySQL take twice as long as build
+jobs on PostgreSQL and SQLite.
+
 MySQL errors with special characters, how to fix it ?
 -----------------------------------------------------
 
