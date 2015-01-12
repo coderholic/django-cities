@@ -34,7 +34,7 @@ class CitySerializer(HyperlinkedModelSerializer):
     HyperlinkedModelSerializer for City.
     """
     url = relations.HyperlinkedIdentityField(
-        view_name='cities-light-api-region-detail')
+        view_name='cities-light-api-city-detail')
     country = relations.HyperlinkedRelatedField(
         view_name='cities-light-api-country-detail')
     region = relations.HyperlinkedRelatedField(
