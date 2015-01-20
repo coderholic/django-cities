@@ -10,16 +10,16 @@ For django-ajax-selects
 For djangorestframework
 -----------------------
 
-The contrib contains support for both v1 and v2 of django restframework.
+The contrib contains support for v1, v2 and v3 of django restframework.
 
-Django REST framework 2
+Django REST framework 3
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 This contrib package defines list and detail endpoints for City, Region and
-Country. If rest_framework (v2) is installed, all you have to do is add this url
+Country. If rest_framework (v3) is installed, all you have to do is add this url
 include::
 
-    url(r'^cities_light/api/', include('cities_light.contrib.restframework2')),
+    url(r'^cities_light/api/', include('cities_light.contrib.restframework3')),
 
 This will configure six endpoints::
 
@@ -39,7 +39,7 @@ for these models and therefore every response object contains url to self field 
 urls for related models. You can configure pagination using the standard rest_framework
 pagination settings in your project settings.py.
 
-.. automodule:: cities_light.contrib.restframework2
+.. automodule:: cities_light.contrib.restframework3
 
 For django-autocomplete-light
 -----------------------------
