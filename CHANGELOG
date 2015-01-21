@@ -1,3 +1,7 @@
+2015-01-21 3.0.3
+
+    Django-restframework support updated by @moimael.
+
 2014-11-24 3.0.2
 
     Make db_index optional on City table. It generates the missing migration
