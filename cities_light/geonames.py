@@ -79,7 +79,10 @@ class Geonames(object):
             zip_file.extract(file_name, DATA_DIR)
 
     def parse(self):
-        file = open(self.file_path, 'r')
+        if not six.PY3:
+            file = open(self.file_path, 'r')
+        else:
+            file = open(self.file_path, encoding='utf-8', mode='r')
         line = True
 
         for line in file:
@@ -95,4 +98,7 @@ class Geonames(object):
             yield [e.strip() for e in line.split('\t')]
 
     def num_lines(self):
-        return sum(1 for line in open(self.file_path))
+        if not six.PY3:
+            return sum(1 for line in open(self.file_path))
+        else:
+            return sum(1 for line in open(self.file_path, encoding='utf-8'))
