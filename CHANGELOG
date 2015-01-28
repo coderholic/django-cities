@@ -1,3 +1,7 @@
+2015-01-28 3.0.4
+
+    Windows support by forcing utf8 by Mikael Österberg.
+
 2015-01-21 3.0.3
 
     Django-restframework support updated by @moimael.
