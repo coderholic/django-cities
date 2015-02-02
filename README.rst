@@ -101,3 +101,5 @@ package updates.
 - `Continuous integration graciously hosted
   <http://travis-ci.org/yourlabs/django-cities-light>`_ by `Travis-ci
   <http://travis-ci.org>`_
+- `**Online paid support** provided via HackHands
+  <https://hackhands.com/jpic/>`_,
