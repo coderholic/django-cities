@@ -41,32 +41,6 @@ pagination settings in your project settings.py.
 
 .. automodule:: cities_light.contrib.restframework3
 
-For django-autocomplete-light
------------------------------
-
-For autocomplete-light, we propose an autocomplete channel that attempts to
-behave like google map's autocomplete. We did some research and it turns out
-every user is apparently able to use it without problems.
-
-.. _basic-channel:
-
-Basic Channel
-~~~~~~~~~~~~~
-
-.. automodule:: cities_light.contrib.autocomplete_light_channels
-   :members:
-
-.. _remote-channel:
-
-Remote channels
-~~~~~~~~~~~~~~~
-
-Check out the :ref:`example usage <autocompletelight:remote-example>`. This is
-the API:
-
-.. automodule:: cities_light.contrib.autocomplete_light_restframework
-   :members:
-
 Ideas for contributions
 -----------------------
 
