@@ -20,7 +20,9 @@ from .exceptions import *
 
 
 __all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search',
-    'to_ascii', 'filter_non_cities', 'filter_non_included_countries']
+    'to_ascii', 'filter_non_cities', 'filter_non_included_countries_country',
+    'filter_non_included_countries_region',
+    'filter_non_included_countries_city']
 
 ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
 
@@ -241,27 +243,62 @@ def filter_non_cities(sender, items, **kwargs):
     """
     Reports non populated places as invalid.
 
-    By default, this reciever is connected to city_items_pre_import, it raises
-    InvalidItems if the row doesn't have PPL in its features (it's not a
-    populated place).
+    By default, this reciever is connected to
+    :py:func:`~cities_light.signals.city_items_pre_import`, it raises
+    :py:class:`~cities_light.exceptions.InvalidItems` if the row doesn't have
+    PPL in its features (it's not a populated place).
     """
     if 'PPL' not in items[7]:
         raise InvalidItems()
 city_items_pre_import.connect(filter_non_cities)
 
 
-def filter_non_included_countries(sender, items, **kwargs):
+def filter_non_included_countries_country(sender, items, **kwargs):
     """
-    Exclude any items which country must not be included.
+    Exclude any **country** which country must not be included.
 
-    This is determined by the
-    :py:data:`cities_light.settings.INCLUDE_COUNTRIES` setting.
+    This is slot is connected to the
+    :py:func:`~cities_light.signals.country_items_pre_import` signal and does
+    nothing by default.  To enable it, set the
+    :py:data:`~cities_light.settings.INCLUDE_COUNTRIES` setting.
     """
     if INCLUDE_COUNTRIES is None:
         return
 
     if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
         raise InvalidItems()
-city_items_pre_import.connect(filter_non_included_countries)
-region_items_pre_import.connect(filter_non_included_countries)
-country_items_pre_import.connect(filter_non_included_countries)
+country_items_pre_import.connect(filter_non_included_countries_country)
+
+
+def filter_non_included_countries_region(sender, items, **kwargs):
+    """
+    Exclude any **region** which country must not be included.
+
+    This is slot is connected to the
+    :py:func:`~cities_light.signals.region_items_pre_import` signal and does
+    nothing by default.  To enable it, set the
+    :py:data:`~cities_light.settings.INCLUDE_COUNTRIES` setting.
+    """
+    if INCLUDE_COUNTRIES is None:
+        return
+
+    if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
+        raise InvalidItems()
+country_items_pre_import.connect(filter_non_included_countries_region)
+
+
+def filter_non_included_countries_city(sender, items, **kwargs):
+    """
+    Exclude any **city** which country must not be included.
+
+    This is slot is connected to the
+    :py:func:`~cities_light.signals.city_items_pre_import` signal and does
+    nothing by default.  To enable it, set the
+    :py:data:`~cities_light.settings.INCLUDE_COUNTRIES` setting.
+    """
+    if INCLUDE_COUNTRIES is None:
+        return
+
+    if items[8].split('.')[0] not in INCLUDE_COUNTRIES:
+        raise InvalidItems()
+city_items_pre_import.connect(filter_non_included_countries_city)
