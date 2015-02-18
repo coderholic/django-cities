@@ -253,13 +253,13 @@ city_items_pre_import.connect(filter_non_cities)
 def filter_non_included_countries(sender, items, **kwargs):
     """
     Exclude any items which country must not be included.
-    
+
     This is determined by the
     :py:data:`cities_light.settings.INCLUDE_COUNTRIES` setting.
     """
     if INCLUDE_COUNTRIES is None:
-        return 
-    
+        return
+
     if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
         raise InvalidItems()
 city_items_pre_import.connect(filter_non_included_countries)

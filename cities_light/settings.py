@@ -12,7 +12,6 @@ because it's probably project specific.
 
     See:
 
-     - http://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers
      - http://download.geonames.org/export/dump/iso-languagecodes.txt
 
     Example::
