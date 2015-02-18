@@ -19,6 +19,13 @@ because it's probably project specific.
 
         CITIES_LIGHT_TRANSLATION_LANGUAGES = ['es', 'en', 'fr', 'abbr']
 
+.. py:data:: INCLUDE_COUNTRIES
+
+    List of country codes to include. It's None by default which lets all
+    countries in the database. But if you only wanted French and Belgium
+    countries/regions/cities, you could set it as such::
+
+        CITIES_LIGHT_INCLUDE_COUNTRIES = ['FR', 'BE']
 
 .. py:data:: COUNTRY_SOURCES
 
@@ -87,6 +94,8 @@ SOURCES += TRANSLATION_SOURCES
 DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
     os.path.normpath(os.path.join(
         os.path.dirname(os.path.realpath(__file__)), 'data')))
+
+INCLUDE_COUNTRIES = getattr(settings, 'CITIES_LIGHT_INCLUDE_COUNTRIES', None)
 
 # MySQL doesn't support indexing TextFields
 INDEX_SEARCH_NAMES = getattr(settings, 'CITIES_LIGHT_INDEX_SEARCH_NAMES', None)

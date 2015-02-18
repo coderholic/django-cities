@@ -15,10 +15,12 @@ from unidecode import unidecode
 import autoslug
 
 from .settings import *
+from .signals import *
+from .exceptions import *
 
 
 __all__ = ['Country', 'Region', 'City', 'CONTINENT_CHOICES', 'to_search',
-    'to_ascii']
+    'to_ascii', 'filter_non_cities', 'filter_non_included_countries']
 
 ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
 
@@ -233,3 +235,33 @@ def city_search_names(sender, instance, **kwargs):
 
     instance.search_names = ' '.join(search_names)
 signals.pre_save.connect(city_search_names, sender=City)
+
+
+def filter_non_cities(sender, items, **kwargs):
+    """
+    Reports non populated places as invalid.
+
+    By default, this reciever is connected to city_items_pre_import, it raises
+    InvalidItems if the row doesn't have PPL in its features (it's not a
+    populated place).
+    """
+    if 'PPL' not in items[7]:
+        raise InvalidItems()
+city_items_pre_import.connect(filter_non_cities)
+
+
+def filter_non_included_countries(sender, items, **kwargs):
+    """
+    Exclude any items which country must not be included.
+    
+    This is determined by the
+    :py:data:`cities_light.settings.INCLUDE_COUNTRIES` setting.
+    """
+    if INCLUDE_COUNTRIES is None:
+        return 
+    
+    if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
+        raise InvalidItems()
+city_items_pre_import.connect(filter_non_included_countries)
+region_items_pre_import.connect(filter_non_included_countries)
+country_items_pre_import.connect(filter_non_included_countries)
