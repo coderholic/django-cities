@@ -2,48 +2,69 @@
 Settings for this application. The most important is TRANSLATION_LANGUAGES
 because it's probably project specific.
 
-TRANSLATION_LANGUAGES
+.. py:data:: TRANSLATION_LANGUAGES
+
     List of language codes. It is used to generate the alternate_names property
     of cities_light models. You want to keep it as small as possible.
     By default, it includes the most popular languages according to wikipedia,
     which use a rather ascii-compatible alphabet. It also contains 'abbr' which
     stands for 'abbreviation', you might want to include this one as well.
 
-See:
+    See:
 
- - http://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers
- - http://download.geonames.org/export/dump/iso-languagecodes.txt
+     - http://download.geonames.org/export/dump/iso-languagecodes.txt
 
-COUNTRY_SOURCES
+    Example::
+
+        CITIES_LIGHT_TRANSLATION_LANGUAGES = ['es', 'en', 'fr', 'abbr']
+
+.. py:data:: INCLUDE_COUNTRIES
+
+    List of country codes to include. It's None by default which lets all
+    countries in the database. But if you only wanted French and Belgium
+    countries/regions/cities, you could set it as such::
+
+        CITIES_LIGHT_INCLUDE_COUNTRIES = ['FR', 'BE']
+
+.. py:data:: COUNTRY_SOURCES
+
     A list of urls to download country info from. Default is countryInfo.txt
     from geonames download server. Overridable in
-    settings.CITIES_LIGHT_COUNTRY_SOURCES.
+    ``settings.CITIES_LIGHT_COUNTRY_SOURCES``.
 
-REGION_SOURCES
+.. py:data:: REGION_SOURCES
+
     A list of urls to download region info from. Default is
     admin1CodesASCII.txt from geonames download server. Overridable in
-    settings.CITIES_LIGHT_REGION_SOURCES
+    ``settings.CITIES_LIGHT_REGION_SOURCES``.
 
-CITY_SOURCES
+.. py:data:: CITY_SOURCES
+
     A list of urls to download city info from. Default is cities15000.zip from
-    geonames download server. Overridable in settings.CITIES_LIGHT_CITY_SOURCES
+    geonames download server. Overridable in
+    ``settings.CITIES_LIGHT_CITY_SOURCES``.
 
-TRANSLATION_SOURCES
+.. py:data:: TRANSLATION_SOURCES
+
     A list of urls to download alternate names info from. Default is
     alternateNames.zip from geonames download server. Overridable in
-    settings.CITIES_LIGHT_TRANSLATION_SOURCES
+    ``settings.CITIES_LIGHT_TRANSLATION_SOURCES``.
 
-SOURCES
-    A list with all sources.
+.. py:data:: SOURCES
 
-DATA_DIR
+    A list with all sources, auto-generated.
+
+.. py:data:: DATA_DIR
+
     Absolute path to download and extract data into. Default is
-    cities_light/data. Overridable in settings.CITIES_LIGHT_DATA_DIR
+    cities_light/data. Overridable in ``settings.CITIES_LIGHT_DATA_DIR``
 
-INDEX_SEARCH_NAMES
+.. py:data:: INDEX_SEARCH_NAMES
+
     If your database engine for cities_light supports indexing TextFields (ie.
     it is **not** MySQL), then this should be set to True. You might have to
-    override this setting if using several databases for your project.
+    override this setting with ``settings.CITIES_LIGHT_INDEX_SEARCH_NAMES`` if
+    using several databases for your project.
 """
 from __future__ import unicode_literals
 
@@ -53,7 +74,7 @@ from django.conf import settings
 
 __all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
     'TRANSLATION_LANGUAGES', 'TRANSLATION_SOURCES', 'SOURCES', 'DATA_DIR',
-    'INDEX_SEARCH_NAMES', ]
+    'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES']
 
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
@@ -72,6 +93,8 @@ SOURCES += TRANSLATION_SOURCES
 DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
     os.path.normpath(os.path.join(
         os.path.dirname(os.path.realpath(__file__)), 'data')))
+
+INCLUDE_COUNTRIES = getattr(settings, 'CITIES_LIGHT_INCLUDE_COUNTRIES', None)
 
 # MySQL doesn't support indexing TextFields
 INDEX_SEARCH_NAMES = getattr(settings, 'CITIES_LIGHT_INDEX_SEARCH_NAMES', None)
