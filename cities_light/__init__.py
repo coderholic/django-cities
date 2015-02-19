@@ -2,4 +2,4 @@ from .signals import *
 from .exceptions import *
 from .settings import *
 
-__version__ = '3.0.4'
+__version__ = '3.0.5'

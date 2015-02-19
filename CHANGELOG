@@ -1,3 +1,7 @@
+2015-02-19 3.0.5
+
+    Added CITIES_LIGHT_INCLUDE_COUNTRIES setting.
+
 2015-01-28 3.0.4
 
     Windows support by forcing utf8 by Mikael Österberg.
