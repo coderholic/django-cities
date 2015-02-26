@@ -65,6 +65,16 @@ because it's probably project specific.
     it is **not** MySQL), then this should be set to True. You might have to
     override this setting with ``settings.CITIES_LIGHT_INDEX_SEARCH_NAMES`` if
     using several databases for your project.
+
+.. py:data:: CITIES_LIGHT_APP_NAME
+
+    Modify it only if you want to define your custom cities models, that
+    are inherited from abstract models of this package.
+    It must be equal to app name, where custom models are defined.
+    For example, if they are in geo/models.py, then set
+    ``settings.CITIES_LIGHT_APP_NAME = 'geo'``.
+    Note: you can't define one custom model, you have to define all of
+    cities_light models, even if you want to modify only one.
 """
 from __future__ import unicode_literals
 
@@ -74,7 +84,8 @@ from django.conf import settings
 
 __all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
     'TRANSLATION_LANGUAGES', 'TRANSLATION_SOURCES', 'SOURCES', 'DATA_DIR',
-    'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES']
+    'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES', 'DEFAULT_APP_NAME',
+    'CITIES_LIGHT_APP_NAME']
 
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
@@ -103,3 +114,7 @@ if INDEX_SEARCH_NAMES is None:
     for database in list(settings.DATABASES.values()):
         if 'mysql' in database['ENGINE'].lower():
             INDEX_SEARCH_NAMES = False
+
+DEFAULT_APP_NAME = 'cities_light'
+CITIES_LIGHT_APP_NAME = getattr(settings, 'CITIES_LIGHT_APP_NAME',
+    DEFAULT_APP_NAME)

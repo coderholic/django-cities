@@ -29,14 +29,47 @@ Signals for this application.
 
     Same as :py:data:`~cities_light.signals.region_items_pre_import` and
     :py:data:`cities_light.signals.city_items_pre_import`.
+
+.. py:data:: city_items_post_import
+
+    Emited by city_import() in the cities_light command for each row parsed in
+    the data file, right before saving City object. Along with City instance
+    it pass items with geonames data. Will be useful, if you define custom
+    cities models with ``settings.CITIES_LIGHT_APP_NAME``.
+
+    Example::
+
+        import cities_light
+
+        def process_city_import(sender, instance, items, **kwargs):
+            instance.timezone = items[17]
+
+        cities_light.signals.city_items_post_import.connect(process_city_import)
+
+.. py:data:: region_items_post_import
+
+    Same as :py:data:`~cities_light.signals.city_items_post_import`.
+
+.. py:data:: country_items_post_import
+
+    Same as :py:data:`~cities_light.signals.region_items_post_import` and
+    :py:data:`cities_light.signals.city_items_post_import`.
 """
 from __future__ import unicode_literals
 
 import django.dispatch
 
 __all__ = ['city_items_pre_import', 'region_items_pre_import',
-           'country_items_pre_import']
+           'country_items_pre_import', 'city_items_post_import',
+           'region_items_post_import', 'country_items_post_import']
 
 city_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 region_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 country_items_pre_import = django.dispatch.Signal(providing_args=['items'])
+
+city_items_post_import = django.dispatch.Signal(
+    providing_args=['instance', 'items'])
+region_items_post_import = django.dispatch.Signal(
+    providing_args=['instance', 'items'])
+country_items_post_import = django.dispatch.Signal(
+    providing_args=['instance', 'items'])

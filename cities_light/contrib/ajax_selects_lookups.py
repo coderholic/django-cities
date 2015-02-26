@@ -10,7 +10,11 @@ Register the lookups in settings.AJAX_LOOKUP_CHANNELS, add::
 from ajax_select import LookupChannel
 from django.db.models import Q
 
-from ..models import *
+from ..loading import get_cities_model
+
+Country = get_cities_model('Country')
+Region = get_cities_model('Region')
+City = get_cities_model('City')
 
 
 class StandardLookupChannel(LookupChannel):

@@ -6,8 +6,12 @@ from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 
 from .forms import *
-from .models import *
 from .settings import *
+from .loading import get_cities_model
+
+Country = get_cities_model('Country')
+Region = get_cities_model('Region')
+City = get_cities_model('City')
 
 
 class CountryAdmin(admin.ModelAdmin):

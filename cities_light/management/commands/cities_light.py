@@ -24,9 +24,13 @@ from ...vendor import progressbar
 
 from ...exceptions import *
 from ...signals import *
-from ...models import *
 from ...settings import *
 from ...geonames import Geonames
+from ...loading import get_cities_model
+
+Country = get_cities_model('Country')
+Region = get_cities_model('Region')
+City = get_cities_model('City')
 
 
 class MemoryUsageWidget(progressbar.Widget):
@@ -246,6 +250,9 @@ It is possible to force the import of files which weren't downloaded using the
         if items[16]:
             country.geoname_id = items[16]
 
+        country_items_post_import.send(sender=self, instance=country,
+            items=items)
+
         self.save(country)
 
     def region_import(self, items):
@@ -289,6 +296,10 @@ It is possible to force the import of files which weren't downloaded using the
             region.name_ascii = items[2]
 
         region.geoname_id = items[3]
+
+        region_items_post_import.send(sender=self, instance=region,
+            items=items)
+
         self.save(region)
 
     def city_import(self, items):
@@ -375,6 +386,9 @@ It is possible to force the import of files which weren't downloaded using the
             # city may have been added manually
             city.geoname_id = items[0]
             save = True
+
+        city_items_post_import.send(sender=self, instance=city,
+            items=items, save=save)
 
         if save:
             self.save(city)
