@@ -7,6 +7,7 @@ from django.contrib.admin.views.main import ChangeList
 
 from .forms import *
 from .settings import *
+from .abstract_models import to_search
 from .loading import get_cities_model
 
 Country = get_cities_model('Country')
