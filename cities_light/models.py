@@ -1,8 +1,9 @@
 """
 By default, all models are taken from this package.
 But it is possible to customise these models to add some fields.
-For such purpose cities_light models are defined as abstract (without customisation
-they all inherit abstract versions without changes).
+For such purpose cities_light models are defined as abstract (without
+customisation they all inherit abstract versions automatically
+without changes).
 
 Steps to customise cities_light models
 ======================================
@@ -36,7 +37,7 @@ Steps to customise cities_light models
         import cities_light
 
         def set_city_fields(sender, instance, items, **kwargs):
-            instance.timezone_name = items[17]
+            instance.timezone = items[17]
         cities_light.signals.city_items_post_import.connect(set_city_fields)
 
 - Define settings.py:

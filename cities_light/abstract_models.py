@@ -16,7 +16,8 @@ import autoslug
 from .settings import INDEX_SEARCH_NAMES, CITIES_LIGHT_APP_NAME
 
 
-__all__ = ['AbstractCountry', 'AbstractRegion', 'AbstractCity', 'CONTINENT_CHOICES']
+__all__ = ['AbstractCountry', 'AbstractRegion', 'AbstractCity',
+    'CONTINENT_CHOICES']
 
 
 CONTINENT_CHOICES = (
@@ -151,7 +152,8 @@ class AbstractCity(Base):
     longitude = models.DecimalField(max_digits=8, decimal_places=5,
         null=True, blank=True)
 
-    region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region', blank=True, null=True)
+    region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region', blank=True,
+                               null=True)
     country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country')
     population = models.BigIntegerField(null=True, blank=True, db_index=True)
     feature_code = models.CharField(max_length=10, null=True, blank=True,
