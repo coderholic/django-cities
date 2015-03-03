@@ -1,3 +1,7 @@
+2015-03-04 3.1.0
+
+    Pluggable models feature contributed by Alexey Evseev.
+
 2015-02-19 3.0.5
 
     Added CITIES_LIGHT_INCLUDE_COUNTRIES setting.
