@@ -1,10 +1,8 @@
-from ..loading import get_cities_model
+from ..loading import get_cities_models
 
 import autocomplete_light
 
-Country = get_cities_model('Country')
-Region = get_cities_model('Region')
-City = get_cities_model('City')
+Country, Region, City = get_cities_models()
 
 
 class CityAutocomplete(autocomplete_light.AutocompleteModelBase):

@@ -29,11 +29,9 @@ from djangorestframework.views import ModelView, ListModelView
 from djangorestframework.mixins import InstanceMixin, ReadModelMixin
 from djangorestframework.resources import ModelResource
 
-from ..loading import get_cities_model
+from ..loading import get_cities_models
 
-Country = get_cities_model('Country')
-Region = get_cities_model('Region')
-City = get_cities_model('City')
+Country, Region, City = get_cities_models()
 
 
 class CityResource(ModelResource):

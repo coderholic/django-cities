@@ -8,11 +8,9 @@ from django.contrib.admin.views.main import ChangeList
 from .forms import *
 from .settings import *
 from .abstract_models import to_search
-from .loading import get_cities_model
+from .loading import get_cities_models
 
-Country = get_cities_model('Country')
-Region = get_cities_model('Region')
-City = get_cities_model('City')
+Country, Region, City = get_cities_models()
 
 
 class CountryAdmin(admin.ModelAdmin):

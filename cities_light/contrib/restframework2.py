@@ -26,11 +26,9 @@ try:
 except ImportError:
     from django.conf.urls import patterns, url, include
 
-from ..loading import get_cities_model
+from ..loading import get_cities_models
 
-Country = get_cities_model('Country')
-Region = get_cities_model('Region')
-City = get_cities_model('City')
+Country, Region, City = get_cities_models()
 
 
 class CitySerializer(HyperlinkedModelSerializer):

@@ -15,3 +15,7 @@ def get_cities_model(model_name, *args, **kwargs):
     ``settings.CITIES_LIGHT_APP_NAME``.
     """
     return get_model(CITIES_LIGHT_APP_NAME, model_name, *args, **kwargs)
+
+
+def get_cities_models(model_names=('Country', 'Region', 'City')):
+    return [get_cities_model(model_name) for model_name in model_names]

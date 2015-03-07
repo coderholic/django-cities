@@ -2,11 +2,9 @@ from __future__ import unicode_literals
 
 from django import forms
 
-from .loading import get_cities_model
+from .loading import get_cities_models
 
-Country = get_cities_model('Country')
-Region = get_cities_model('Region')
-City = get_cities_model('City')
+Country, Region, City = get_cities_models()
 
 __all__ = ['CountryForm', 'RegionForm', 'CityForm']
 
