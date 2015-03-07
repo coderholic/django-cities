@@ -232,21 +232,21 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
         try:
-            country = Country.objects.get(code2=items[ICountry.code])
+            country = Country.objects.get(code2=items[0])
         except Country.DoesNotExist:
             if self.noinsert:
                 return
-            country = Country(code2=items[ICountry.code])
+            country = Country(code2=items[0])
 
-        country.name = force_text(items[ICountry.name])
+        country.name = force_text(items[4])
         # Strip + prefix for consistency. Note that some countries have several
         # prefixes ie. Puerto Rico
-        country.phone = items[ICountry.phone].replace('+', '')
-        country.code3 = items[ICountry.code3]
-        country.continent = items[ICountry.continent]
-        country.tld = items[ICountry.tld][1:]  # strip the leading dot
-        if items[ICountry.geonameid]:
-            country.geoname_id = items[ICountry.geonameid]
+        country.phone = items[12].replace('+', '')
+        country.code3 = items[1]
+        country.continent = items[8]
+        country.tld = items[9][1:]  # strip the leading dot
+        if items[16]:
+            country.geoname_id = items[16]
 
         country_items_post_import.send(sender=self, instance=country,
             items=items)
@@ -261,16 +261,16 @@ It is possible to force the import of files which weren't downloaded using the
 
         items = [force_text(x) for x in items]
 
-        name = items[IRegion.name]
-        if not items[IRegion.name]:
-            name = items[IRegion.asciiName]
+        name = items[1]
+        if not items[1]:
+            name = items[2]
 
-        code2, geoname_code = items[IRegion.code].split('.')
+        code2, geoname_code = items[0].split('.')
 
         country_id = self._get_country_id(code2)
 
-        if items[IRegion.geonameid]:
-            kwargs = dict(geoname_id=items[IRegion.geonameid])
+        if items[3]:
+            kwargs = dict(geoname_id=items[3])
         else:
             kwargs = dict(name=name, country_id=country_id)
 
@@ -291,9 +291,9 @@ It is possible to force the import of files which weren't downloaded using the
             region.geoname_code = geoname_code
 
         if not region.name_ascii:
-            region.name_ascii = items[IRegion.asciiName]
+            region.name_ascii = items[2]
 
-        region.geoname_id = items[IRegion.geonameid]
+        region.geoname_id = items[3]
 
         region_items_post_import.send(sender=self, instance=region,
             items=items)
@@ -307,7 +307,7 @@ It is possible to force the import of files which weren't downloaded using the
             return
 
         try:
-            country_id = self._get_country_id(items[ICity.countryCode])
+            country_id = self._get_country_id(items[8])
         except Country.DoesNotExist:
             if self.noinsert:
                 return
@@ -315,8 +315,8 @@ It is possible to force the import of files which weren't downloaded using the
                 raise
 
         try:
-            kwargs = dict(name=force_text(items[ICity.name]),
-                country_id=self._get_country_id(items[ICity.countryCode]))
+            kwargs = dict(name=force_text(items[1]),
+                country_id=self._get_country_id(items[8]))
         except Country.DoesNotExist:
             if self.noinsert:
                 return
@@ -324,8 +324,7 @@ It is possible to force the import of files which weren't downloaded using the
                 raise
 
         try:
-            kwargs['region_id'] = self._get_region_id(items[ICity.countryCode],
-                items[ICity.admin1Code])
+            kwargs['region_id'] = self._get_region_id(items[8], items[10])
         except Region.DoesNotExist:
             pass
 
@@ -342,10 +341,9 @@ It is possible to force the import of files which weren't downloaded using the
 
         except City.DoesNotExist:
             try:
-                city = City.objects.get(geoname_id=items[ICity.geonameid])
-                city.name = force_text(items[ICity.name])
-                city.country_id = self._get_country_id(
-                    items[ICity.countryCode])
+                city = City.objects.get(geoname_id=items[0])
+                city.name = force_text(items[1])
+                city.country_id = self._get_country_id(items[8])
             except City.DoesNotExist:
                 if self.noinsert:
                     return
@@ -359,32 +357,32 @@ It is possible to force the import of files which weren't downloaded using the
 
         if not city.name_ascii:
             # useful for cities with chinese names
-            city.name_ascii = items[ICity.asciiName]
+            city.name_ascii = items[2]
             save = True
 
         if not city.latitude:
-            city.latitude = items[ICity.latitude]
+            city.latitude = items[4]
             save = True
 
         if not city.longitude:
-            city.longitude = items[ICity.longitude]
+            city.longitude = items[5]
             save = True
 
         if not city.population:
-            city.population = items[ICity.population]
+            city.population = items[14]
             save = True
 
         if not city.feature_code:
-            city.feature_code = items[ICity.featureCode]
+            city.feature_code = items[7]
             save = True
 
         if not TRANSLATION_SOURCES and not city.alternate_names:
-            city.alternate_names = force_text(items[ICity.alternateNames])
+            city.alternate_names = force_text(items[3])
             save = True
 
         if not city.geoname_id:
             # city may have been added manually
-            city.geoname_id = items[ICity.geonameid]
+            city.geoname_id = items[0]
             save = True
 
         city_items_post_import.send(sender=self, instance=city,
@@ -413,34 +411,28 @@ It is possible to force the import of files which weren't downloaded using the
             # avoid shortnames, colloquial, and historic
             return
 
-        item_lang = items[IAlternate.language]
-
-        if item_lang not in TRANSLATION_LANGUAGES:
+        if items[2] not in TRANSLATION_LANGUAGES:
             return
 
-        item_geoid = items[IAlternate.geonameid]
-        item_name = items[IAlternate.name]
-
         # arg optimisation code kills me !!!
-        item_geoid = int(item_geoid)
+        items[1] = int(items[1])
 
-        if item_geoid in self.country_ids:
+        if items[1] in self.country_ids:
             model_class = Country
-        elif item_geoid in self.region_ids:
+        elif items[1] in self.region_ids:
             model_class = Region
-        elif item_geoid in self.city_ids:
+        elif items[1] in self.city_ids:
             model_class = City
         else:
             return
 
-        if item_geoid not in self.translation_data[model_class]:
-            self.translation_data[model_class][item_geoid] = {}
+        if items[1] not in self.translation_data[model_class]:
+            self.translation_data[model_class][items[1]] = {}
 
-        if item_lang not in self.translation_data[model_class][item_geoid]:
-            self.translation_data[model_class][item_geoid][item_lang] = []
+        if items[2] not in self.translation_data[model_class][items[1]]:
+            self.translation_data[model_class][items[1]][items[2]] = []
 
-        self.translation_data[model_class][item_geoid][item_lang].append(
-            item_name)
+        self.translation_data[model_class][items[1]][items[2]].append(items[3])
 
     def translation_import(self):
         data = getattr(self, 'translation_data', None)
