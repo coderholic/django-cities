@@ -85,7 +85,8 @@ from django.conf import settings
 __all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
     'TRANSLATION_LANGUAGES', 'TRANSLATION_SOURCES', 'SOURCES', 'DATA_DIR',
     'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES', 'DEFAULT_APP_NAME',
-    'CITIES_LIGHT_APP_NAME']
+    'CITIES_LIGHT_APP_NAME', 'ICountry', 'IRegion', 'ICity',
+    'IAlternate']
 
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
@@ -118,3 +119,77 @@ if INDEX_SEARCH_NAMES is None:
 DEFAULT_APP_NAME = 'cities_light'
 CITIES_LIGHT_APP_NAME = getattr(settings, 'CITIES_LIGHT_APP_NAME',
     DEFAULT_APP_NAME)
+
+
+class ICountry:
+    """
+    Country field indexes in geonames.
+    """
+    code = 0
+    code3 = 1
+    codeNum = 2
+    fips = 3
+    name = 4
+    capital = 5
+    area = 6
+    population = 7
+    continent = 8
+    tld = 9
+    currencyCode = 10
+    currencyName = 11
+    phone = 12
+    postalCodeFormat = 13
+    postalCodeRegex = 14
+    languages = 15
+    geonameid = 16
+    neighbours = 17
+    equivalentFips = 18
+
+
+class IRegion:
+    """
+    Region field indexes in geonames.
+    """
+    code = 0
+    name = 1
+    asciiName = 2
+    geonameid = 3
+
+
+class ICity:
+    """
+    City field indexes in geonames.
+    """
+    geonameid = 0
+    name = 1
+    asciiName = 2
+    alternateNames = 3
+    latitude = 4
+    longitude = 5
+    featureClass = 6
+    featureCode = 7
+    countryCode = 8
+    cc2 = 9
+    admin1Code = 10
+    admin2Code = 11
+    admin3Code = 12
+    admin4Code = 13
+    population = 14
+    elevation = 15
+    gtopo30 = 16
+    timezone = 17
+    modificationDate = 18
+
+
+class IAlternate:
+    """
+    Alternate names field indexes in geonames.
+    """
+    nameid = 0
+    geonameid = 1
+    language = 2
+    name = 3
+    isPreferred = 4
+    isShort = 5
+    isColloquial = 6
+    isHistoric = 7
