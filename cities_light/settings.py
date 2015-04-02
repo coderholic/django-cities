@@ -159,6 +159,7 @@ class IRegion:
 class ICity:
     """
     City field indexes in geonames.
+    Description of fields: http://download.geonames.org/export/dump/readme.txt
     """
     geonameid = 0
     name = 1
@@ -184,6 +185,7 @@ class ICity:
 class IAlternate:
     """
     Alternate names field indexes in geonames.
+    Description of fields: http://download.geonames.org/export/dump/readme.txt
     """
     nameid = 0
     geonameid = 1
