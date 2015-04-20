@@ -17,7 +17,7 @@ class CountryAutocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields = ('name', 'name_ascii')
 
 
-class RestAutocompleteBase(autocomplete_light. AutocompleteRestModel):
+class RestAutocompleteBase(autocomplete_light.AutocompleteRestModel):
     def model_for_source_url(self, url):
         """
         Return the appropriate model for the urls defined by
