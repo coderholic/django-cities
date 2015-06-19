@@ -1,6 +1,7 @@
 try:
+    from django.utils.encoding import force_unicode
+except NameError, ImportError:
     from django.utils.encoding import force_text
-except NameError:
     force_unicode = force_text
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
