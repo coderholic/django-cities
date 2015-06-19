@@ -85,7 +85,7 @@ class Command(BaseCommand):
         urls = [e.format(filename=filename) for e in settings.files[filekey]['urls']]
         for url in urls:
             try:
-                web_file = urllib.urlopen(url)
+                web_file = urllib.request.urlopen(url)
                 if 'html' in web_file.headers['content-type']: raise Exception()
                 break
             except:
@@ -128,7 +128,8 @@ class Command(BaseCommand):
 
     def get_data(self, filekey):
         filename = settings.files[filekey]['filename']
-        file = open(os.path.join(self.data_dir, filename), 'rb')
+        print(filename)
+        file = open(os.path.join(self.data_dir, filename), 'r')
         name, ext = filename.rsplit('.', 1)
         if (ext == 'zip'):
             file = zipfile.ZipFile(file).open(name + '.txt')
@@ -325,6 +326,7 @@ class Command(BaseCommand):
                 pass
             
             if not self.call_hook('city_post', city, item): continue
+            print( city)
             city.save()
             self.logger.debug("Added city: {0}".format(city))
         
@@ -489,8 +491,8 @@ class Command(BaseCommand):
             self.logger.debug("Adding postal code: {0}, {1}".format(pc.country, pc))
             try:
                 pc.save()
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
 
     def flush_country(self):
         self.logger.info("Flushing country data")
