@@ -131,8 +131,9 @@ class Command(BaseCommand):
         file = open(os.path.join(self.data_dir, filename), 'r')
         name, ext = filename.rsplit('.', 1)
         if (ext == 'zip'):
-            file = zipfile.ZipFile(file).extractall(self.data_dir)
-            fiel = open(os.path.join(self.data_dir, name + '.txt'), 'r')
+            file = zipfile.ZipFile(os.path.join(self.data_dir, filename)).extractall(self.data_dir)
+            #file = zipfile.ZipFile(file).extractall(self.data_dir)
+            file = open(os.path.join(self.data_dir, name + '.txt'), 'r')
 
         data = (
             dict(zip(settings.files[filekey]['fields'], row.split("\t"))) 
