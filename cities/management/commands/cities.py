@@ -128,11 +128,11 @@ class Command(BaseCommand):
 
     def get_data(self, filekey):
         filename = settings.files[filekey]['filename']
-        print(filename)
         file = open(os.path.join(self.data_dir, filename), 'r')
         name, ext = filename.rsplit('.', 1)
         if (ext == 'zip'):
-            file = zipfile.ZipFile(file).open(name + '.txt')
+            file = zipfile.ZipFile(file).extractall(self.data_dir)
+            fiel = open(os.path.join(self.data_dir, name + '.txt'), 'r')
 
         data = (
             dict(zip(settings.files[filekey]['fields'], row.split("\t"))) 

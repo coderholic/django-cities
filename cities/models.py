@@ -1,5 +1,7 @@
-from django.utils.encoding import force_text
-force_unicode = force_text
+try:
+    from django.utils.encoding import force_text
+except ImportError:
+    force_unicode = force_text
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
 from .conf import settings
@@ -32,6 +34,9 @@ class Place(models.Model):
     def __unicode__(self):
         return force_unicode(self.name)
 
+    def __str__(self):
+        return self.__unicode__()
+    
 class Country(Place):
     code = models.CharField(max_length=2, db_index=True)
     code3 = models.CharField(max_length=3, db_index=True)
