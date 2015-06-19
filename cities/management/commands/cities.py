@@ -327,7 +327,6 @@ class Command(BaseCommand):
                 pass
             
             if not self.call_hook('city_post', city, item): continue
-            print( city)
             city.save()
             self.logger.debug("Added city: {0}".format(city))
         
