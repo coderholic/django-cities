@@ -1,6 +1,7 @@
 from importlib import import_module
 from collections import defaultdict
 from django.conf import settings as django_settings
+from django.core.exceptions import ImproperlyConfigured
     
 __all__ = [
     'city_types','district_types',
@@ -189,7 +190,13 @@ def create_settings():
     res.files = files.copy()
     if hasattr(django_settings, "CITIES_FILES"):
         for key in django_settings.CITIES_FILES.keys():
+            if 'filenames' in django_settings.CITIES_FILES[key] and 'filename' in django_settings.CITIES_FILES[key]:
+                raise ImproperlyConfigured(
+                    "Only one key should be specified for '%s': 'filename' of 'filenames'. Both specified instead" % key
+                )
             res.files[key].update(django_settings.CITIES_FILES[key])
+            if 'filenames' in django_settings.CITIES_FILES[key]:
+                del res.files[key]['filename']
 
     if hasattr(django_settings, "CITIES_LOCALES"):
         locales = django_settings.CITIES_LOCALES[:]
