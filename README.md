@@ -62,6 +62,14 @@ CITIES_FILES = {
     },
 }
 
+# Alternatively you can specify multiple filenames to process:
+CITIES_FILES = {
+    'city': {
+       'filenames': ["US.zip", "GB.zip", ]
+       'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+    },
+}
+
 # Localized names will be imported for all ISO 639-1 locale codes below.
 # 'und' is undetermined language data (most alternate names are missing a lang tag).
 # See download.geonames.org/export/dump/iso-languagecodes.txt
