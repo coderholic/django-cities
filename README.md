@@ -85,9 +85,27 @@ CITIES_POSTAL_CODES = ['US', 'CA']
 # List of plugins to process data during import
 CITIES_PLUGINS = [
     'cities.plugin.postal_code_ca.Plugin',  # Canada postal codes need region codes remapped to match geonames
-    'cities.plugin.reset_queries.Plugin',  # plugin that helps to reduce memory usage when importing large datasets (e.g. "allCountries.zip")
+    'cities.plugin.reset_queries.Plugin',  # plugin that helps to reduce memory usage when importing large datasets (e.g. "allCountries.zip").
 ]
+
+CITIES_PLUGINS_RESET_QUERIES_CHANCE = 1.0 / 1000000  # this setting may be specified if you use 'cities.plugin.reset_queries.Plugin'
 ```
+
+
+### Writing plugins
+
+You can specify import path of any class in ``CITIES_PLUGINS``. to affect import it should have one of following methods:
+
+* ``FOO_pre(self, parser, item)``;
+* ``FOO_post(self, parser, model_instance, item)``,
+
+where "FOO" should be one of: "country", "region", "subregion", "city", "district", "alt_name" or "postal_code".
+
+Arguments passed to hooks:
+
+* ``parser``: instance of "cities" management command;
+* ``item``: dict instance with data for row being processed;
+* ``model_instance``: instance of model that was created based on ``item``.
 
 ### Examples
 
@@ -136,6 +154,26 @@ This repository contains an example project which lets you browse the place hier
 These are apps that build on top of the ``django-cities``. Useful for essentially extending what ``django-cities`` can do.
 
 * [django-airports](https://github.com/bashu/django-airports) provides you with airport related model and data (from OpenFlights) that can be used in your django projects.
+
+### Running tests
+
+1. install postgres, postgis and libgdal-dev
+2. create django_cities database:
+
+        sudo su -l postgres
+        # Enter your password
+        createuser -d -s -P some_username
+        # Enter password
+        createdb -T template0 -E utf-8 -l en_US.UTF-8 -O multitest django_cities
+        psql  -c 'create extension postgis;' -d django_cities
+
+3. Run tests:
+
+        POSTGRES_USER=some_username POSTGRES_PASSWORD='password from createuser step' tox
+        
+        # if you have changed example data files then you should push your changes to github and specify commit and repo variables:
+        TRAVIS_COMMIT=`git rev-parse HEAD` TRAVIS_REPO_SLUG='github-username/django-cities' POSTGRES_USER=some_username POSTGRES_PASSWORD='password from createuser ste' tox
+
 
 ### Notes
 
