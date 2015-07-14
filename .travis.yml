@@ -1,0 +1,28 @@
+language: python
+services:
+  - postgresql
+python:
+  - "2.7"
+#  - "3.3"
+#  - "3.4"
+env:
+  - TOX_ENV=py27-1.5
+  - TOX_ENV=py27-1.6
+  - TOX_ENV=py27-1.7
+#  - TOX_ENV=py27-1.8
+#  - TOX_ENV=py33-1.6
+#  - TOX_ENV=py33-1.7
+#  - TOX_ENV=py33-1.8
+#  - TOX_ENV=py34-1.6
+#  - TOX_ENV=py34-1.7
+#  - TOX_ENV=py34-1.8
+install:
+  - pip install tox
+virtualenv: # to use gdal
+  system_site_packages: true
+before_script:
+  - psql -U postgres -c "create extension postgis"
+  - psql -c 'create database django_cities;' -U postgres
+  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d django_cities
+script:
+  - tox -e $TOX_ENV
