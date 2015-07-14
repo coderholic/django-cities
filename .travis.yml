@@ -1,0 +1,30 @@
+language: python
+services:
+  - postgresql
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+env:
+  - DJANGO=1.7.11
+  - DJANGO=1.8.14
+  - DJANGO=1.9.9
+  - DJANGO=1.10
+matrix:
+  exclude:
+    - python: "3.5"
+      env: DJANGO=1.7.11
+    - python: "3.3"
+      env: DJANGO=1.9.9
+    - python: "3.3"
+      env: DJANGO=1.10
+install:
+  - pip install -q tox tqdm psycopg2
+  - pip install -q Django==$DJANGO
+before_script:
+  - psql -U postgres -c "create extension postgis"
+  - psql -c 'create database django_cities;' -U postgres
+  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d django_cities
+script:
+  - PYTHONPATH=. python test_project/manage.py test test_app --noinput

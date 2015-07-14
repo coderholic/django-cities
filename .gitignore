@@ -1,6 +1,7 @@
 *.pyc
 
 *.egg-info
+.tox
 build
 dist
 cities/data
@@ -8,3 +9,5 @@ cities/data
 # WebDAV file system cache
 .DAV/
 
+
+__pycache__
