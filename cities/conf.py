@@ -6,7 +6,8 @@ from django.core.exceptions import ImproperlyConfigured
 __all__ = [
     'city_types', 'district_types',
     'import_opts', 'import_opts_all', 'HookException', 'settings',
-    'NO_LONGER_EXISTENT_COUNTRY_CODES'
+    'CONTINENT_DATA', 'NO_LONGER_EXISTENT_COUNTRY_CODES',
+    'CITIES_IGNORE_EMPTY_REGIONS',
 ]
 
 url_bases = {

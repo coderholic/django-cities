@@ -55,7 +55,8 @@ class Country(Place):
     currency_name = models.CharField(max_length=50, null=True)
     languages = models.CharField(max_length=250, null=True)
     phone = models.CharField(max_length=20)
-    continent = models.CharField(max_length=2)
+    continent = models.ForeignKey(Continent, null=True,
+                                  related_name='countries')
     tld = models.CharField(max_length=5)
     capital = models.CharField(max_length=100)
     neighbours = models.ManyToManyField("self")

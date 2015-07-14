@@ -1,0 +1,29 @@
+# truncated version of http://download.geonames.org/export/dump/admin1CodesASCII.txt
+# please read http://www.geonames.org/export/zip/readme.txt for license info
+UA.27 Zhytomyr	Zhytomyr	686966
+UA.26 Zaporizhia	Zaporizhia	687699
+UA.25 Zakarpattia Zakarpattia 687869
+UA.24 Volyn Volyn 689064
+UA.23 Vinnyts'ka	Vinnyts'ka	689559
+UA.22 Ternopil	Ternopil	691649
+UA.21 Sumy	Sumy	692196
+UA.20 Misto Sevastopol’ Misto Sevastopol' 694422
+UA.19 Rivne Rivne 695592
+UA.18 Poltava Poltava 696634
+UA.17 Odessa	Odessa	698738
+UA.16 Mykolaiv	Mykolaiv	700567
+UA.15 Lviv	Lviv	702549
+UA.14 Luhansk Luhansk 702657
+UA.13 Kiev	Kiev	703446
+UA.12 Kyiv City Kyiv City 703447
+UA.11 Crimea	Crimea	703883
+UA.10 Kirovohrad	Kirovohrad	705811
+UA.09 Khmelnytskyi	Khmelnytskyi	706370
+UA.08 Kherson Kherson 706442
+UA.07 Kharkiv Kharkiv 706482
+UA.06 Ivano-Frankivsk Ivano-Frankivsk 707470
+UA.05 Donetsk Donetsk 709716
+UA.04 Dnipropetrovsk	Dnipropetrovsk	709929
+UA.03 Chernivtsi	Chernivtsi	710720
+UA.02 Chernihiv Chernihiv 710734
+UA.01 Cherkasy	Cherkasy	710802

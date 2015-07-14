@@ -72,17 +72,17 @@ class Migration(migrations.Migration):
             name='alt_names',
             field=models.ManyToManyField(related_name='cities_continents', to='cities.AlternativeName'),
         ),
+        migrations.RenameField(
+            model_name='country',
+            old_name='continent',
+            new_name='continent_code',
+        ),
         migrations.AddField(
             model_name='country',
             name='continent',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='countries', to='cities.Continent'),
         ),
         migrations.RunPython(add_continents, rm_continents),
-        migrations.RenameField(
-            model_name='country',
-            old_name='continent',
-            new_name='continent_code',
-        ),
         migrations.RunPython(add_continent_fks, rm_continent_fks),
         migrations.RemoveField(
             model_name='country',

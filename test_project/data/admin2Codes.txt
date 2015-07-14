@@ -1,0 +1,5 @@
+# truncated version of http://download.geonames.org/export/dump/admin2Codes.txt
+# please read http://www.geonames.org/export/zip/readme.txt for license info
+UA.03.686734	Sokyryans’kyy Rayon	Sokyryans'kyy Rayon	686734
+UA.07.686892	Zolochivs’kyy Rayon	Zolochivs'kyy Rayon	686892
+UA.04.687050	Zhovtnevyy Rayon	Zhovtnevyy Rayon	687050
