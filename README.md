@@ -130,6 +130,12 @@ This repository contains an example project which lets you browse the place hier
 [<PostalCode: 94040>, <PostalCode: 94041>, <PostalCode: 94043>, <PostalCode: 94024>, <PostalCode: 94022>]
 ```
 
+###  Third-party apps / extensions
+
+These are apps that build on top of the ``django-cities``. Useful for essentially extending what ``django-cities`` can do.
+
+* [django-airports](https://github.com/bashu/django-airports) provides you with airport related model and data (from OpenFlights) that can be used in your django projects.
+
 ### Notes
 
 Some datasets are very large (> 100 MB) and take time to download / import, and there's no progress display.
