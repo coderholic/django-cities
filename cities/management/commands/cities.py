@@ -22,6 +22,7 @@ import zipfile
 import time
 from itertools import chain
 from optparse import make_option
+from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 from django.db import connection
@@ -79,8 +80,11 @@ class Command(BaseCommand):
                     return False
         return True
 
-    def download(self, filekey):
-        filename = settings.files[filekey]['filename']
+    def download(self, filekey, key_index=None):
+        if key_index is None:
+            filename = settings.files[filekey]['filename']
+        else:
+            filename = settings.files[filekey]['filenames'][key_index]
         web_file = None
         urls = [e.format(filename=filename) for e in settings.files[filekey]['urls']]
         for url in urls:
@@ -120,25 +124,40 @@ class Command(BaseCommand):
             raise Exception("File not found and download failed: " + filename)
             
         return uptodate
-    
+
     def download_once(self, filekey):
-        if filekey in self.download_cache: return self.download_cache[filekey]
-        uptodate = self.download_cache[filekey] = self.download(filekey)
+
+        if 'filename' in settings.files[filekey]:
+            download_args = [(filekey, None)]
+        else:
+            download_args = []
+            for i, name in enumerate(settings.files[filekey]['filenames']):
+                download_args.append((filekey, i))
+
+        uptodate = True
+        for filekey, i in download_args:
+            download_key = '%s-%s' % (filekey, i)
+            if download_key in self.download_cache:
+                continue
+            self.download_cache[filekey] = self.download(filekey, i)
+            uptodate = uptodate and self.download_cache[filekey]
         return uptodate
 
     def get_data(self, filekey):
-        filename = settings.files[filekey]['filename']
-        file = open(os.path.join(self.data_dir, filename), 'rb')
-        name, ext = filename.rsplit('.', 1)
-        if (ext == 'zip'):
-            file = zipfile.ZipFile(file).open(name + '.txt')
+        if 'filename' in settings.files[filekey]:
+            filenames = [settings.files[filekey]['filename']]
+        else:
+            filenames = settings.files[filekey]['filenames']
 
-        data = (
-            dict(zip(settings.files[filekey]['fields'], row.split("\t"))) 
-            for row in file if not row.startswith('#')
-        )
+        for filename in filenames:
+            file_obj = open(os.path.join(self.data_dir, filename), 'rb')
+            name, ext = filename.rsplit('.', 1)
+            if (ext == 'zip'):
+                file_obj = zipfile.ZipFile(file_obj).open(name + '.txt')
 
-        return data
+            for row in file_obj:
+                if not row.startswith('#'):
+                    yield dict(zip(settings.files[filekey]['fields'], row.split("\t"))) 
 
     def parse(self, data):
         for line in data:
