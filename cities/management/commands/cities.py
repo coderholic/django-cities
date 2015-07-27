@@ -22,14 +22,24 @@ import zipfile
 import time
 from itertools import chain
 from optparse import make_option
+
+import django
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 from django.db import connection, transaction
 from django.contrib.gis.gdal.envelope import Envelope
+
 from ...conf import *
 from ...models import *
 from ...util import geo_distance
+
+
+# TODO: Remove backwards compatibility once django-cities requires Django 1.7
+# or 1.8 LTS.
+_transact = (transaction.commit_on_success if django.VERSION < (1, 6) else
+             transaction.atomic)
+
 
 class Command(BaseCommand):
     app_dir = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../..')
@@ -49,7 +59,7 @@ class Command(BaseCommand):
         ),
     )
 
-    @transaction.commit_on_success
+    @_transact
     def handle(self, *args, **options):
         self.download_cache = {}
         self.options = options
