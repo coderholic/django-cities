@@ -189,7 +189,7 @@ def create_settings():
     
     res.files = files.copy()
     if hasattr(django_settings, "CITIES_FILES"):
-        for key in django_settings.CITIES_FILES.keys():
+        for key in list(django_settings.CITIES_FILES.keys()):
             if 'filenames' in django_settings.CITIES_FILES[key] and 'filename' in django_settings.CITIES_FILES[key]:
                 raise ImproperlyConfigured(
                     "Only one key should be specified for '%s': 'filename' of 'filenames'. Both specified instead" % key
