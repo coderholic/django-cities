@@ -20,7 +20,7 @@ DATABASES = {
     }
 }
 
-TEMPLATE_DIRS = (rel("templates"))
+TEMPLATE_DIRS = (rel("templates"),)
 TIME_ZONE = 'UTC'
 LANGUAGE_CODE = 'en-us'
 
