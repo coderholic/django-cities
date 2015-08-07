@@ -41,13 +41,30 @@ Either clone this repository into your project, or install with ```pip install d
 You'll need to add ```cities``` to ```INSTALLED_APPS``` in your projects settings.py file:
 
 ```python
+import django
+
 INSTALLED_APPS = (
     ...
     'cities',
 )
+
+if django.VERSION < (1, 7):
+    INSTALLED_APPS += (
+        'south',
+    )
 ```
 
 Then run ```./manage.py syncdb``` to create the required database tables, and ```./manage.py cities --import=all``` to import all of the place data. **NOTE:** This can take a long time.
+
+#### Upgrading from 0.4.1
+
+Upgrading from 0.4.1 is likely to cause problems trying to apply a
+migration when the tables already exist. In this case a fake migration
+needs to be applied:
+
+```shell
+./manage.py migrate cities 0001 --fake
+```
 
 ### Configuration
 
