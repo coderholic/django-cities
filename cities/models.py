@@ -38,9 +38,7 @@ class Place(models.Model):
     def __str__(self):
         return force_text(self.name)
 
-    def __str__(self):
-        return self.__unicode__()
-    
+
 class Country(Place):
     code = models.CharField(max_length=2, db_index=True)
     code3 = models.CharField(max_length=3, db_index=True)
