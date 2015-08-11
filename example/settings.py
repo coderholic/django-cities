@@ -1,4 +1,6 @@
 import os
+import django
+
 def rel(path):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), path)
 
@@ -18,7 +20,7 @@ DATABASES = {
     }
 }
 
-TEMPLATE_DIRS = (rel("templates"))
+TEMPLATE_DIRS = (rel("templates"),)
 TIME_ZONE = 'UTC'
 LANGUAGE_CODE = 'en-us'
 
@@ -34,8 +36,14 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.admin',
+    'django.contrib.gis',
     'cities',
 )
+
+if django.VERSION < (1, 7):
+    INSTALLED_APPS += (
+        'south',
+    )
 
 CITIES_POSTAL_CODES = ['ALL']
 CITIES_LOCALES = ['ALL']

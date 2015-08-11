@@ -3,6 +3,8 @@ try:
 except (NameError, ImportError):
     from django.utils.encoding import force_text
     force_unicode = force_text
+
+from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
 from .conf import settings
@@ -12,6 +14,7 @@ __all__ = [
         'City', 'District', 'PostalCode', 'AlternativeName', 
 ]
 
+@python_2_unicode_compatible
 class Place(models.Model):
     name = models.CharField(max_length=200, db_index=True, verbose_name="ascii name")
     slug = models.CharField(max_length=200)
@@ -32,8 +35,8 @@ class Place(models.Model):
     def get_absolute_url(self):
         return "/".join([place.slug for place in self.hierarchy])
 
-    def __unicode__(self):
-        return force_unicode(self.name)
+    def __str__(self):
+        return force_text(self.name)
 
     def __str__(self):
         return self.__unicode__()
@@ -59,9 +62,6 @@ class Country(Place):
     @property
     def parent(self):
         return None
-
-    def __unicode__(self):
-        return force_unicode(self.name)
 
 class Region(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
@@ -115,6 +115,7 @@ class District(Place):
     def parent(self):
         return self.city
 
+@python_2_unicode_compatible
 class AlternativeName(models.Model):
     name = models.CharField(max_length=256)
     language = models.CharField(max_length=100)
@@ -122,9 +123,10 @@ class AlternativeName(models.Model):
     is_short = models.BooleanField(default=False)
     is_colloquial = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return "%s (%s)" % (force_unicode(self.name), force_unicode(self.language))
+    def __str__(self):
+        return "%s (%s)" % (force_text(self.name), force_text(self.language))
 
+@python_2_unicode_compatible
 class PostalCode(Place):
     code = models.CharField(max_length=20)
     location = models.PointField()
@@ -145,18 +147,19 @@ class PostalCode(Place):
     @property
     def name_full(self):
         """Get full name including hierarchy"""
-        return u', '.join(reversed(self.names)) 
+        return force_text(', '.join(reversed(self.names)))
 
     @property
     def names(self):
         """Get a hierarchy of non-null names, root first"""
         return [e for e in [
-            force_unicode(self.country),
-            force_unicode(self.region_name),
-            force_unicode(self.subregion_name),
-            force_unicode(self.district_name),
-            force_unicode(self.name),
+            force_text(self.country),
+            force_text(self.region_name),
+            force_text(self.subregion_name),
+            force_text(self.district_name),
+            force_text(self.name),
         ] if e]
 
-    def __unicode__(self):
-        return force_unicode(self.code)
+    def __str__(self):
+        return force_text(self.code)
+    

@@ -14,21 +14,38 @@ http://download.geonames.org/export/zip/
 - Postal Codes:         allCountries.zip
 """
 
+import io
 import os
 import sys
-import urllib
 import logging
 import zipfile
 import time
+
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib import urlopen
+    
 from itertools import chain
 from optparse import make_option
+
+import django
+from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
-from django.db import connection
+from django.db import connection, transaction
 from django.contrib.gis.gdal.envelope import Envelope
+
 from ...conf import *
 from ...models import *
 from ...util import geo_distance
+
+
+# TODO: Remove backwards compatibility once django-cities requires Django 1.7
+# or 1.8 LTS.
+_transact = (transaction.commit_on_success if django.VERSION < (1, 6) else
+             transaction.atomic)
+
 
 class Command(BaseCommand):
     app_dir = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../..')
@@ -48,6 +65,7 @@ class Command(BaseCommand):
         ),
     )
 
+    @_transact
     def handle(self, *args, **options):
         self.download_cache = {}
         self.options = options
@@ -79,20 +97,23 @@ class Command(BaseCommand):
                     return False
         return True
 
-    def download(self, filekey):
-        filename = settings.files[filekey]['filename']
+    def download(self, filekey, key_index=None):
+        if key_index is None:
+            filename = settings.files[filekey]['filename']
+        else:
+            filename = settings.files[filekey]['filenames'][key_index]
         web_file = None
         urls = [e.format(filename=filename) for e in settings.files[filekey]['urls']]
         for url in urls:
             try:
-                web_file = urllib.request.urlopen(url)
+                web_file = urlopen(url)
                 if 'html' in web_file.headers['content-type']: raise Exception()
                 break
             except:
                 web_file = None
                 continue
         else:
-            self.logger.error("Web file not found: {0}. Tried URLs:\n{1}".format(filename, '\n'.join(urls)))
+            self.logger.error("Web file not found: %s. Tried URLs:\n%s", filename, '\n'.join(urls))
             
         uptodate = False
         filepath = os.path.join(self.data_dir, filename)
@@ -113,34 +134,49 @@ class Command(BaseCommand):
             self.logger.info("Downloading: " + filename)
             if not os.path.exists(self.data_dir):
                 os.makedirs(self.data_dir)
-            file = open(os.path.join(self.data_dir, filename), 'wb')
+            file = io.open(os.path.join(self.data_dir, filename), 'wb')
             file.write(web_file.read())
             file.close()
         elif not os.path.exists(filepath):
             raise Exception("File not found and download failed: " + filename)
             
         return uptodate
-    
+
     def download_once(self, filekey):
-        if filekey in self.download_cache: return self.download_cache[filekey]
-        uptodate = self.download_cache[filekey] = self.download(filekey)
+
+        if 'filename' in settings.files[filekey]:
+            download_args = [(filekey, None)]
+        else:
+            download_args = []
+            for i, name in enumerate(settings.files[filekey]['filenames']):
+                download_args.append((filekey, i))
+
+        uptodate = True
+        for filekey, i in download_args:
+            download_key = '%s-%s' % (filekey, i)
+            if download_key in self.download_cache:
+                continue
+            self.download_cache[filekey] = self.download(filekey, i)
+            uptodate = uptodate and self.download_cache[filekey]
         return uptodate
 
     def get_data(self, filekey):
-        filename = settings.files[filekey]['filename']
-        file = open(os.path.join(self.data_dir, filename), 'r')
-        name, ext = filename.rsplit('.', 1)
-        if (ext == 'zip'):
-            file = zipfile.ZipFile(os.path.join(self.data_dir, filename)).extractall(self.data_dir)
-            #file = zipfile.ZipFile(file).extractall(self.data_dir)
-            file = open(os.path.join(self.data_dir, name + '.txt'), 'r')
+        if 'filename' in settings.files[filekey]:
+            filenames = [settings.files[filekey]['filename']]
+        else:
+            filenames = settings.files[filekey]['filenames']
 
-        data = (
-            dict(zip(settings.files[filekey]['fields'], row.split("\t"))) 
-            for row in file if not row.startswith('#')
-        )
+        for filename in filenames:
+            name, ext = filename.rsplit('.', 1)
+            if (ext == 'zip'):
+                zipfile.ZipFile(os.path.join(self.data_dir, filename)).extractall(self.data_dir)
+                file_obj = io.open(os.path.join(self.data_dir, name + '.txt'), 'r', encoding='utf-8')
+            else:
+                file_obj = io.open(os.path.join(self.data_dir, filename), 'r', encoding='utf-8')
 
-        return data
+            for row in file_obj:
+                if not row.startswith('#'):
+                    yield dict(list(zip(settings.files[filekey]['fields'], row.split("\t"))))
 
     def parse(self, data):
         for line in data:
@@ -187,7 +223,7 @@ class Command(BaseCommand):
             if not self.call_hook('country_post', country, item): continue 
             country.save()
 
-        for country, neighbour_codes in neighbours.items():
+        for country, neighbour_codes in list(neighbours.items()):
             neighbours = [x for x in [countries.get(x) for x in neighbour_codes if x] if x]
             country.neighbours.add(*neighbours)
         
@@ -221,12 +257,13 @@ class Command(BaseCommand):
             try: 
                 region.country = self.country_index[country_code]
             except:
-                self.logger.warning("{0}: {1}: Cannot find country: {2} -- skipping".format("COUNTRY", region.name, country_code))
+                self.logger.warning("Region: %s: Cannot find country: %s -- skipping",
+                                    region.name, country_code)
                 continue
             
             if not self.call_hook('region_post', region, item): continue
             region.save()
-            self.logger.debug("Added region: {0}, {1}".format(item['code'], region))
+            self.logger.debug("Added region: %s, %s", item['code'], region)
         
     def build_region_index(self):
         if hasattr(self, 'region_index'): return
@@ -261,12 +298,13 @@ class Command(BaseCommand):
             try: 
                 subregion.region = self.region_index[country_code + "." + region_code]
             except:
-                self.logger.warning("Subregion: {0}: Cannot find region: {1}".format(subregion.name, region_code))
+                self.logger.warning("Subregion: %s: Cannot find region: %s",
+                                    subregion.name, region_code)
                 continue
                 
             if not self.call_hook('subregion_post', subregion, item): continue
             subregion.save()
-            self.logger.debug("Added subregion: {0}, {1}".format(item['code'], subregion))
+            self.logger.debug("Added subregion: %s, %s", item['code'], subregion)
             
         del self.region_index
         
@@ -306,7 +344,8 @@ class Command(BaseCommand):
                 country = self.country_index[country_code]
                 city.country = country
             except:
-                self.logger.warning("{0}: {1}: Cannot find country: {2} -- skipping".format("CITY", city.name, country_code))
+                self.logger.warning("City: %s: Cannot find country: %s -- skipping",
+                                    city.name, country_code)
                 continue
 
             region_code = item['admin1Code']
@@ -314,7 +353,8 @@ class Command(BaseCommand):
                 region = self.region_index[country_code + "." + region_code]
                 city.region = region
             except:
-                self.logger.warning("{0}: {1}: Cannot find region: {2} -- skipping".format(country_code, city.name, region_code))
+                self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
+                                    country_code, city.name, region_code)
                 continue
             
             subregion_code = item['admin2Code']
@@ -323,12 +363,13 @@ class Command(BaseCommand):
                 city.subregion = subregion
             except:
                 if subregion_code:
-                    self.logger.warning("{0}: {1}: Cannot find subregion: {2} -- skipping".format(country_code, city.name, subregion_code))
+                    self.logger.warning("%s: %s: Cannot find subregion: %s -- skipping",
+                                        country_code, city.name, subregion_code)
                 pass
             
             if not self.call_hook('city_post', city, item): continue
             city.save()
-            self.logger.debug("Added city: {0}".format(city))
+            self.logger.debug("Added city: %s", city)
         
     def build_hierarchy(self):
         if hasattr(self, 'hierarchy'): return
@@ -377,34 +418,41 @@ class Command(BaseCommand):
             try: 
                 city = city_index[self.hierarchy[district.id]]
             except:
-                self.logger.warning("District: {0}: Cannot find city in hierarchy, using nearest".format(district.name))
+                self.logger.warning("District: %s: Cannot find city in hierarchy, using nearest", district.name)
                 city_pop_min = 100000
-                # we are going to try to find closet city using native database .distance(...) query but if that fails
-                # then we fall back to degree search, MYSQL has no support and Spatialite with SRID 4236. 
+                # we are going to try to find closet city using native
+                # database .distance(...) query but if that fails then
+                # we fall back to degree search, MYSQL has no support
+                # and Spatialite with SRID 4236.
                 try:
-                    city = City.objects.filter(population__gt=city_pop_min).distance(district.location).order_by('distance')[0]
+                    city = City.objects.filter(population__gt=city_pop_min).distance(
+                        district.location).order_by('distance')[0]
                 except:
-                    self.logger.warning("District: {0}: DB backend does not support native '.distance(...)' query " \
-                                        "falling back to two degree search".format(district.name))
+                    self.logger.warning(
+                        "District: %s: DB backend does not support native '.distance(...)' query "
+                        "falling back to two degree search",
+                        district.name
+                    )
                     search_deg = 2
                     min_dist = float('inf')
                     bounds = Envelope(district.location.x-search_deg, district.location.y-search_deg,
                                       district.location.x+search_deg, district.location.y+search_deg)
-                    for e in City.objects.filter(population__gt=city_pop_min).filter(location__intersects=bounds.wkt):
+                    for e in City.objects.filter(population__gt=city_pop_min).filter(
+                            location__intersects=bounds.wkt):
                         dist = geo_distance(district.location, e.location)
                         if dist < min_dist:
                             min_dist = dist
                             city = e
                     
             if not city:
-                self.logger.warning("District: {0}: Cannot find city -- skipping".format(district.name))
+                self.logger.warning("District: %s: Cannot find city -- skipping", district.name)
                 continue
 
             district.city = city
             
             if not self.call_hook('district_post', district, item): continue
             district.save()
-            self.logger.debug("Added district: {0}".format(district))
+            self.logger.debug("Added district: %s", district)
         
     def import_alt_name(self):
         uptodate = self.download('alt_name')
@@ -428,7 +476,7 @@ class Command(BaseCommand):
             locale = item['language']
             if not locale: locale = 'und'
             if not locale in settings.locales and 'all' not in settings.locales: 
-                self.logger.info("SKIPPING {0}".format(settings.locales))
+                self.logger.info("SKIPPING %s", settings.locales)
                 continue
             
             # Check if known geo id
@@ -447,7 +495,7 @@ class Command(BaseCommand):
             alt.save()
             geo_info['object'].alt_names.add(alt)
 
-            self.logger.debug("Added alt name: {0}, {1}".format(locale, alt))
+            self.logger.debug("Added alt name: %s, %s", locale, alt)
 
     def import_postal_code(self):
         uptodate = self.download('postal_code')
@@ -470,7 +518,7 @@ class Command(BaseCommand):
             try:
                 country = self.country_index[country_code]
             except:
-                self.logger.warning("Postal code: {0}: Cannot find country: {1} -- skipping".format(code, country_code))
+                self.logger.warning("Postal code: %s: Cannot find country: %s -- skipping", code, country_code)
                 continue
 
             pc = PostalCode()
@@ -484,11 +532,12 @@ class Command(BaseCommand):
             try:
                 pc.location = Point(float(item['longitude']), float(item['latitude']))
             except:
-                self.logger.warning("Postal code: {0}, {1}: Invalid location ({2}, {3})".format(pc.country, pc.code, item['longitude'], item['latitude']))
+                self.logger.warning("Postal code: %s, %s: Invalid location (%s, %s)",
+                                    pc.country, pc.code, item['longitude'], item['latitude'])
                 continue
 
             if not self.call_hook('postal_code_post', pc, item): continue
-            self.logger.debug("Adding postal code: {0}, {1}".format(pc.country, pc))
+            self.logger.debug("Adding postal code: %s, %s", pc.country, pc)
             try:
                 pc.save()
             except Exception as e:

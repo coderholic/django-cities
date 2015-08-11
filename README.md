@@ -41,13 +41,30 @@ Either clone this repository into your project, or install with ```pip install d
 You'll need to add ```cities``` to ```INSTALLED_APPS``` in your projects settings.py file:
 
 ```python
+import django
+
 INSTALLED_APPS = (
     ...
     'cities',
 )
+
+if django.VERSION < (1, 7):
+    INSTALLED_APPS += (
+        'south',
+    )
 ```
 
 Then run ```./manage.py syncdb``` to create the required database tables, and ```./manage.py cities --import=all``` to import all of the place data. **NOTE:** This can take a long time.
+
+#### Upgrading from 0.4.1
+
+Upgrading from 0.4.1 is likely to cause problems trying to apply a
+migration when the tables already exist. In this case a fake migration
+needs to be applied:
+
+```shell
+./manage.py migrate cities 0001 --fake
+```
 
 ### Configuration
 
@@ -58,6 +75,14 @@ There are various optional configuration options you can set in your ```settings
 CITIES_FILES = {
     'city': {
        'filename': 'cities1000.zip',
+       'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+    },
+}
+
+# Alternatively you can specify multiple filenames to process:
+CITIES_FILES = {
+    'city': {
+       'filenames': ["US.zip", "GB.zip", ]
        'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
     },
 }
@@ -77,6 +102,7 @@ CITIES_POSTAL_CODES = ['US', 'CA']
 # List of plugins to process data during import
 CITIES_PLUGINS = [
     'cities.plugin.postal_code_ca.Plugin',  # Canada postal codes need region codes remapped to match geonames
+    'cities.plugin.reset_queries.Plugin',  # plugin that helps to reduce memory usage when importing large datasets (e.g. "allCountries.zip")
 ]
 ```
 
@@ -121,6 +147,12 @@ This repository contains an example project which lets you browse the place hier
 >>> PostalCode.objects.distance(City.objects.get(name='Mountain View', region__name='California').location).order_by('distance')[:5]
 [<PostalCode: 94040>, <PostalCode: 94041>, <PostalCode: 94043>, <PostalCode: 94024>, <PostalCode: 94022>]
 ```
+
+###  Third-party apps / extensions
+
+These are apps that build on top of the ``django-cities``. Useful for essentially extending what ``django-cities`` can do.
+
+* [django-airports](https://github.com/bashu/django-airports) provides you with airport related model and data (from OpenFlights) that can be used in your django projects.
 
 ### Notes
 
