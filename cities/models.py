@@ -118,6 +118,7 @@ class District(Place):
 @python_2_unicode_compatible
 class AlternativeName(models.Model):
     name = models.CharField(max_length=256)
+    slug = models.CharField(max_length=256)
     language = models.CharField(max_length=100)
     is_preferred = models.BooleanField(default=False)
     is_short = models.BooleanField(default=False)
