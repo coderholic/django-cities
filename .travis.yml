@@ -10,6 +10,9 @@ env:
   - REQ="django<1.8" DB=postgresql
   - REQ="django<1.8" DB=mysql
   - REQ="django<1.8" DB=sqlite
+  - REQ="django<1.9" DB=postgresql
+  - REQ="django<1.9" DB=mysql
+  - REQ="django<1.9" DB=sqlite
 install:
   - pip install -q $REQ --use-mirrors
   - pip install pep8 --use-mirrors
