@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.gis import admin as geoadmin
 from .models import *
 
-class CitiesAdmin(geoadmin.OSMGeoAdmin):#admin.ModelAdmin):
+class CitiesAdmin(admin.ModelAdmin):
     raw_id_fields = ['alt_names']
 
 class CountryAdmin(CitiesAdmin):
