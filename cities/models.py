@@ -6,12 +6,53 @@ except (NameError, ImportError):
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+from django.core.exceptions import FieldError
 from .conf import settings
+
+from logging import getLogger
+
+LOG = getLogger()
 
 __all__ = [
         'Point', 'Country', 'Region', 'Subregion',
         'City', 'District', 'PostalCode', 'AlternativeName', 
 ]
+
+
+class PlaceManager(models.GeoManager):
+    """
+    Custom Manager class for the Place model.
+    """
+
+    def nearest_to(self, point, range_in_miles=10):
+        """
+        Find the place nearest to the point specified.
+        :param point: A point in the world (lat, long)
+        :type point: django.contrib.gis.geos.point.Point
+        :param range_in_miles: Number of miles that the search should be valid within.  If nothing is found within the
+            mileage specified, then nearest_to returns a None.
+        :type range_in_miles: int
+        :return: Return the Place nearest to the point.
+        :rtype: Place
+        """
+        try:
+            place_candidates = self.filter(location__distance_lte=(point, D(mi=range_in_miles))).\
+                distance(point).order_by('distance')
+        except FieldError:
+            msg = "{model} does not have a location field to search by.  Implement a meaningful nearest_to func " \
+                  "if you need this feature.".format(model=self.model)
+            LOG.debug(msg)
+            raise FieldError(msg)
+
+        try:
+            return place_candidates[0]
+        except IndexError:
+            LOG.debug("No Place candidates near to {point}.  Max mileage was: {mileage}.".format(point=point,
+                                                                                                 mileage=range_in_miles)
+                      )
+            return None
+
 
 @python_2_unicode_compatible
 class Place(models.Model):
@@ -19,7 +60,7 @@ class Place(models.Model):
     slug = models.CharField(max_length=200)
     alt_names = models.ManyToManyField('AlternativeName')
 
-    objects = models.GeoManager()
+    objects = PlaceManager()
 
     class Meta:
         abstract = True
