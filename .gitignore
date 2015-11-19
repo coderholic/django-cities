@@ -5,6 +5,9 @@ build
 dist
 cities/data
 
+#PyCharm
+.idea/
+
 # WebDAV file system cache
 .DAV/
 
