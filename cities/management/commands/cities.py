@@ -30,13 +30,13 @@ from itertools import chain
 from optparse import make_option
 
 import django
-from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
-from django.db import connection, transaction
+from django.db import transaction
 from django.contrib.gis.gdal.envelope import Envelope
 
 from ...conf import *
+from ...conf import CITIES_IGNORE_EMPTY_REGIONS
 from ...models import *
 from ...util import geo_distance
 
@@ -353,9 +353,13 @@ class Command(BaseCommand):
                 region = self.region_index[country_code + "." + region_code]
                 city.region = region
             except:
-                self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
-                                    country_code, city.name, region_code)
-                continue
+                if CITIES_IGNORE_EMPTY_REGIONS:
+                    city.region = None
+                else:
+                    self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
+                                        country_code, city.name, region_code)
+                    continue
+
             
             subregion_code = item['admin2Code']
             try: 
@@ -365,7 +369,7 @@ class Command(BaseCommand):
                 if subregion_code:
                     self.logger.warning("%s: %s: Cannot find subregion: %s -- skipping",
                                         country_code, city.name, subregion_code)
-                pass
+                    continue
             
             if not self.call_hook('city_post', city, item): continue
             city.save()

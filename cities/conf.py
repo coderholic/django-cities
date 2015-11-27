@@ -228,3 +228,9 @@ def create_plugins():
 settings = create_settings()
 if hasattr(django_settings, "CITIES_PLUGINS"):
     create_plugins()
+
+if hasattr(django_settings, "CITIES_IGNORE_EMPTY_REGIONS"):
+    CITIES_IGNORE_EMPTY_REGIONS = django_settings.CITIES_IGNORE_EMPTY_REGIONS
+else:
+    CITIES_IGNORE_EMPTY_REGIONS = False
+
