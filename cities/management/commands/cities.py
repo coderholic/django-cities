@@ -360,7 +360,6 @@ class Command(BaseCommand):
                                         country_code, city.name, region_code)
                     continue
 
-            
             subregion_code = item['admin2Code']
             try: 
                 subregion = self.region_index[country_code + "." + region_code + "." + subregion_code]
