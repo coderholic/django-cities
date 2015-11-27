@@ -369,7 +369,7 @@ class Command(BaseCommand):
                 if subregion_code:
                     self.logger.warning("%s: %s: Cannot find subregion: %s -- skipping",
                                         country_code, city.name, subregion_code)
-                    continue
+                pass
             
             if not self.call_hook('city_post', city, item): continue
             city.save()
