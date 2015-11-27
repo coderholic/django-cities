@@ -105,7 +105,7 @@ CITIES_PLUGINS = [
     'cities.plugin.reset_queries.Plugin',  # plugin that helps to reduce memory usage when importing large datasets (e.g. "allCountries.zip")
 ]
 
-# Import cities without region or subregion
+# Import cities without region (default False)
 CITIES_IGNORE_EMPTY_REGIONS = True
 ```
 
