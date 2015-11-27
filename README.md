@@ -104,9 +104,10 @@ CITIES_PLUGINS = [
     'cities.plugin.postal_code_ca.Plugin',  # Canada postal codes need region codes remapped to match geonames
     'cities.plugin.reset_queries.Plugin',  # plugin that helps to reduce memory usage when importing large datasets (e.g. "allCountries.zip")
 ]
-```
+
 # Import cities without region or subregion
 CITIES_IGNORE_EMPTY_REGIONS = True
+```
 
 ### Examples
 
