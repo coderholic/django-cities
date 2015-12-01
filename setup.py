@@ -30,6 +30,7 @@ setup(
         'six',
         'unidecode>=0.04.13',
         'django_autoslug',
+        'progressbar2>=3.5.1'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -45,4 +46,3 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 )
-
