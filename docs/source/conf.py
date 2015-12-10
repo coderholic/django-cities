@@ -16,10 +16,20 @@ import os, sys, os.path
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('../../'))
-sys.path.insert(0, os.path.abspath('../../../../lib/python2.7/site-packages/'))
+import django
 from django.conf import settings
-settings.configure()
+settings.configure(
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'cities_light'
+    ]
+)
+django.setup()
 
 autoclass_content = "both"
 
