@@ -6,4 +6,8 @@ build
 dist
 
 # Ignore the downloaded data.
-cities_light/data
+cities_light/data/admin1CodesASCII.*
+cities_light/data/alternateNames.*
+cities_light/data/cities*
+cities_light/data/countryInfo*
+cities_light/data/install_datetime

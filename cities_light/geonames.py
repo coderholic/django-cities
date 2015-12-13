@@ -13,6 +13,7 @@ except ImportError:
     from urllib import urlopen
 
 from .settings import *
+from .exceptions import SourceFileDoesNotExist
 
 
 class Geonames(object):
@@ -23,11 +24,16 @@ class Geonames(object):
             self.logger.info('Creating %s' % DATA_DIR)
             os.mkdir(DATA_DIR)
 
+        protocol = url.split('://')[0]
         destination_file_name = url.split('/')[-1]
-        self.file_path = os.path.join(DATA_DIR,
-            destination_file_name)
+        self.file_path = os.path.join(DATA_DIR, destination_file_name)
 
-        self.downloaded = self.download(url, self.file_path, force)
+        if protocol == 'file':
+            self.downloaded = False
+            if not os.path.exists(self.file_path):
+                raise SourceFileDoesNotExist(self.file_path)
+        else:
+            self.downloaded = self.download(url, self.file_path, force)
 
         # extract the destination file, use the extracted file as new
         # destination

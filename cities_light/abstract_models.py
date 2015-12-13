@@ -127,14 +127,6 @@ class ToSearchTextField(models.TextField):
             value)
         return to_search(value)
 
-    def south_field_triple(self):
-        "Returns a suitable description of this field for South."
-        from south.modelsinspector import introspector
-        field_class = self.__class__.__module__ + "." + self.__class__.__name__
-        args, kwargs = introspector(self)
-        # That's our definition!
-        return (field_class, args, kwargs)
-
 
 class AbstractCity(Base):
     """

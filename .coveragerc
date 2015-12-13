@@ -1,0 +1,5 @@
+[run]
+omit =
+  cities_light/tests/project/*
+  cities_light/contrib/*
+  cities_light/migrations/*
