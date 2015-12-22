@@ -84,7 +84,7 @@ from django.conf import settings
 
 __all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
     'TRANSLATION_LANGUAGES', 'TRANSLATION_SOURCES', 'SOURCES', 'DATA_DIR',
-    'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES', 'DEFAULT_APP_NAME',
+    'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES', 'INCLUDE_CITY_TYPES', 'DEFAULT_APP_NAME',
     'CITIES_LIGHT_APP_NAME', 'ICountry', 'IRegion', 'ICity',
     'IAlternate']
 
@@ -107,6 +107,13 @@ DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
         os.path.dirname(os.path.realpath(__file__)), 'data')))
 
 INCLUDE_COUNTRIES = getattr(settings, 'CITIES_LIGHT_INCLUDE_COUNTRIES', None)
+
+INCLUDE_CITY_TYPES = getattr(
+    settings,
+    'CITIES_LIGHT_INCLUDE_CITY_TYPES',
+    ['PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLC', 'PPLCH', 'PPLF',
+     'PPLG', 'PPLH', 'PPLL', 'PPLQ', 'PPLR', 'PPLS', 'PPLW', 'PPLX']
+)
 
 # MySQL doesn't support indexing TextFields
 INDEX_SEARCH_NAMES = getattr(settings, 'CITIES_LIGHT_INDEX_SEARCH_NAMES', None)

@@ -90,7 +90,7 @@ def filter_non_cities(sender, items, **kwargs):
     :py:class:`~cities_light.exceptions.InvalidItems` if the row doesn't have
     PPL in its features (it's not a populated place).
     """
-    if 'PPL' not in items[7]:
+    if items[7] not in INCLUDE_CITY_TYPES:
         raise InvalidItems()
 city_items_pre_import.connect(filter_non_cities)
 
