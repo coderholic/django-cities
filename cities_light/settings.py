@@ -26,6 +26,16 @@ because it's probably project specific.
 
         CITIES_LIGHT_INCLUDE_COUNTRIES = ['FR', 'BE']
 
+.. py:data:: INCLUDE_CITY_TYPES
+
+    List of city feature codes to include. They are described at
+    http://www.geonames.org/export/codes.html, section "P city, village".
+
+        CITIES_LIGHT_INCLUDE_CITY_TYPES = [
+            'PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLC',
+            'PPLF', 'PPLG', 'PPLL', 'PPLR', 'PPLS', 'STLMT',
+        ]
+
 .. py:data:: COUNTRY_SOURCES
 
     A list of urls to download country info from. Default is countryInfo.txt
@@ -84,9 +94,9 @@ from django.conf import settings
 
 __all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
     'TRANSLATION_LANGUAGES', 'TRANSLATION_SOURCES', 'SOURCES', 'DATA_DIR',
-    'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES', 'INCLUDE_CITY_TYPES', 'DEFAULT_APP_NAME',
-    'CITIES_LIGHT_APP_NAME', 'ICountry', 'IRegion', 'ICity',
-    'IAlternate']
+    'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES', 'INCLUDE_CITY_TYPES',
+    'DEFAULT_APP_NAME', 'CITIES_LIGHT_APP_NAME',
+    'ICountry', 'IRegion', 'ICity', 'IAlternate']
 
 COUNTRY_SOURCES = getattr(settings, 'CITIES_LIGHT_COUNTRY_SOURCES',
     ['http://download.geonames.org/export/dump/countryInfo.txt'])
@@ -108,6 +118,8 @@ DATA_DIR = getattr(settings, 'CITIES_LIGHT_DATA_DIR',
 
 INCLUDE_COUNTRIES = getattr(settings, 'CITIES_LIGHT_INCLUDE_COUNTRIES', None)
 
+# Feature codes are described in the "P city, village" section at
+# http://www.geonames.org/export/codes.html
 INCLUDE_CITY_TYPES = getattr(
     settings,
     'CITIES_LIGHT_INCLUDE_CITY_TYPES',

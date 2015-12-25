@@ -2,7 +2,7 @@
     :target: http://travis-ci.org/yourlabs/django-cities-light
 .. image:: https://pypip.in/d/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
-.. image:: https://pypip.in/v/django-cities-light/badge.png   
+.. image:: https://pypip.in/v/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
 
 django-cities-light -- *Simple django-cities alternative*
@@ -22,9 +22,9 @@ database, you should use
 `django-cities
 <https://github.com/coderholic/django-cities>`_.
 
-Requirements: 
+Requirements:
 
-- Python 2.7 or 3.3, 
+- Python 2.7 or 3.3,
 - **Django >= 1.6 for django-cities-light 3.x.x**
 - or Django >= 1.4 <= 1.6 for django-cities-light 2.x.x
 - MySQL (better in 3.x.x) or PostgreSQL or SQLite.
@@ -56,6 +56,7 @@ Configure filters to exclude data you don't want, ie.::
 
     CITIES_LIGHT_TRANSLATION_LANGUAGES = ['fr', 'en']
     CITIES_LIGHT_INCLUDE_COUNTRIES = ['FR']
+    CITIES_LIGHT_INCLUDE_CITY_TYPES = ['PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLC', 'PPLF', 'PPLG', 'PPLL', 'PPLR', 'PPLS', 'STLMT',]
 
 Now, run syncdb, it will only create tables for models that are not disabled::
 
@@ -64,7 +65,7 @@ Now, run syncdb, it will only create tables for models that are not disabled::
 Note that this project supports django-south. It is recommended that you use
 south too else you're on your own for migrations/upgrades.
 
-.. danger:: 
+.. danger::
 
    Since version 2.4.0, django-cities-light uses django
    migrations by default. This means that django-south users

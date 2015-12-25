@@ -84,11 +84,11 @@ def connect_default_signals(model_class):
 
 def filter_non_cities(sender, items, **kwargs):
     """
-    Reports non populated places as invalid.
-    By default, this reciever is connected to
+    Exclude any **city** which feature code must not be included.
+    By default, this receiver is connected to
     :py:func:`~cities_light.signals.city_items_pre_import`, it raises
-    :py:class:`~cities_light.exceptions.InvalidItems` if the row doesn't have
-    PPL in its features (it's not a populated place).
+    :py:class:`~cities_light.exceptions.InvalidItems` if the row feature code
+    is not in the :py:data:`~cities_light.settings.INCLUDE_CITY_TYPES` setting.
     """
     if items[7] not in INCLUDE_CITY_TYPES:
         raise InvalidItems()
