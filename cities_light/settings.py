@@ -123,8 +123,8 @@ INCLUDE_COUNTRIES = getattr(settings, 'CITIES_LIGHT_INCLUDE_COUNTRIES', None)
 INCLUDE_CITY_TYPES = getattr(
     settings,
     'CITIES_LIGHT_INCLUDE_CITY_TYPES',
-    ['PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLC', 'PPLCH', 'PPLF',
-     'PPLG', 'PPLH', 'PPLL', 'PPLQ', 'PPLR', 'PPLS', 'PPLW', 'PPLX']
+    ['PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLC',
+     'PPLF', 'PPLG', 'PPLL', 'PPLR', 'PPLS', 'STLMT']
 )
 
 # MySQL doesn't support indexing TextFields
