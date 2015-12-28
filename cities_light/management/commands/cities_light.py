@@ -31,25 +31,6 @@ from ...loading import get_cities_models
 Country, Region, City = get_cities_models()
 
 
-class LazyProgressBar(progressbar.ProgressBar):
-
-    """
-    Less CPU-intensive progressbar with lazy update.
-
-    Performs update() only if value increment is large enough to add more bars
-    to progressbar according to current terminal width.
-    """
-
-    def update(self, value=None):
-        try:
-            divisor = self.max_value / self.term_width
-            if value // divisor == self.previous_value // divisor:
-                return
-        except:
-            pass  # ignore any division errors
-        super(LazyProgressBar, self).update(value=value)
-
-
 class MemoryUsageWidget(progressbar.widgets.WidgetBase):
     def __call__(self, progress, data):
         if sys.platform != 'win32':
@@ -174,8 +155,10 @@ It is possible to force the import of files which weren't downloaded using the
                             continue
 
                 i = 0
-                progress = LazyProgressBar(max_value=geonames.num_lines(),
-                                           widgets=self.widgets).start()
+                progress = progressbar.ProgressBar(
+                    max_value=geonames.num_lines(),
+                    widgets=self.widgets
+                ).start()
 
                 for items in geonames.parse():
                     if url in CITY_SOURCES:
@@ -472,8 +455,10 @@ It is possible to force the import of files which weren't downloaded using the
             max += len(model_class_data.keys())
 
         i = 0
-        progress = LazyProgressBar(max_value=max,
-                                   widgets=self.widgets).start()
+        progress = progressbar.ProgressBar(
+            max_value=max,
+            widgets=self.widgets
+        ).start()
 
         for model_class, model_class_data in data.items():
             for geoname_id, geoname_data in model_class_data.items():
