@@ -85,7 +85,7 @@ class AbstractCountry(Base):
     continent = models.CharField(max_length=2, db_index=True,
         choices=CONTINENT_CHOICES)
     tld = models.CharField(max_length=5, blank=True, db_index=True)
-    phone = models.CharField(max_length=20, null=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
 
     class Meta(Base.Meta):
         verbose_name_plural = _('countries')
