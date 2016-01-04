@@ -5,7 +5,6 @@ import itertools
 import os
 import datetime
 import time
-import os.path
 import logging
 import optparse
 import sys

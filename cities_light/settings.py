@@ -139,6 +139,12 @@ DEFAULT_APP_NAME = 'cities_light'
 CITIES_LIGHT_APP_NAME = getattr(settings, 'CITIES_LIGHT_APP_NAME',
     DEFAULT_APP_NAME)
 
+FIXTURES_BASE_URL = getattr(
+    settings,
+    'CITIES_LIGHT_FIXTURES_BASE_URL',
+    'file://{0}'.format(os.path.join(DATA_DIR, 'fixtures/'))
+)
+
 
 class ICountry:
     """

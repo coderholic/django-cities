@@ -1,19 +1,13 @@
 from __future__ import unicode_literals
 
 import six
-import time
-import os
 import os.path
 import zipfile
 import logging
 
-try:
-    from urllib.request import urlopen
-except ImportError:
-    from urllib import urlopen
-
 from .settings import *
-from .exceptions import SourceFileDoesNotExist
+# from .exceptions import SourceFileDoesNotExist
+from .downloader import Downloader
 
 
 class Geonames(object):
@@ -24,16 +18,14 @@ class Geonames(object):
             self.logger.info('Creating %s' % DATA_DIR)
             os.mkdir(DATA_DIR)
 
-        protocol = url.split('://')[0]
         destination_file_name = url.split('/')[-1]
         self.file_path = os.path.join(DATA_DIR, destination_file_name)
 
-        if protocol == 'file':
-            self.downloaded = False
-            if not os.path.exists(self.file_path):
-                raise SourceFileDoesNotExist(self.file_path)
-        else:
-            self.downloaded = self.download(url, self.file_path, force)
+        self.downloaded = self.download(
+            url=url,
+            path=self.file_path,
+            force=force
+        )
 
         # extract the destination file, use the extracted file as new
         # destination
@@ -50,29 +42,12 @@ class Geonames(object):
             DATA_DIR, destination_file_name)
 
     def download(self, url, path, force=False):
-        remote_file = urlopen(url)
-        remote_time = time.strptime(remote_file.headers['last-modified'],
-            '%a, %d %b %Y %H:%M:%S %Z')
-        remote_size = int(remote_file.headers['content-length'])
-
-        if os.path.exists(path) and not force:
-            local_time = time.gmtime(os.path.getmtime(path))
-            local_size = os.path.getsize(path)
-
-            if local_time >= remote_time and local_size == remote_size:
-                self.logger.warning(
-                    'Assuming local download is up to date for %s' % url)
-
-                return False
-
-        self.logger.info('Downloading %s into %s' % (url, path))
-        with open(path, 'wb') as local_file:
-            chunk = remote_file.read()
-            while chunk:
-                local_file.write(chunk)
-                chunk = remote_file.read()
-
-        return True
+        downloader = Downloader()
+        return downloader.download(
+            source=url,
+            destination=path,
+            force=force
+        )
 
     def extract(self, zip_path, file_name):
         destination = os.path.join(DATA_DIR, file_name)
