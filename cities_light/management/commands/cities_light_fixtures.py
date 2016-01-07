@@ -9,7 +9,7 @@ import optparse
 
 try:
     from cStringIO import StringIO
-except:
+except ImportError:
     from io import StringIO
 
 from django.db import transaction
@@ -58,7 +58,7 @@ It is possible to force fixture download by using the --force-fetch option:
         optparse.make_option('--base-url',
                              action='store',
                              metavar='BASE_URL',
-                             help='Base URL to fetch from (default is '
+                             help='Base url to fetch from (default is '
                                   'settings.CITIES_LIGHT_FIXTURES_BASE_URL)'),
     )
 

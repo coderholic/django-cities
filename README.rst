@@ -74,6 +74,23 @@ This command is well documented, consult the help with::
 
     ./manage.py help cities_light
 
+Using fixtures
+--------------
+
+Geonames.org is updated on daily basis and its full import is quite slow, so
+if you want to import the same data multiple times (for example on different
+servers) it is convenient to use fixtures with the helper management command::
+
+    ./manage.py cities_light_fixtures dump
+    ./manage.py cities_light_fixtures load
+
+To reduce space, JSON fixtures are compressed with bzip2 and can be fetched
+from any HTTP server or local filesystem.
+
+Consult the help with::
+
+    ./manage.py help cities_light_fixtures
+
 Development
 -----------
 
@@ -114,7 +131,6 @@ If you want to build the docs, use the following steps::
     make html
 
 If you are ready to send a patch, please read YourLabs guidelines: https://github.com/yourlabs/community/blob/master/docs/guidelines.rst
-
 
 Resources
 ---------

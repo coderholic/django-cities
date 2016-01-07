@@ -6,7 +6,6 @@ import zipfile
 import logging
 
 from .settings import *
-# from .exceptions import SourceFileDoesNotExist
 from .downloader import Downloader
 
 

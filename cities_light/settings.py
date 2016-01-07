@@ -64,6 +64,12 @@ because it's probably project specific.
 
     A list with all sources, auto-generated.
 
+.. py:data:: FIXTURES_BASE_URL
+
+   Base URL to download country/region/city fixtures from. Should end
+   with a slash. Default is ``file://DATA_DIR/fixtures/``. Overridable in
+   ``settings.CITIES_LIGHT_FIXTURES_BASE_URL``.
+
 .. py:data:: DATA_DIR
 
     Absolute path to download and extract data into. Default is
