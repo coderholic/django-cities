@@ -4,12 +4,6 @@ import os.path
 import posixpath
 import django
 
-
-if django.VERSION < (1, 7):
-    SOUTH_MIGRATION_MODULES = {
-        'cities_light': 'cities_light.south_migrations',
-    }
-
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 DEBUG = True
@@ -29,6 +23,11 @@ CITIES_LIGHT_CITY_SOURCES = [
     'http://download.geonames.org/export/dump/%s.zip' %
     os.environ.get('CITIES_LIGHT_CITY_SOURCE', 'cities15000'),
 ]
+CITIES_LIGHT_TRANSLATION_LANGUAGES=['fr', 'ru']
+CITIES_LIGHT_CITY_SOURCES=['file://angouleme_city.txt']
+CITIES_LIGHT_REGION_SOURCES=['file://angouleme_region.txt']
+CITIES_LIGHT_COUNTRY_SOURCES=['file://angouleme_country.txt']
+CITIES_LIGHT_TRANSLATION_SOURCES=['file://angouleme_translations.txt']
 
 DATABASES = {
     'default': {
@@ -119,10 +118,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'test_project.urls'
+ROOT_URLCONF = 'cities_light.tests.project.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'test_project.wsgi.application'
+WSGI_APPLICATION = 'cities_light.tests.project.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -141,10 +140,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     'cities_light',
+    'dbdiff',
 )
-
-if django.VERSION < (1, 7):
-    INSTALLED_APPS += ('south',)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

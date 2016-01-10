@@ -1,5 +1,7 @@
 from __future__ import division, unicode_literals
 
+import collections
+import itertools
 import os
 import datetime
 import time
@@ -116,8 +118,14 @@ It is possible to force the import of files which weren't downloaded using the
             progressbar.Percentage(),
             progressbar.Bar(),
         ]
+        sources = list(itertools.chain(
+            COUNTRY_SOURCES,
+            REGION_SOURCES,
+            CITY_SOURCES,
+            TRANSLATION_SOURCES,
+        ))
 
-        for url in SOURCES:
+        for url in sources:
             destination_file_name = url.split('/')[-1]
 
             force = options.get('force_all', False)
@@ -397,17 +405,18 @@ It is possible to force the import of files which weren't downloaded using the
 
     def translation_parse(self, items):
         if not hasattr(self, 'translation_data'):
-            self.country_ids = Country.objects.values_list('geoname_id',
-                flat=True)
-            self.region_ids = Region.objects.values_list('geoname_id',
-                flat=True)
-            self.city_ids = City.objects.values_list('geoname_id', flat=True)
+            self.country_ids = list(Country.objects.values_list('geoname_id',
+                flat=True))
+            self.region_ids = list(Region.objects.values_list('geoname_id',
+                flat=True))
+            self.city_ids = list(City.objects.values_list('geoname_id',
+                flat=True))
 
-            self.translation_data = {
-                Country: {},
-                Region: {},
-                City: {},
-            }
+            self.translation_data = collections.OrderedDict((
+                (Country, {}),
+                (Region, {}),
+                (City, {}),
+            ))
 
         connection.close()
 
@@ -469,9 +478,10 @@ It is possible to force the import of files which weren't downloaded using the
                 save = False
 
                 if not model.alternate_names:
-                    alternate_names = []
+                    alternate_names = set()
                 else:
-                    alternate_names = model.alternate_names.split(',')
+                    alternate_names = set(sorted(
+                        model.alternate_names.split(',')))
 
                 for lang, names in geoname_data.items():
                     if lang == 'post':
@@ -481,13 +491,13 @@ It is possible to force the import of files which weren't downloaded using the
 
                     for name in names:
                         name = force_text(name)
+
                         if name == model.name:
                             continue
 
-                        if name not in alternate_names:
-                            alternate_names.append(name)
+                        alternate_names.add(name)
 
-                alternate_names = u','.join(alternate_names)
+                alternate_names = u','.join(sorted(alternate_names))
                 if model.alternate_names != alternate_names:
                     model.alternate_names = alternate_names
                     save = True
@@ -503,6 +513,7 @@ It is possible to force the import of files which weren't downloaded using the
     def save(self, model):
         try:
             with transaction.atomic():
+                self.logger.debug('Saving %s' % model.name)
                 model.save()
         except IntegrityError as e:
             self.logger.warning('Saving %s failed: %s' % (model, e))

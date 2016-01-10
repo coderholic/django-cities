@@ -1,4 +1,4 @@
-
+from __future__ import unicode_literals
 
 import six
 import re
@@ -85,7 +85,7 @@ class AbstractCountry(Base):
     continent = models.CharField(max_length=2, db_index=True,
         choices=CONTINENT_CHOICES)
     tld = models.CharField(max_length=5, blank=True, db_index=True)
-    phone = models.CharField(max_length=20, null=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
 
     class Meta(Base.Meta):
         verbose_name_plural = _('countries')
@@ -126,14 +126,6 @@ class ToSearchTextField(models.TextField):
         value = super(ToSearchTextField, self).get_prep_lookup(lookup_type,
             value)
         return to_search(value)
-
-    def south_field_triple(self):
-        "Returns a suitable description of this field for South."
-        from south.modelsinspector import introspector
-        field_class = self.__class__.__module__ + "." + self.__class__.__name__
-        args, kwargs = introspector(self)
-        # That's our definition!
-        return (field_class, args, kwargs)
 
 
 class AbstractCity(Base):

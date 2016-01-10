@@ -1,13 +1,15 @@
 # -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.utils import unittest
+from django import test
 
-from .forms import CountryForm, CityForm
-from .models import Country, City
+from ..forms import CountryForm, CityForm
+from ..models import Country, City
 
 
-class FormTestCase(unittest.TestCase):
+class FormTestCase(test.TransactionTestCase):
+    reset_sequences = True
+
     def testCountryFormNameAndContinentAlone(self):
         form = CountryForm({'name': 'Spain', 'continent': 'EU'})
         self.assertTrue(form.is_valid())
@@ -21,17 +23,22 @@ class FormTestCase(unittest.TestCase):
         form.save()
 
 
-class SaveTestCase(unittest.TestCase):
+class SaveTestCase(test.TransactionTestCase):
+    reset_sequences = True
+
     def testCountryAsciiAndSlug(self):
         country = Country(name='áó éú')
         country.save()
 
-        self.assertEqual(country.name_ascii, 'ao e')
-        self.assertEqual(country.slug, 'ao-e')
+        self.assertEqual(country.name_ascii, 'ao eu')
+        self.assertEqual(country.slug, 'ao-eu')
 
     def testCityAsciiAndSlug(self):
-        city = City(name='áó éú', country_id=1)
+        country = Country(name='Belgium')
+        country.save()
+
+        city = City(name='áó éú', country=country)
         city.save()
 
-        self.assertEqual(city.name_ascii, 'ao e')
-        self.assertEqual(city.slug, 'ao-e')
+        self.assertEqual(city.name_ascii, 'ao eu')
+        self.assertEqual(city.slug, 'ao-eu')

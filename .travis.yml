@@ -1,27 +1,60 @@
 sudo: false
 language: python
 python:
-  - "2.7"
-  - "3.3"
+- '3.5'
+matrix:
+  allow_failures:
+  # Pre-1.8 django versions support optparse as it's not supported anymore in
+  # 1.10. Instead of doing compatibility for both, wait for 1.10 to be out to
+  # drop 1.7 support.
+  - env: TOXENV=py27-django110-sqlite
+  - env: TOXENV=py27-django110-mysql
+  - env: TOXENV=py27-django110-postgresql
+  - env: TOXENV=py34-django110-sqlite
+  - env: TOXENV=py34-django110-mysql
+  - env: TOXENV=py34-django110-postgresql
 env:
-  - REQ="django<1.7" DB=postgresql
-  - REQ="django<1.7" DB=mysql
-  - REQ="django<1.7" DB=sqlite
-  - REQ="django<1.8" DB=postgresql
-  - REQ="django<1.8" DB=mysql
-  - REQ="django<1.8" DB=sqlite
-  - REQ="django<1.9" DB=postgresql
-  - REQ="django<1.9" DB=mysql
-  - REQ="django<1.9" DB=sqlite
+  matrix:
+  - TOXENV=py27-django17-sqlite
+  - TOXENV=py27-django17-mysql
+  - TOXENV=py27-django17-postgresql
+  - TOXENV=py27-django18-sqlite
+  - TOXENV=py27-django18-mysql
+  - TOXENV=py27-django18-postgresql
+  - TOXENV=py27-django19-sqlite
+  - TOXENV=py27-django19-mysql
+  - TOXENV=py27-django19-postgresql
+  - TOXENV=py27-django110-sqlite
+  - TOXENV=py27-django110-mysql
+  - TOXENV=py27-django110-postgresql
+  - TOXENV=py34-django17-sqlite
+  - TOXENV=py34-django17-mysql
+  - TOXENV=py34-django17-postgresql
+  - TOXENV=py34-django18-sqlite
+  - TOXENV=py34-django18-mysql
+  - TOXENV=py34-django18-postgresql
+  - TOXENV=py34-django19-sqlite
+  - TOXENV=py34-django19-mysql
+  - TOXENV=py34-django19-postgresql
+  - TOXENV=py34-django110-sqlite
+  - TOXENV=py34-django110-mysql
+  - TOXENV=py34-django110-postgresql
+  - TOXENV=checkqa
 install:
-  - pip install -q $REQ --use-mirrors
-  - pip install pep8 --use-mirrors
-  - pip install https://github.com/dcramer/pyflakes/tarball/master
-  - python setup.py install
-before_script:
-  - "pep8 --ignore=E402,E124,E128 --exclude=tests,south_migrations,migrations cities_light"
-  - mysql -e 'create database cities_light_test;'
-  - psql -c 'create database cities_light_test;' -U postgres
+- pip install -U pip
+- pip install tox codecov
 script:
-  - python setup.py test
-  - bash test.sh
+- tox
+after_success:
+- codecov
+cache:
+  directories:
+  - "$HOME/.cache/pip"
+before_cache:
+- rm -f $HOME/.cache/pip/log/debug.log
+notifications:
+  irc:
+    channels:
+    - irc.freenode.org#yourlabs
+    template:
+    - "%{repository} (%{commit} %{author}) : %{message} %{build_url} %{compare_url}"

@@ -4,6 +4,8 @@
     :target: https://crate.io/packages/django-cities-light
 .. image:: https://pypip.in/v/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
+.. image:: https://codecov.io/github/yourlabs/django-cities-light/coverage.svg?branch=stable/3.x.x
+    :target: https://codecov.io/github/yourlabs/django-cities-light?branch=stable/3.x.x
 
 django-cities-light -- *Simple django-cities alternative*
 =========================================================
@@ -25,10 +27,8 @@ database, you should use
 Requirements:
 
 - Python 2.7 or 3.3,
-- **Django >= 1.6 for django-cities-light 3.x.x**
-- or Django >= 1.4 <= 1.6 for django-cities-light 2.x.x
-- MySQL (better in 3.x.x) or PostgreSQL or SQLite.
-- django-south is optionnal, but recommended, for django <= 1.6
+- Django >= 1.7
+- MySQL or PostgreSQL or SQLite.
 
 Yes, for some reason, code that used to work on MySQL (not without pain xD)
 does not work anymore. So we're now using django.db.transaction.atomic which
@@ -58,22 +58,10 @@ Configure filters to exclude data you don't want, ie.::
     CITIES_LIGHT_INCLUDE_COUNTRIES = ['FR']
     CITIES_LIGHT_INCLUDE_CITY_TYPES = ['PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLC', 'PPLF', 'PPLG', 'PPLL', 'PPLR', 'PPLS', 'STLMT',]
 
-Now, run syncdb, it will only create tables for models that are not disabled::
+Now, run migrations, it will only create tables for models that are not
+disabled::
 
-    ./manage.py syncdb
-
-Note that this project supports django-south. It is recommended that you use
-south too else you're on your own for migrations/upgrades.
-
-.. danger::
-
-   Since version 2.4.0, django-cities-light uses django
-   migrations by default. This means that django-south users
-   should add to settings::
-
-       SOUTH_MIGRATION_MODULES = {
-           'cities_light': 'cities_light.south_migrations',
-       }
+    ./manage.py migrate
 
 Data update
 -----------

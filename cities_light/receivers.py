@@ -34,34 +34,35 @@ def city_country(sender, instance, **kwargs):
 
 
 def city_search_names(sender, instance, **kwargs):
-    search_names = []
+    search_names = set()
 
-    country_names = [instance.country.name]
+    country_names = set((instance.country.name,))
     if instance.country.alternate_names:
-        country_names += instance.country.alternate_names.split(',')
+        for n in instance.country.alternate_names.split(','):
+            country_names.add(n)
 
-    city_names = [instance.name]
+    city_names = set((instance.name,))
     if instance.alternate_names:
-        city_names += instance.alternate_names.split(',')
+        for n in instance.alternate_names.split(','):
+            city_names.add(n)
 
     if instance.region_id:
-        region_names = [instance.region.name]
+        region_names = set((instance.region.name,))
         if instance.region.alternate_names:
-            region_names += instance.region.alternate_names.split(',')
+            for n in instance.region.alternate_names.split(','):
+                region_names.add(n)
 
     for city_name in city_names:
         for country_name in country_names:
             name = to_search(city_name + country_name)
-            if name not in search_names:
-                search_names.append(name)
+            search_names.add(name)
 
             if instance.region_id:
                 for region_name in region_names:
                     name = to_search(city_name + region_name + country_name)
-                    if name not in search_names:
-                        search_names.append(name)
+                    search_names.add(name)
 
-    instance.search_names = ' '.join(search_names)
+    instance.search_names = ' '.join(sorted(search_names))
 
 
 def connect_default_signals(model_class):
