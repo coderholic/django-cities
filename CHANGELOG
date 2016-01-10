@@ -1,3 +1,21 @@
+2016-01-10 3.2.0
+
+    - #105: Drop LazyProgressBar, patch was accepted upstream by @max-arnold,
+    - #104: Better feature code filtering by @max-arnold,
+    - #100, #96: The mistery about migrations appearing in some
+      environments but not others has been solved: it was due to the
+      presence of b'' in migration files. A new test was added to fail if
+      django wants to create new migrations in any environment.
+    - Phone number was required to create a country, it's not anymore.
+    - Support Django 1.7 to 1.9, thanks @suquant for helping,
+    - Support for 1.7 will drop when 1.10 is released, unless someone
+      contributes compatibility in cities_light options declaration,
+    - Bugfix in import: some search names would not be generated in some
+      cases due to unpredictability of the iteration order on
+      translation_data.items()
+    - Test with django-dbdiff are much faster than importing the whole data
+    - Tox for testing, coverage
+
 2015-04-02 3.1.2
 
     Django 1.8 compatibility by @suquant
@@ -37,7 +55,7 @@
     - Require Django >= 1.6 for django.db.transaction.atomic,
     - Apparently stable MySQL support.
 
-MySQL users should use 3.0.0. 
+MySQL users should use 3.0.0.
 
 PostgreSQL and SQLite users are free to keep on using 2.x.x which supports
 Django >= 1.4.
@@ -85,7 +103,7 @@ Django >= 1.4.
 
     - Fixed #43: load cities with the same name from different
       regions, by @dpoirier
- 
+
 2014-02-02 2.1.11
 
     - Django 1.7 support: remove migrations in pre-install.
@@ -167,7 +185,7 @@ Awesome contributions were merged:
 
 2013-06-26 2.0.8
 
-    - Merge #22: ugettext_lazy instead of ugettext. 
+    - Merge #22: ugettext_lazy instead of ugettext.
     - Added Aaron VanDerlip to AUTHORS.
     - Promoted dev status to 5 Stable.
 
