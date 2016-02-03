@@ -420,6 +420,11 @@ It is possible to force the import of files which weren't downloaded using the
 
         connection.close()
 
+        try:
+            translation_items_pre_import.send(sender=self, items=items)
+        except InvalidItems:
+            return
+
         if len(items) > 5:
             # avoid shortnames, colloquial, and historic
             return
