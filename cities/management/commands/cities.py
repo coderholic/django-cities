@@ -28,6 +28,7 @@ except ImportError:
 
 from itertools import chain
 from optparse import make_option
+from tqdm import tqdm
 
 import django
 from django.core.management.base import BaseCommand
@@ -203,11 +204,17 @@ class Command(BaseCommand):
 
         data = self.get_data('country')
 
+        total = sum(1 for _ in data)
+
+        data = self.get_data('country')
+
         neighbours = {}
         countries = {}
 
         self.logger.info("Importing country data")
-        for item in data:
+        for item in tqdm([d for d in data if d['code'] not in no_longer_existent_country_codes],
+                         total=total,
+                         desc="Importing countries..."):
             self.logger.info(item)
             if not self.call_hook('country_pre', item):
                 continue
@@ -249,7 +256,9 @@ class Command(BaseCommand):
 
         self.logger.info("Building country index")
         self.country_index = {}
-        for obj in Country.objects.all():
+        for obj in tqdm(Country.objects.all(),
+                        total=Country.objects.count(),
+                        desc="Building country index"):
             self.country_index[obj.code] = obj
 
     def import_region(self):
@@ -259,8 +268,12 @@ class Command(BaseCommand):
         data = self.get_data('region')
         self.build_country_index()
 
+        total = sum(1 for _ in data)
+
+        data = self.get_data('region')
+
         self.logger.info("Importing region data")
-        for item in data:
+        for item in tqdm(data, total=total, desc="Importing regions"):
             if not self.call_hook('region_pre', item):
                 continue
 
@@ -291,7 +304,9 @@ class Command(BaseCommand):
 
         self.logger.info("Building region index")
         self.region_index = {}
-        for obj in chain(Region.objects.all(), Subregion.objects.all()):
+        for obj in tqdm(chain(Region.objects.all(), Subregion.objects.all()),
+                        total=Region.objects.count() + Subregion.objects.count(),
+                        desc="Building region index"):
             self.region_index[obj.full_code()] = obj
 
     def import_subregion(self):
@@ -301,11 +316,15 @@ class Command(BaseCommand):
 
         data = self.get_data('subregion')
 
+        total = sum(1 for _ in data)
+
+        data = self.get_data('subregion')
+
         self.build_country_index()
         self.build_region_index()
 
         self.logger.info("Importing subregion data")
-        for item in data:
+        for item in tqdm(data, total=total, desc="Importing subregions"):
             if not self.call_hook('subregion_pre', item):
                 continue
 
@@ -338,11 +357,15 @@ class Command(BaseCommand):
             return
         data = self.get_data('city')
 
+        total = sum(1 for _ in data)
+
+        data = self.get_data('city')
+
         self.build_country_index()
         self.build_region_index()
 
         self.logger.info("Importing city data")
-        for item in data:
+        for item in tqdm(data, total=total, desc="Importing cities"):
             if not self.call_hook('city_pre', item):
                 continue
 
@@ -409,9 +432,16 @@ class Command(BaseCommand):
         self.download('hierarchy')
         data = self.get_data('hierarchy')
 
+        total = sum(1 for _ in data)
+
+        data = self.get_data('hierarchy')
         self.logger.info("Building hierarchy index")
+
+        if hasattr(self, 'hierarchy') and self.hierarchy:
+            return
+
         self.hierarchy = {}
-        for item in data:
+        for item in tqdm(data, total=total, desc="Building hierarchy index"):
             parent_id = int(item['parent'])
             child_id = int(item['child'])
             self.hierarchy[child_id] = parent_id
@@ -420,6 +450,10 @@ class Command(BaseCommand):
         uptodate = self.download_once('city')
         if uptodate and not self.force:
             return
+
+        data = self.get_data('city')
+
+        total = sum(1 for _ in data)
 
         data = self.get_data('city')
 
@@ -433,7 +467,7 @@ class Command(BaseCommand):
             city_index[obj.id] = obj
 
         self.logger.info("Importing district data")
-        for item in data:
+        for item in tqdm(data, total=total, desc="Importing districts"):
             if not self.call_hook('district_pre', item):
                 continue
 
@@ -496,17 +530,24 @@ class Command(BaseCommand):
             return
         data = self.get_data('alt_name')
 
+        total = sum(1 for _ in data)
+
+        data = self.get_data('alt_name')
+
         self.logger.info("Building geo index")
         geo_index = {}
-        for type_ in [Country, Region, Subregion, City, District]:
-            for obj in type_.objects.all():
+        for type_ in (Country, Region, Subregion, City, District):
+            plural_type_name = '{}s'.format(type_.__name__) if type_.__name__[-1] != 'y' else '{}ies'.format(type_.__name__[:-1])
+            for obj in tqdm(type_.objects.all(),
+                            total=type_.objects.count(),
+                            desc="Building geo index for {}".format(plural_type_name.lower())):
                 geo_index[obj.id] = {
                     'type': type_,
                     'object': obj,
                 }
 
         self.logger.info("Importing alternate name data")
-        for item in data:
+        for item in tqdm(data, total=total, desc="Importing data for alternative names"):
             if not self.call_hook('alt_name_pre', item):
                 continue
 
@@ -545,11 +586,16 @@ class Command(BaseCommand):
             return
         data = self.get_data('postal_code')
 
+        total = sum(1 for _ in data)
+
+        data = self.get_data('postal_code')
+
         self.build_country_index()
         self.build_region_index()
 
         self.logger.info("Importing postal codes")
-        for item in data:
+
+        for item in tqdm(data, total=total, desc="Importing postal codes"):
             if not self.call_hook('postal_code_pre', item):
                 continue
 
@@ -609,10 +655,15 @@ class Command(BaseCommand):
         self.logger.info("Flushing district data")
         District.objects.all().delete()
 
-    def flush_alt_name(self):
-        self.logger.info("Flushing alternate name data")
-        AlternativeName.objects.all().delete()
-
     def flush_postal_code(self):
         self.logger.info("Flushing postal code data")
         PostalCode.objects.all().delete()
+
+    def flush_alt_name(self):
+        self.logger.info("Flushing alternate name data")
+        for type_ in (Country, Region, Subregion, City, District, PostalCode, Language):
+            plural_type_name = type_.__name__ if type_.__name__[-1] != 'y' else '{}ies'.format(type_.__name__[:-1])
+            for obj in tqdm(type_.objects.all(), total=type_.objects.count(),
+                            desc="Flushing alternative names for {}".format(
+                                plural_type_name)):
+                obj.alt_names.all().delete()

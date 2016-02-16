@@ -20,6 +20,9 @@ setup(
     author_email='ben.m.dowling@gmail.com',
     url='https://github.com/coderholic/django-cities',
     packages=find_packages(exclude=['example']),
+    install_requires=[
+        'tqdm',
+    ],
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.md'),
