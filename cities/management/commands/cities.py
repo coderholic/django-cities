@@ -25,9 +25,10 @@ try:
     from urllib.request import urlopen
 except ImportError:
     from urllib import urlopen
-    
+
 from itertools import chain
 from optparse import make_option
+from tqdm import tqdm
 
 import django
 from django.core.management.base import BaseCommand
@@ -53,16 +54,22 @@ class Command(BaseCommand):
     logger = logging.getLogger("cities")
 
     option_list = BaseCommand.option_list + (
-        make_option('--force', action='store_true', default=False,
-            help='Import even if files are up-to-date.'
-        ),
-        make_option('--import', metavar="DATA_TYPES", default='all',
-            help =  'Selectively import data. Comma separated list of data types: '
-                    + str(import_opts).replace("'",'')
-        ),
-        make_option('--flush', metavar="DATA_TYPES", default='',
-            help =  "Selectively flush data. Comma separated list of data types."
-        ),
+        make_option(
+            '--force',
+            action='store_true',
+            default=False,
+            help='Import even if files are up-to-date.'),
+        make_option(
+            '--import',
+            metavar="DATA_TYPES",
+            default='all',
+            help='Selectively import data. Comma separated list of data types: '
+            + ' ' + str(import_opts).replace("'", '')),
+        make_option(
+            '--flush',
+            metavar="DATA_TYPES",
+            default='',
+            help="Selectively flush data. Comma separated list of data types."),
     )
 
     @_transact
@@ -73,14 +80,17 @@ class Command(BaseCommand):
         self.force = self.options['force']
 
         self.flushes = [e for e in self.options['flush'].split(',') if e]
-        if 'all' in self.flushes: self.flushes = import_opts_all
+        if 'all' in self.flushes:
+            self.flushes = import_opts_all
         for flush in self.flushes:
             func = getattr(self, "flush_" + flush)
             func()
 
         self.imports = [e for e in self.options['import'].split(',') if e]
-        if 'all' in self.imports: self.imports = import_opts_all
-        if self.flushes: self.imports = []
+        if 'all' in self.imports:
+            self.imports = import_opts_all
+        if self.flushes:
+            self.imports = []
         for import_ in self.imports:
             func = getattr(self, "import_" + import_)
             func()
@@ -89,11 +99,12 @@ class Command(BaseCommand):
         if hasattr(settings, 'plugins'):
             for plugin in settings.plugins[hook]:
                 try:
-                    func = getattr(plugin,hook)
+                    func = getattr(plugin, hook)
                     func(self, *args, **kwargs)
                 except HookException as e:
                     error = str(e)
-                    if error: self.logger.error(error)
+                    if error:
+                        self.logger.error(error)
                     return False
         return True
 
@@ -107,14 +118,15 @@ class Command(BaseCommand):
         for url in urls:
             try:
                 web_file = urlopen(url)
-                if 'html' in web_file.headers['content-type']: raise Exception()
+                if 'html' in web_file.headers['content-type']:
+                    raise Exception()
                 break
             except:
                 web_file = None
                 continue
         else:
             self.logger.error("Web file not found: %s. Tried URLs:\n%s", filename, '\n'.join(urls))
-            
+
         uptodate = False
         filepath = os.path.join(self.data_dir, filename)
         if web_file is not None:
@@ -129,7 +141,7 @@ class Command(BaseCommand):
         else:
             self.logger.warning("Assuming file is up-to-date")
             uptodate = True
-            
+
         if not uptodate and web_file is not None:
             self.logger.info("Downloading: " + filename)
             if not os.path.exists(self.data_dir):
@@ -139,7 +151,7 @@ class Command(BaseCommand):
             file.close()
         elif not os.path.exists(filepath):
             raise Exception("File not found and download failed: " + filename)
-            
+
         return uptodate
 
     def download_once(self, filekey):
@@ -180,13 +192,19 @@ class Command(BaseCommand):
 
     def parse(self, data):
         for line in data:
-            if len(line) < 1 or line[0] == '#': continue
+            if len(line) < 1 or line[0] == '#':
+                continue
             items = [e.strip() for e in line.split('\t')]
             yield items
 
     def import_country(self):
         uptodate = self.download('country')
-        if uptodate and not self.force: return
+        if uptodate and not self.force:
+            return
+
+        data = self.get_data('country')
+
+        total = sum(1 for _ in data)
 
         data = self.get_data('country')
 
@@ -194,13 +212,17 @@ class Command(BaseCommand):
         countries = {}
 
         self.logger.info("Importing country data")
-        for item in data:
+        for item in tqdm([d for d in data if d['code'] not in no_longer_existent_country_codes],
+                         total=total,
+                         desc="Importing countries..."):
             self.logger.info(item)
-            if not self.call_hook('country_pre', item): continue
-            
+            if not self.call_hook('country_pre', item):
+                continue
+
             country = Country()
-            try: country.id = int(item['geonameid'])
-            except: 
+            try:
+                country.id = int(item['geonameid'])
+            except:
                 continue
 
             country.name = item['name']
@@ -209,7 +231,7 @@ class Command(BaseCommand):
             country.code3 = item['code3']
             country.population = item['population']
             country.continent = item['continent']
-            country.tld = item['tld'][1:] # strip the leading .
+            country.tld = item['tld'][1:]  # strip the leading .
             country.phone = item['phone']
             country.currency = item['currencyCode']
             country.currency_name = item['currencyName']
@@ -219,32 +241,42 @@ class Command(BaseCommand):
 
             neighbours[country] = item['neighbours'].split(",")
             countries[country.code] = country
-            
-            if not self.call_hook('country_post', country, item): continue 
+
+            if not self.call_hook('country_post', country, item):
+                continue
             country.save()
 
         for country, neighbour_codes in list(neighbours.items()):
             neighbours = [x for x in [countries.get(x) for x in neighbour_codes if x] if x]
             country.neighbours.add(*neighbours)
-        
+
     def build_country_index(self):
-        if hasattr(self, 'country_index'): return
-        
+        if hasattr(self, 'country_index'):
+            return
+
         self.logger.info("Building country index")
         self.country_index = {}
-        for obj in Country.objects.all():
+        for obj in tqdm(Country.objects.all(),
+                        total=Country.objects.count(),
+                        desc="Building country index"):
             self.country_index[obj.code] = obj
-            
+
     def import_region(self):
         uptodate = self.download('region')
-        if uptodate and not self.force: return
+        if uptodate and not self.force:
+            return
         data = self.get_data('region')
         self.build_country_index()
-                
+
+        total = sum(1 for _ in data)
+
+        data = self.get_data('region')
+
         self.logger.info("Importing region data")
-        for item in data:
-            if not self.call_hook('region_pre', item): continue
-            
+        for item in tqdm(data, total=total, desc="Importing regions"):
+            if not self.call_hook('region_pre', item):
+                continue
+
             region = Region()
 
             region.id = int(item['geonameid'])
@@ -254,38 +286,48 @@ class Command(BaseCommand):
 
             country_code, region_code = item['code'].split(".")
             region.code = region_code
-            try: 
+            try:
                 region.country = self.country_index[country_code]
             except:
                 self.logger.warning("Region: %s: Cannot find country: %s -- skipping",
                                     region.name, country_code)
                 continue
-            
-            if not self.call_hook('region_post', region, item): continue
+
+            if not self.call_hook('region_post', region, item):
+                continue
             region.save()
             self.logger.debug("Added region: %s, %s", item['code'], region)
-        
+
     def build_region_index(self):
-        if hasattr(self, 'region_index'): return
-        
+        if hasattr(self, 'region_index'):
+            return
+
         self.logger.info("Building region index")
         self.region_index = {}
-        for obj in chain(Region.objects.all(), Subregion.objects.all()):
+        for obj in tqdm(chain(Region.objects.all(), Subregion.objects.all()),
+                        total=Region.objects.count() + Subregion.objects.count(),
+                        desc="Building region index"):
             self.region_index[obj.full_code()] = obj
-            
+
     def import_subregion(self):
         uptodate = self.download('subregion')
-        if uptodate and not self.force: return
+        if uptodate and not self.force:
+            return
 
         data = self.get_data('subregion')
-        
+
+        total = sum(1 for _ in data)
+
+        data = self.get_data('subregion')
+
         self.build_country_index()
         self.build_region_index()
-                
+
         self.logger.info("Importing subregion data")
-        for item in data:
-            if not self.call_hook('subregion_pre', item): continue
-            
+        for item in tqdm(data, total=total, desc="Importing subregions"):
+            if not self.call_hook('subregion_pre', item):
+                continue
+
             subregion = Subregion()
 
             subregion.id = int(item['geonameid'])
@@ -295,32 +337,40 @@ class Command(BaseCommand):
 
             country_code, region_code, subregion_code = item['code'].split(".")
             subregion.code = subregion_code
-            try: 
+            try:
                 subregion.region = self.region_index[country_code + "." + region_code]
             except:
                 self.logger.warning("Subregion: %s: Cannot find region: %s",
                                     subregion.name, region_code)
                 continue
-                
-            if not self.call_hook('subregion_post', subregion, item): continue
+
+            if not self.call_hook('subregion_post', subregion, item):
+                continue
             subregion.save()
             self.logger.debug("Added subregion: %s, %s", item['code'], subregion)
-            
+
         del self.region_index
-        
-    def import_city(self):            
+
+    def import_city(self):
         uptodate = self.download_once('city')
-        if uptodate and not self.force: return
+        if uptodate and not self.force:
+            return
+        data = self.get_data('city')
+
+        total = sum(1 for _ in data)
+
         data = self.get_data('city')
 
         self.build_country_index()
         self.build_region_index()
 
         self.logger.info("Importing city data")
-        for item in data:
-            if not self.call_hook('city_pre', item): continue
-            
-            if item['featureCode'] not in city_types: continue
+        for item in tqdm(data, total=total, desc="Importing cities"):
+            if not self.call_hook('city_pre', item):
+                continue
+
+            if item['featureCode'] not in city_types:
+                continue
 
             city = City()
             try:
@@ -340,7 +390,7 @@ class Command(BaseCommand):
                 pass
 
             country_code = item['countryCode']
-            try: 
+            try:
                 country = self.country_index[country_code]
                 city.country = country
             except:
@@ -349,7 +399,7 @@ class Command(BaseCommand):
                 continue
 
             region_code = item['admin1Code']
-            try: 
+            try:
                 region = self.region_index[country_code + "." + region_code]
                 city.region = region
             except:
@@ -361,7 +411,7 @@ class Command(BaseCommand):
                     continue
 
             subregion_code = item['admin2Code']
-            try: 
+            try:
                 subregion = self.region_index[country_code + "." + region_code + "." + subregion_code]
                 city.subregion = subregion
             except:
@@ -369,56 +419,72 @@ class Command(BaseCommand):
                     self.logger.warning("%s: %s: Cannot find subregion: %s -- skipping",
                                         country_code, city.name, subregion_code)
                 pass
-            
-            if not self.call_hook('city_post', city, item): continue
+
+            if not self.call_hook('city_post', city, item):
+                continue
             city.save()
             self.logger.debug("Added city: %s", city)
-        
+
     def build_hierarchy(self):
-        if hasattr(self, 'hierarchy'): return
-        
+        if hasattr(self, 'hierarchy'):
+            return
+
         self.download('hierarchy')
         data = self.get_data('hierarchy')
-        
+
+        total = sum(1 for _ in data)
+
+        data = self.get_data('hierarchy')
         self.logger.info("Building hierarchy index")
+
+        if hasattr(self, 'hierarchy') and self.hierarchy:
+            return
+
         self.hierarchy = {}
-        for item in data:
+        for item in tqdm(data, total=total, desc="Building hierarchy index"):
             parent_id = int(item['parent'])
             child_id = int(item['child'])
             self.hierarchy[child_id] = parent_id
-            
+
     def import_district(self):
         uptodate = self.download_once('city')
-        if uptodate and not self.force: return
-        
+        if uptodate and not self.force:
+            return
+
+        data = self.get_data('city')
+
+        total = sum(1 for _ in data)
+
         data = self.get_data('city')
 
         self.build_country_index()
         self.build_region_index()
         self.build_hierarchy()
-            
+
         self.logger.info("Building city index")
         city_index = {}
         for obj in City.objects.all():
             city_index[obj.id] = obj
-            
+
         self.logger.info("Importing district data")
-        for item in data:
-            if not self.call_hook('district_pre', item): continue
-            
+        for item in tqdm(data, total=total, desc="Importing districts"):
+            if not self.call_hook('district_pre', item):
+                continue
+
             type = item['featureCode']
-            if type not in district_types: continue
-            
+            if type not in district_types:
+                continue
+
             district = District()
             district.name = item['name']
             district.name_std = item['asciiName']
             district.slug = slugify(district.name_std)
             district.location = Point(float(item['longitude']), float(item['latitude']))
             district.population = int(item['population'])
-            
+
             # Find city
             city = None
-            try: 
+            try:
                 city = city_index[self.hierarchy[district.id]]
             except:
                 self.logger.warning("District: %s: Cannot find city in hierarchy, using nearest", district.name)
@@ -446,47 +512,60 @@ class Command(BaseCommand):
                         if dist < min_dist:
                             min_dist = dist
                             city = e
-                    
+
             if not city:
                 self.logger.warning("District: %s: Cannot find city -- skipping", district.name)
                 continue
 
             district.city = city
-            
-            if not self.call_hook('district_post', district, item): continue
+
+            if not self.call_hook('district_post', district, item):
+                continue
             district.save()
             self.logger.debug("Added district: %s", district)
-        
+
     def import_alt_name(self):
         uptodate = self.download('alt_name')
-        if uptodate and not self.force: return
+        if uptodate and not self.force:
+            return
         data = self.get_data('alt_name')
-        
+
+        total = sum(1 for _ in data)
+
+        data = self.get_data('alt_name')
+
         self.logger.info("Building geo index")
         geo_index = {}
-        for type_ in [Country, Region, Subregion, City, District]:
-            for obj in type_.objects.all():
+        for type_ in (Country, Region, Subregion, City, District):
+            plural_type_name = '{}s'.format(type_.__name__) if type_.__name__[-1] != 'y' else '{}ies'.format(type_.__name__[:-1])
+            for obj in tqdm(type_.objects.all(),
+                            total=type_.objects.count(),
+                            desc="Building geo index for {}".format(plural_type_name.lower())):
                 geo_index[obj.id] = {
                     'type': type_,
                     'object': obj,
                 }
-        
+
         self.logger.info("Importing alternate name data")
-        for item in data:
-            if not self.call_hook('alt_name_pre', item): continue
-            
+        for item in tqdm(data, total=total, desc="Importing data for alternative names"):
+            if not self.call_hook('alt_name_pre', item):
+                continue
+
             # Only get names for languages in use
             locale = item['language']
-            if not locale: locale = 'und'
-            if not locale in settings.locales and 'all' not in settings.locales: 
+            if not locale:
+                locale = 'und'
+            if not locale in settings.locales and 'all' not in settings.locales:
                 self.logger.info("SKIPPING %s", settings.locales)
                 continue
-            
+
             # Check if known geo id
             geo_id = int(item['geonameid'])
-            try: geo_info = geo_index[geo_id]
-            except: continue
-            
+            try:
+                geo_info = geo_index[geo_id]
+            except:
+                continue
+
             alt = AlternativeName()
             alt.id = int(item['nameid'])
             alt.name = item['name']
@@ -494,7 +573,8 @@ class Command(BaseCommand):
             alt.is_short = item['isShort']
             alt.language = locale
 
-            if not self.call_hook('alt_name_post', alt, item): continue
+            if not self.call_hook('alt_name_post', alt, item):
+                continue
             alt.save()
             geo_info['object'].alt_names.add(alt)
 
@@ -502,18 +582,26 @@ class Command(BaseCommand):
 
     def import_postal_code(self):
         uptodate = self.download('postal_code')
-        if uptodate and not self.force: return
+        if uptodate and not self.force:
+            return
+        data = self.get_data('postal_code')
+
+        total = sum(1 for _ in data)
+
         data = self.get_data('postal_code')
 
         self.build_country_index()
         self.build_region_index()
 
         self.logger.info("Importing postal codes")
-        for item in data:
-            if not self.call_hook('postal_code_pre', item): continue
+
+        for item in tqdm(data, total=total, desc="Importing postal codes"):
+            if not self.call_hook('postal_code_pre', item):
+                continue
 
             country_code = item['countryCode']
-            if country_code not in settings.postal_codes and 'ALL' not in settings.postal_codes: continue
+            if country_code not in settings.postal_codes and 'ALL' not in settings.postal_codes:
+                continue
 
             # Find country
             code = item['postalCode']
@@ -539,7 +627,8 @@ class Command(BaseCommand):
                                     pc.country, pc.code, item['longitude'], item['latitude'])
                 continue
 
-            if not self.call_hook('postal_code_post', pc, item): continue
+            if not self.call_hook('postal_code_post', pc, item):
+                continue
             self.logger.debug("Adding postal code: %s, %s", pc.country, pc)
             try:
                 pc.save()
@@ -549,27 +638,32 @@ class Command(BaseCommand):
     def flush_country(self):
         self.logger.info("Flushing country data")
         Country.objects.all().delete()
-        
+
     def flush_region(self):
         self.logger.info("Flushing region data")
         Region.objects.all().delete()
-        
+
     def flush_subregion(self):
         self.logger.info("Flushing subregion data")
         Subregion.objects.all().delete()
-        
+
     def flush_city(self):
         self.logger.info("Flushing city data")
         City.objects.all().delete()
-    
+
     def flush_district(self):
         self.logger.info("Flushing district data")
         District.objects.all().delete()
-    
-    def flush_alt_name(self):
-        self.logger.info("Flushing alternate name data")
-        AlternativeName.objects.all().delete()
-        
+
     def flush_postal_code(self):
         self.logger.info("Flushing postal code data")
         PostalCode.objects.all().delete()
+
+    def flush_alt_name(self):
+        self.logger.info("Flushing alternate name data")
+        for type_ in (Country, Region, Subregion, City, District, PostalCode, Language):
+            plural_type_name = type_.__name__ if type_.__name__[-1] != 'y' else '{}ies'.format(type_.__name__[:-1])
+            for obj in tqdm(type_.objects.all(), total=type_.objects.count(),
+                            desc="Flushing alternative names for {}".format(
+                                plural_type_name)):
+                obj.alt_names.all().delete()
