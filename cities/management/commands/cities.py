@@ -212,7 +212,7 @@ class Command(BaseCommand):
         countries = {}
 
         self.logger.info("Importing country data")
-        for item in tqdm([d for d in data if d['code'] not in no_longer_existent_country_codes],
+        for item in tqdm([d for d in data if d['code'] not in NO_LONGER_EXISTENT_COUNTRY_CODES],
                          total=total,
                          desc="Importing countries..."):
             self.logger.info(item)

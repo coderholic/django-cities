@@ -5,7 +5,8 @@ from django.core.exceptions import ImproperlyConfigured
     
 __all__ = [
     'city_types','district_types',
-    'import_opts','import_opts_all','HookException','settings'
+    'import_opts','import_opts_all','HookException','settings',
+    'NO_LONGER_EXISTENT_COUNTRY_CODES'
 ]
 
 url_bases = {
@@ -143,6 +144,8 @@ country_codes = [
     'TC','TD','TF','TG','TH','TJ','TK','TL','TM','TN','TO','TR','TT','TV','TW','TZ','UA','UG','UM','US','UY','UZ',
     'VA','VC','VE','VG','VI','VN','VU','WF','WS','YE','YT','ZA','ZM','ZW',
 ]
+
+NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
 
 # See http://www.geonames.org/export/codes.html
 city_types = ['PPL','PPLA','PPLC','PPLA2','PPLA3','PPLA4', 'PPLG']
