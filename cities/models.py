@@ -9,9 +9,10 @@ from django.contrib.gis.geos import Point
 from .conf import settings
 
 __all__ = [
-        'Point', 'Country', 'Region', 'Subregion',
-        'City', 'District', 'PostalCode', 'AlternativeName', 
+    'Point', 'Country', 'Region', 'Subregion',
+    'City', 'District', 'PostalCode', 'AlternativeName',
 ]
+
 
 @python_2_unicode_compatible
 class Place(models.Model):
@@ -37,6 +38,7 @@ class Place(models.Model):
     def __str__(self):
         return force_text(self.name)
 
+
 class Country(Place):
     code = models.CharField(max_length=2, db_index=True)
     code3 = models.CharField(max_length=3, db_index=True)
@@ -59,6 +61,7 @@ class Country(Place):
     def parent(self):
         return None
 
+
 class Region(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
@@ -70,6 +73,7 @@ class Region(Place):
 
     def full_code(self):
         return ".".join([self.parent.code, self.code])
+
 
 class Subregion(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
@@ -83,6 +87,7 @@ class Subregion(Place):
     def full_code(self):
         return ".".join([self.parent.parent.code, self.parent.code, self.code])
 
+
 class City(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     location = models.PointField()
@@ -91,8 +96,8 @@ class City(Place):
     subregion = models.ForeignKey(Subregion, null=True, blank=True)
     country = models.ForeignKey(Country)
     elevation = models.IntegerField(null=True)
-    kind = models.CharField(max_length=10) # http://www.geonames.org/export/codes.html
-    timezone = models.CharField(max_length=40) 
+    kind = models.CharField(max_length=10)  # http://www.geonames.org/export/codes.html
+    timezone = models.CharField(max_length=40)
 
     class Meta:
         verbose_name_plural = "cities"
@@ -100,6 +105,7 @@ class City(Place):
     @property
     def parent(self):
         return self.region
+
 
 class District(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
@@ -110,6 +116,7 @@ class District(Place):
     @property
     def parent(self):
         return self.city
+
 
 @python_2_unicode_compatible
 class AlternativeName(models.Model):
@@ -122,12 +129,13 @@ class AlternativeName(models.Model):
     def __str__(self):
         return "%s (%s)" % (force_text(self.name), force_text(self.language))
 
+
 @python_2_unicode_compatible
 class PostalCode(Place):
     code = models.CharField(max_length=20)
     location = models.PointField()
 
-    country = models.ForeignKey(Country, related_name = 'postal_codes')
+    country = models.ForeignKey(Country, related_name='postal_codes')
 
     # Region names for each admin level, region may not exist in DB
     region_name = models.CharField(max_length=100, db_index=True)
@@ -158,4 +166,3 @@ class PostalCode(Place):
 
     def __str__(self):
         return force_text(self.code)
-    

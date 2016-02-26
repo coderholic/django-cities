@@ -166,7 +166,6 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['postalcode_id', 'alternativename_id'])
 
-
     def backwards(self, orm):
         # Deleting model 'Country'
         db.delete_table(u'cities_country')
@@ -209,7 +208,6 @@ class Migration(SchemaMigration):
 
         # Removing M2M table for field alt_names on 'PostalCode'
         db.delete_table(db.shorten_name(u'cities_postalcode_alt_names'))
-
 
     models = {
         u'cities.alternativename': {

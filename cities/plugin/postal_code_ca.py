@@ -16,9 +16,10 @@ code_map = {
     'NU': '14',
 }
 
+
 class Plugin:
     def postal_code_pre(self, parser, item):
         country_code = item['countryCode']
-        if country_code != 'CA': return
+        if country_code != 'CA':
+            return
         item['admin1Code'] = code_map[item['admin1Code']]
-        
