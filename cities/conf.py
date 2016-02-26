@@ -5,7 +5,8 @@ from django.core.exceptions import ImproperlyConfigured
     
 __all__ = [
     'city_types','district_types',
-    'import_opts','import_opts_all','HookException','settings'
+    'import_opts','import_opts_all','HookException','settings',
+    'NO_LONGER_EXISTENT_COUNTRY_CODES'
 ]
 
 url_bases = {
@@ -144,6 +145,8 @@ country_codes = [
     'VA','VC','VE','VG','VI','VN','VU','WF','WS','YE','YT','ZA','ZM','ZW',
 ]
 
+NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
+
 # See http://www.geonames.org/export/codes.html
 city_types = ['PPL','PPLA','PPLC','PPLA2','PPLA3','PPLA4', 'PPLG']
 district_types = ['PPLX']
@@ -234,3 +237,5 @@ if hasattr(django_settings, "CITIES_IGNORE_EMPTY_REGIONS"):
 else:
     CITIES_IGNORE_EMPTY_REGIONS = False
 
+if hasattr(django_settings, "CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES"):
+    NO_LONGER_EXISTENT_COUNTRY_CODES = django_settings.CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES
