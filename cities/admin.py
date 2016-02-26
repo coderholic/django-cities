@@ -1,8 +1,10 @@
 from django.contrib import admin
 from .models import *
 
+
 class CitiesAdmin(admin.ModelAdmin):
     raw_id_fields = ['alt_names']
+
 
 class CountryAdmin(CitiesAdmin):
     list_display = ['name', 'code', 'code3', 'tld', 'phone', 'continent', 'area', 'population']
@@ -10,12 +12,14 @@ class CountryAdmin(CitiesAdmin):
 
 admin.site.register(Country, CountryAdmin)
 
+
 class RegionAdmin(CitiesAdmin):
     ordering = ['name_std']
     list_display = ['name_std', 'code', 'country']
     search_fields = ['name', 'name_std', 'code']
 
 admin.site.register(Region, RegionAdmin)
+
 
 class SubregionAdmin(CitiesAdmin):
     ordering = ['name_std']
@@ -25,6 +29,7 @@ class SubregionAdmin(CitiesAdmin):
 
 admin.site.register(Subregion, SubregionAdmin)
 
+
 class CityAdmin(CitiesAdmin):
     ordering = ['name_std']
     list_display = ['name_std', 'subregion', 'region', 'country', 'population']
@@ -33,12 +38,14 @@ class CityAdmin(CitiesAdmin):
 
 admin.site.register(City, CityAdmin)
 
+
 class DistrictAdmin(CitiesAdmin):
     raw_id_fields = ['alt_names', 'city']
     list_display = ['name_std', 'city']
     search_fields = ['name', 'name_std']
 
 admin.site.register(District, DistrictAdmin)
+
 
 class AltNameAdmin(admin.ModelAdmin):
     ordering = ['name']
@@ -47,6 +54,7 @@ class AltNameAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 admin.site.register(AlternativeName, AltNameAdmin)
+
 
 class PostalCodeAdmin(CitiesAdmin):
     ordering = ['code']

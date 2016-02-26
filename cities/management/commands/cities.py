@@ -63,8 +63,8 @@ class Command(BaseCommand):
             '--import',
             metavar="DATA_TYPES",
             default='all',
-            help='Selectively import data. Comma separated list of data types: '
-            + ' ' + str(import_opts).replace("'", '')),
+            help='Selectively import data. Comma separated list of data ' +
+                 'types: ' + str(import_opts).replace("'", '')),
         make_option(
             '--flush',
             metavar="DATA_TYPES",
@@ -406,6 +406,7 @@ class Command(BaseCommand):
                 if CITIES_IGNORE_EMPTY_REGIONS:
                     city.region = None
                 else:
+                    print("{}: {}: Cannot find region: {} -- skipping", country_code, city.name, region_code)
                     self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
                                         country_code, city.name, region_code)
                     continue
@@ -504,8 +505,9 @@ class Command(BaseCommand):
                     )
                     search_deg = 2
                     min_dist = float('inf')
-                    bounds = Envelope(district.location.x-search_deg, district.location.y-search_deg,
-                                      district.location.x+search_deg, district.location.y+search_deg)
+                    bounds = Envelope(
+                        district.location.x - search_deg, district.location.y - search_deg,
+                        district.location.x + search_deg, district.location.y + search_deg)
                     for e in City.objects.filter(population__gt=city_pop_min).filter(
                             location__intersects=bounds.wkt):
                         dist = geo_distance(district.location, e.location)
@@ -555,7 +557,7 @@ class Command(BaseCommand):
             locale = item['language']
             if not locale:
                 locale = 'und'
-            if not locale in settings.locales and 'all' not in settings.locales:
+            if locale not in settings.locales and 'all' not in settings.locales:
                 self.logger.info("SKIPPING %s", settings.locales)
                 continue
 

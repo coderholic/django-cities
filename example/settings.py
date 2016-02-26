@@ -1,6 +1,7 @@
 import os
 import django
 
+
 def rel(path):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), path)
 
@@ -65,8 +66,8 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
-            },
         },
+    },
     'loggers': {
         'cities': {
             'handlers': ['log_to_stdout'],

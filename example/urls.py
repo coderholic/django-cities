@@ -1,8 +1,10 @@
+from django import VERSION as DJANGO_VERSION
 from django.conf.urls.defaults import *
 from django.conf.urls import patterns
 from django.contrib import admin
 from django.views.generic import ListView
 from cities.models import Country, Region, City, District, PostalCode
+
 
 class PlaceListView(ListView):
     template_name = "list.html"
@@ -18,12 +20,12 @@ class PlaceListView(ListView):
             self.place = country
             return Region.objects.filter(country=country).order_by('name')
 
-        region = Region.objects.get(country = country, slug=args[1])
+        region = Region.objects.get(country=country, slug=args[1])
         if len(args) == 2:
             self.place = region
             return City.objects.filter(region=region).order_by('name')
 
-        city = City.objects.get(region = region, slug=args[2])
+        city = City.objects.get(region=region, slug=args[2])
         self.place = city
         return District.objects.filter(city=city).order_by('name')
 
@@ -37,7 +39,14 @@ class PlaceListView(ListView):
         return context
 
 admin.autodiscover()
-urlpatterns = patterns('',
-    (r'^admin/', include(admin.site.urls)),
-    (r'^(.*)$', PlaceListView.as_view()),
-)
+if DJANGO_VERSION < (1, 9, 0):
+    urlpatterns = patterns(
+        '',
+        (r'^admin/', include(admin.site.urls)),
+        (r'^(.*)$', PlaceListView.as_view()),
+    )
+else:
+    urlpatterns = [
+        (r'^admin/', include(admin.site.urls)),
+        (r'^(.*)$', PlaceListView.as_view()),
+    ]
