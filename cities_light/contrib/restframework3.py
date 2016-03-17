@@ -123,6 +123,6 @@ router.register(r'regions', RegionModelViewSet,
                 base_name='cities-light-api-region')
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^', include(router.urls)),
-)
+]
