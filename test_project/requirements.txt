@@ -1,1 +1,18 @@
-django
+## base dependencies
+django<1.9
+django-autocomplete-light==1.4.14
+django-ajax-selects==1.4.1
+djangorestframework==3.3.3
+
+## optional database adapters
+# psycopg2
+# mysqlclient
+
+## testing
+django-dbdiff==0.6.0
+mock
+pytest
+tox
+
+## debugging
+ipython
