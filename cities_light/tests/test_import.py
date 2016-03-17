@@ -32,4 +32,4 @@ class ImportBase(test.TransactionTestCase):
     @source('translation', 'angouleme_translations')
     def test_single_city(self):
         management.call_command('cities_light', force_import_all=True)
-        Fixture('cities_light/fixtures/angouleme.json').assertNoDiff()
+        Fixture('cities_light/tests/fixtures/angouleme.json').assertNoDiff()

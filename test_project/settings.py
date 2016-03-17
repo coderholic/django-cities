@@ -14,22 +14,7 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-FIXTURE_DIRS = [
-    os.path.join(PROJECT_ROOT, 'fixtures'),
-]
-
 MANAGERS = ADMINS
-
-CITIES_LIGHT_TRANSLATION_LANGUAGES=['fr', 'ru']
-if os.environ.get('CI', False):
-    CITIES_LIGHT_CITY_SOURCES = [
-        'http://download.geonames.org/export/dump/%s.zip' %
-        os.environ.get('CITIES_LIGHT_CITY_SOURCE', 'cities15000'),
-    ]
-    CITIES_LIGHT_CITY_SOURCES=['file://angouleme_city.txt']
-    CITIES_LIGHT_REGION_SOURCES=['file://angouleme_region.txt']
-    CITIES_LIGHT_COUNTRY_SOURCES=['file://angouleme_country.txt']
-    CITIES_LIGHT_TRANSLATION_SOURCES=['file://angouleme_translations.txt']
 
 DATABASES = {
     'default': {
@@ -91,7 +76,6 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -131,7 +115,6 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_ROOT, 'templates'),
 )
 
 INSTALLED_APPS = (
@@ -146,12 +129,6 @@ INSTALLED_APPS = (
     'cities_light',
 )
 
-try:
-    import dbdiff
-except ImportError:
-    pass
-else:
-    INSTALLED_APPS += ('dbdiff',)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -186,7 +163,25 @@ LOGGING = {
         'cities_light': {
             'handlers':['console'],
             'propagate': True,
-            'level':'DEBUG',
+            'level':'WARNING',
         },
     }
 }
+
+if os.environ.get('CI', False):
+    CITIES_LIGHT_TRANSLATION_LANGUAGES=['fr', 'ru']
+
+    TESTS_DIR = os.path.abspath(
+        os.path.join(PROJECT_ROOT, 'cities_light', 'tests')
+    )
+
+    FIXTURE_DIRS = [os.path.join(TESTS_DIR, 'fixtures')]
+
+    CITIES_LIGHT_CITY_SOURCES = ['file://angouleme_city.txt']
+    CITIES_LIGHT_REGION_SOURCES = ['file://angouleme_region.txt']
+    CITIES_LIGHT_COUNTRY_SOURCES = ['file://angouleme_country.txt']
+    CITIES_LIGHT_TRANSLATION_SOURCES = ['file://angouleme_translations.txt']
+
+    LOGGING['loggers']['cities_light']['level'] = 'DEBUG'
+
+    INSTALLED_APPS += ('dbdiff',)
