@@ -74,6 +74,17 @@ This command is well documented, consult the help with::
 
     ./manage.py help cities_light
 
+Development
+-----------
+
+To build the docs use the following steps:
+
+1. mkvirtualenv dcl-doc
+2. pip install -e ./
+3. pip install -r docs/requirements.txt
+4. cd docs
+5. make html
+
 Resources
 ---------
 
