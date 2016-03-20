@@ -77,19 +77,18 @@ This command is well documented, consult the help with::
 Development
 -----------
 
-Using bundled test project::
+Create development virtualenv (you need to have tox installed in your base system)::
 
-    mkvirtualenv cities-light
-    pip install -e ./
-    pip install -r test_project/requirements.txt
+    tox -e dev
+    source .tox/dev/bin/activate
 
-Then run::
+Then run the full import::
 
     test_project/manage.py cities_light
 
-There are several environment variables which affect some settings (like DB_ENGINE and CI), you can find them all in test_project/settings.py.
+There are several environment variables which affect project settings (like DB_ENGINE and CI), you can find them all in test_project/settings.py.
 
-To run the test suite you need to have postgresql or mysql installed with passwordless login (or just use sqlite). Otherwise the tests which try to create/drop database will fail.
+To run the test suite you need to have postgresql or mysql installed with passwordless login, or just use sqlite. Otherwise the tests which try to create/drop database will fail.
 
 Running the full test suite::
 
@@ -110,9 +109,7 @@ To run it even faster, you can switch to specific tox virtualenv::
 
 If you want to build the docs, use the following steps::
 
-    mkvirtualenv cities-light
-    pip install -e ./
-    pip install -r docs/requirements.txt
+    source .tox/dev/bin/activate
     cd docs
     make html
 
