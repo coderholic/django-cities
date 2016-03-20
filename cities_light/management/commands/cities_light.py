@@ -18,8 +18,8 @@ except ImportError:
     import pickle
 
 from django.db import transaction, connection
+from django.db import reset_queries, IntegrityError
 from django.core.management.base import BaseCommand
-from django.db import transaction, reset_queries, IntegrityError
 from django.utils.encoding import force_text
 
 import progressbar

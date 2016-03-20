@@ -77,13 +77,44 @@ This command is well documented, consult the help with::
 Development
 -----------
 
-To build the docs use the following steps:
+Create development virtualenv (you need to have tox installed in your base system)::
 
-1. mkvirtualenv dcl-doc
-2. pip install -e ./
-3. pip install -r docs/requirements.txt
-4. cd docs
-5. make html
+    tox -e dev
+    source .tox/dev/bin/activate
+
+Then run the full import::
+
+    test_project/manage.py cities_light
+
+There are several environment variables which affect project settings (like DB_ENGINE and CI), you can find them all in test_project/settings.py.
+
+To run the test suite you need to have postgresql or mysql installed with passwordless login, or just use sqlite. Otherwise the tests which try to create/drop database will fail.
+
+Running the full test suite::
+
+    tox
+
+To run the tests in specific environment use the following command::
+
+    tox -e py27-django18-sqlite
+
+And to run one specific test use this one::
+
+    tox -e py27-django18-sqlite -- ../cities_light/tests/test_form.py::FormTestCase::testCountryFormNameAndContinentAlone
+
+To run it even faster, you can switch to specific tox virtualenv::
+
+    source .tox/py27-django18-sqlite/bin/activate
+    CI=true test_project/manage.py test cities_light.tests.test_form.FormTestCase.testCountryFormNameAndContinentAlone
+
+If you want to build the docs, use the following steps::
+
+    source .tox/dev/bin/activate
+    cd docs
+    make html
+
+If you are ready to send a patch, please read YourLabs guidelines: https://github.com/yourlabs/community/blob/master/docs/guidelines.rst
+
 
 Resources
 ---------
