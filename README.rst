@@ -77,13 +77,47 @@ This command is well documented, consult the help with::
 Development
 -----------
 
-To build the docs use the following steps:
+Using bundled test project::
 
-1. mkvirtualenv dcl-doc
-2. pip install -e ./
-3. pip install -r docs/requirements.txt
-4. cd docs
-5. make html
+    mkvirtualenv cities-light
+    pip install -e ./
+    pip install -r test_project/requirements.txt
+
+Then run::
+
+    test_project/manage.py cities_light
+
+There are several environment variables which affect some settings (like DB_ENGINE and CI), you can find them all in test_project/settings.py.
+
+To run the test suite you need to have postgresql or mysql installed with passwordless login (or just use sqlite). Otherwise the tests which try to create/drop database will fail.
+
+Running the full test suite::
+
+    tox
+
+To run the tests in specific environment use the following command::
+
+    tox -e py27-django18-sqlite
+
+And to run one specific test use this one::
+
+    tox -e py27-django18-sqlite -- ../cities_light/tests/test_form.py::FormTestCase::testCountryFormNameAndContinentAlone
+
+To run it even faster, you can switch to specific tox virtualenv::
+
+    source .tox/py27-django18-sqlite/bin/activate
+    CI=true test_project/manage.py test cities_light.tests.test_form.FormTestCase.testCountryFormNameAndContinentAlone
+
+If you want to build the docs, use the following steps::
+
+    mkvirtualenv cities-light
+    pip install -e ./
+    pip install -r docs/requirements.txt
+    cd docs
+    make html
+
+If you are ready to send a patch, please read YourLabs guidelines: https://github.com/yourlabs/community/blob/master/docs/guidelines.rst
+
 
 Resources
 ---------
