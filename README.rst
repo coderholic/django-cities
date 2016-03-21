@@ -100,7 +100,7 @@ To run the tests in specific environment use the following command::
 
 And to run one specific test use this one::
 
-    tox -e py27-django18-sqlite -- ../cities_light/tests/test_form.py::FormTestCase::testCountryFormNameAndContinentAlone
+    tox -e py27-django18-sqlite -- cities_light/tests/test_form.py::FormTestCase::testCountryFormNameAndContinentAlone
 
 To run it even faster, you can switch to specific tox virtualenv::
 
