@@ -118,16 +118,16 @@ LOGGING = {
 if os.environ.get('CI', False):
     CITIES_LIGHT_TRANSLATION_LANGUAGES=['fr', 'ru']
 
-    TESTS_DIR = os.path.abspath(
-        os.path.join(BASE_DIR, '..', 'cities_light', 'tests')
+    FIXTURE_DIR = os.path.abspath(
+        os.path.join(BASE_DIR, 'cities_light', 'tests', 'fixtures')
     )
 
-    FIXTURE_DIRS = [os.path.join(TESTS_DIR, 'fixtures')]
+    FIXTURE_DIRS = [FIXTURE_DIR]
 
-    CITIES_LIGHT_CITY_SOURCES = ['file://angouleme_city.txt']
-    CITIES_LIGHT_REGION_SOURCES = ['file://angouleme_region.txt']
-    CITIES_LIGHT_COUNTRY_SOURCES = ['file://angouleme_country.txt']
-    CITIES_LIGHT_TRANSLATION_SOURCES = ['file://angouleme_translations.txt']
+    CITIES_LIGHT_CITY_SOURCES = ['file://%s/angouleme_city.txt' % FIXTURE_DIR]
+    CITIES_LIGHT_REGION_SOURCES = ['file://%s/angouleme_region.txt' % FIXTURE_DIR]
+    CITIES_LIGHT_COUNTRY_SOURCES = ['file://%s/angouleme_country.txt' % FIXTURE_DIR]
+    CITIES_LIGHT_TRANSLATION_SOURCES = ['file://%s/angouleme_translations.txt' % FIXTURE_DIR]
 
     LOGGING['loggers']['cities_light']['level'] = 'DEBUG'
 

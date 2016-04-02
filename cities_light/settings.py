@@ -64,6 +64,12 @@ because it's probably project specific.
 
     A list with all sources, auto-generated.
 
+.. py:data:: FIXTURES_BASE_URL
+
+   Base URL to download country/region/city fixtures from. Should end
+   with a slash. Default is ``file://DATA_DIR/fixtures/``. Overridable in
+   ``settings.CITIES_LIGHT_FIXTURES_BASE_URL``.
+
 .. py:data:: DATA_DIR
 
     Absolute path to download and extract data into. Default is
@@ -92,7 +98,8 @@ import os.path
 
 from django.conf import settings
 
-__all__ = ['COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
+__all__ = [
+    'FIXTURES_BASE_URL', 'COUNTRY_SOURCES', 'REGION_SOURCES', 'CITY_SOURCES',
     'TRANSLATION_LANGUAGES', 'TRANSLATION_SOURCES', 'SOURCES', 'DATA_DIR',
     'INDEX_SEARCH_NAMES', 'INCLUDE_COUNTRIES', 'INCLUDE_CITY_TYPES',
     'DEFAULT_APP_NAME', 'CITIES_LIGHT_APP_NAME',
@@ -138,6 +145,12 @@ if INDEX_SEARCH_NAMES is None:
 DEFAULT_APP_NAME = 'cities_light'
 CITIES_LIGHT_APP_NAME = getattr(settings, 'CITIES_LIGHT_APP_NAME',
     DEFAULT_APP_NAME)
+
+FIXTURES_BASE_URL = getattr(
+    settings,
+    'CITIES_LIGHT_FIXTURES_BASE_URL',
+    'file://{0}'.format(os.path.join(DATA_DIR, 'fixtures/'))
+)
 
 
 class ICountry:
