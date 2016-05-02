@@ -221,6 +221,9 @@ def create_settings():
     else:
         locales = ['en', 'und']
 
+    if hasattr(django_settings, "CITIES_DATA_DIR"):
+        res.data_dir = django_settings.CITIES_DATA_DIR
+
     try:
         locales.remove('LANGUAGES')
         locales += [e[0] for e in django_settings.LANGUAGES]
