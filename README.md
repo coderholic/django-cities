@@ -93,6 +93,10 @@ CITIES_FILES = {
 # 'LANGUAGES' will match your language settings, and 'ALL' will install everything
 CITIES_LOCALES = ['en', 'und', 'LANGUAGES']
 
+# full path of folder where the data from geonames.org are downloaded
+# by default all data are downloaded in folder 'data' relative to package installation
+CITIES_DATA_DIR = '/var/data'
+
 # Postal codes will be imported for all ISO 3166-1 alpha-2 country codes below.
 # You can also specificy 'ALL' to import all postal codes.
 # See cities.conf for a full list of country codes. 'ALL' will install everything.

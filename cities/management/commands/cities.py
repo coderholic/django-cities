@@ -49,8 +49,11 @@ _transact = (transaction.commit_on_success if django.VERSION < (1, 6) else
 
 
 class Command(BaseCommand):
-    app_dir = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../..')
-    data_dir = os.path.join(app_dir, 'data')
+    if hasattr(settings, 'data_dir'):
+        data_dir = settings.data_dir
+    else:
+        app_dir = os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + '/../..')
+        data_dir = os.path.join(app_dir, 'data')
     logger = logging.getLogger("cities")
 
     option_list = BaseCommand.option_list + (
