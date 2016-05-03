@@ -574,6 +574,7 @@ class Command(BaseCommand):
             alt = AlternativeName()
             alt.id = int(item['nameid'])
             alt.name = item['name']
+            alt.slug = slugify(alt.name)
             alt.is_preferred = item['isPreferred']
             alt.is_short = item['isShort']
             alt.language = locale

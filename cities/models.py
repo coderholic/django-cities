@@ -1,7 +1,8 @@
 try:
-    from django.utils.encoding import force_unicode as force_text
+    from django.utils.encoding import force_unicode
 except (NameError, ImportError):
     from django.utils.encoding import force_text
+    force_unicode = force_text
 
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.gis.db import models
@@ -121,6 +122,7 @@ class District(Place):
 @python_2_unicode_compatible
 class AlternativeName(models.Model):
     name = models.CharField(max_length=256)
+    slug = models.CharField(max_length=256)
     language = models.CharField(max_length=100)
     is_preferred = models.BooleanField(default=False)
     is_short = models.BooleanField(default=False)
