@@ -1,3 +1,11 @@
+2016-05-29 3.3.0
+
+    - #118: Add Django 1.10 support, drop Django 1.7 support by @jpic
+    - #113: Fix DeprecationWarning by @mbaragiola
+    - #106: New management command to work with fixtures by @max-arnold
+    - #108: translation_items_pre_import_signal by @FaBay89
+    - #106: New management command feature by @greeday2
+
 2016-01-10 3.2.0
 
     - #105: Drop LazyProgressBar, patch was accepted upstream by @max-arnold,
