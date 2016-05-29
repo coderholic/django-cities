@@ -30,6 +30,13 @@ Signals for this application.
     Same as :py:data:`~cities_light.signals.region_items_pre_import` and
     :py:data:`cities_light.signals.city_items_pre_import`.
 
+.. py:data:: translation_items_pre_import
+
+    Same as :py:data:`~cities_light.signals.region_items_pre_import` and
+    :py:data:`cities_light.signals.city_items_pre_import`.
+
+    Note: Be careful because of long runtime; it will be called VERY often.
+
 .. py:data:: city_items_post_import
 
     Emited by city_import() in the cities_light command for each row parsed in
@@ -61,11 +68,13 @@ import django.dispatch
 
 __all__ = ['city_items_pre_import', 'region_items_pre_import',
            'country_items_pre_import', 'city_items_post_import',
-           'region_items_post_import', 'country_items_post_import']
+           'region_items_post_import', 'country_items_post_import',
+           'translation_items_pre_import']
 
 city_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 region_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 country_items_pre_import = django.dispatch.Signal(providing_args=['items'])
+translation_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 
 city_items_post_import = django.dispatch.Signal(
     providing_args=['instance', 'items'])
