@@ -4,9 +4,6 @@ python:
 - '3.5'
 matrix:
   allow_failures:
-  # Pre-1.8 django versions support optparse as it's not supported anymore in
-  # 1.10. Instead of doing compatibility for both, wait for 1.10 to be out to
-  # drop 1.7 support.
   - env: TOXENV=py27-django110-sqlite
   - env: TOXENV=py27-django110-mysql
   - env: TOXENV=py27-django110-postgresql
@@ -15,9 +12,6 @@ matrix:
   - env: TOXENV=py34-django110-postgresql
 env:
   matrix:
-  - TOXENV=py27-django17-sqlite
-  - TOXENV=py27-django17-mysql
-  - TOXENV=py27-django17-postgresql
   - TOXENV=py27-django18-sqlite
   - TOXENV=py27-django18-mysql
   - TOXENV=py27-django18-postgresql
@@ -27,9 +21,6 @@ env:
   - TOXENV=py27-django110-sqlite
   - TOXENV=py27-django110-mysql
   - TOXENV=py27-django110-postgresql
-  - TOXENV=py34-django17-sqlite
-  - TOXENV=py34-django17-mysql
-  - TOXENV=py34-django17-postgresql
   - TOXENV=py34-django18-sqlite
   - TOXENV=py34-django18-mysql
   - TOXENV=py34-django18-postgresql
