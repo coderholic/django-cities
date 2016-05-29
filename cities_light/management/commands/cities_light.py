@@ -65,28 +65,27 @@ It is possible to force the import of files which weren't downloaded using the
 
     logger = logging.getLogger('cities_light')
 
-    option_list = BaseCommand.option_list + (
-        optparse.make_option('--force-import-all', action='store_true',
+    def add_arguments(self, parser):
+        parser.add_argument('--force-import-all', action='store_true',
             default=False, help='Import even if files are up-to-date.'
         ),
-        optparse.make_option('--force-all', action='store_true', default=False,
+        parser.add_argument('--force-all', action='store_true', default=False,
             help='Download and import if files are up-to-date.'
         ),
-        optparse.make_option('--force-import', action='append', default=[],
+        parser.add_argument('--force-import', action='append', default=[],
             help='Import even if files matching files are up-to-date'
         ),
-        optparse.make_option('--force', action='append', default=[],
+        parser.add_argument('--force', action='append', default=[],
             help='Download and import even if matching files are up-to-date'
         ),
-        optparse.make_option('--noinsert', action='store_true',
+        parser.add_argument('--noinsert', action='store_true',
             default=False,
             help='Update existing data only'
         ),
-        optparse.make_option('--hack-translations', action='store_true',
+        parser.add_argument('--hack-translations', action='store_true',
             default=False,
             help='Set this if you intend to import translations a lot'
         ),
-    )
 
     def _travis(self):
         if not os.environ.get('TRAVIS', False):

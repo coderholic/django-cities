@@ -50,21 +50,24 @@ It is possible to force fixture download by using the --force-fetch option:
 
     logger = logging.getLogger('cities_light')
 
-    option_list = BaseCommand.option_list + (
-        optparse.make_option('--force-fetch',
-                             action='store_true',
-                             default=False,
-                             help='Force fetch'),
-        optparse.make_option('--base-url',
-                             action='store',
-                             metavar='BASE_URL',
-                             help='Base url to fetch from (default is '
-                                  'settings.CITIES_LIGHT_FIXTURES_BASE_URL)'),
-    )
-
     COUNTRY_FIXTURE = 'cities_light_country.json.bz2'
     REGION_FIXTURE = 'cities_light_region.json.bz2'
     CITY_FIXTURE = 'cities_light_city.json.bz2'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--force-fetch',
+            action='store_true',
+            default=False,
+            help='Force fetch'
+        )
+        parser.add_argument(
+            '--base-url',
+            action='store',
+            metavar='BASE_URL',
+            help='Base url to fetch from (default is '
+                 'settings.CITIES_LIGHT_FIXTURES_BASE_URL)'
+        )
 
     def handle(self, *args, **options):
         """Management command handler."""
