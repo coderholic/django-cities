@@ -9,7 +9,7 @@ from django.contrib.gis.geos import Point
 from .conf import settings
 
 __all__ = [
-    'Point', 'Country', 'Region', 'Subregion',
+    'Point', 'Continent', 'Country', 'Region', 'Subregion',
     'City', 'District', 'PostalCode', 'AlternativeName',
 ]
 
@@ -34,6 +34,13 @@ class Place(models.Model):
 
     def get_absolute_url(self):
         return "/".join([place.slug for place in self.hierarchy])
+
+    def __str__(self):
+        return force_text(self.name)
+
+
+class Continent(Place):
+    code = models.CharField(max_length=2, unique=True, db_index=True)
 
     def __str__(self):
         return force_text(self.name)
