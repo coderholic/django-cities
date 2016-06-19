@@ -159,6 +159,16 @@ country_codes = [
 
 NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
 
+CONTINENT_DATA = {
+    'AF': ('Africa', 6255146),
+    'AS': ('Asia', 6255147),
+    'EU': ('Europe', 6255148),
+    'NA': ('North America', 6255149),
+    'OC': ('Oceania', 6255151),
+    'SA': ('South America', 6255150),
+    'AN': ('Antarctica', 6255152),
+}
+
 # See http://www.geonames.org/export/codes.html
 city_types = ['PPL', 'PPLA', 'PPLC', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLG']
 district_types = ['PPLX']
@@ -259,3 +269,6 @@ else:
 
 if hasattr(django_settings, "CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES"):
     NO_LONGER_EXISTENT_COUNTRY_CODES = django_settings.CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES
+
+# Allow users to override specified contents
+CONTINENT_DATA.update(getattr(django_settings, 'CITIES_CONTINENT_DATA', {}))

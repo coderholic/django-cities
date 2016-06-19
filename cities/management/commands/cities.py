@@ -214,6 +214,13 @@ class Command(BaseCommand):
         neighbours = {}
         countries = {}
 
+        continents = {c.code: c for c in Continent.objects.all()}
+
+        # If the continent attribute on Country is a ForeignKey, import
+        # continents as ForeignKeys to the Continent models, otherwise assume
+        # they are still the CharField(max_length=2) and import them the old way
+        import_continents_as_fks = type(Country._meta.get_field('continent')) == ForeignKey
+
         self.logger.info("Importing country data")
         for item in tqdm([d for d in data if d['code'] not in NO_LONGER_EXISTENT_COUNTRY_CODES],
                          total=total,
@@ -233,7 +240,7 @@ class Command(BaseCommand):
             country.code = item['code']
             country.code3 = item['code3']
             country.population = item['population']
-            country.continent = item['continent']
+            country.continent = continents[item['continent']] if import_continents_as_fks else item['continent']
             country.tld = item['tld'][1:]  # strip the leading .
             country.phone = item['phone']
             country.currency = item['currencyCode']
