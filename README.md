@@ -82,7 +82,7 @@ CITIES_FILES = {
 # Alternatively you can specify multiple filenames to process:
 CITIES_FILES = {
     'city': {
-       'filenames': ["US.zip", "GB.zip", ]
+       'filenames': ["US.zip", "GB.zip", ],
        'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
     },
 }
