@@ -141,6 +141,7 @@ package updates.
 - `Mailing list graciously hosted
   <http://groups.google.com/group/yourlabs>`_ by `Google
   <http://groups.google.com>`_
+- For **Security** issues, please contact yourlabs-security@googlegroups.com
 - `Git graciously hosted
   <https://github.com/yourlabs/django-cities-light/>`_ by `GitHub
   <http://github.com>`_,
