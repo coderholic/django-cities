@@ -56,7 +56,7 @@ class Command(BaseCommand):
         data_dir = os.path.join(app_dir, 'data')
     logger = logging.getLogger("cities")
 
-    option_list = BaseCommand.option_list + (
+    option_list = getattr(BaseCommand, 'option_list', ()) + (
         make_option(
             '--force',
             action='store_true',
