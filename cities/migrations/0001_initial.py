@@ -4,10 +4,14 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import django.contrib.gis.db.models.fields
 
+import swapper
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        swapper.dependency('cities', 'City'),
+        swapper.dependency('cities', 'Country'),
     ]
 
     operations = [
@@ -37,6 +41,7 @@ class Migration(migrations.Migration):
                 ('alt_names', models.ManyToManyField(to='cities.AlternativeName')),
             ],
             options={
+                'swappable': swapper.swappable_setting('cities', 'City'),
                 'verbose_name_plural': 'cities',
             },
         ),
@@ -58,10 +63,11 @@ class Migration(migrations.Migration):
                 ('tld', models.CharField(max_length=5)),
                 ('capital', models.CharField(max_length=100)),
                 ('alt_names', models.ManyToManyField(to='cities.AlternativeName')),
-                ('neighbours', models.ManyToManyField(related_name='neighbours_rel_+', to='cities.Country')),
+                ('neighbours', models.ManyToManyField(related_name='neighbours_rel_+', to=swapper.get_model_name('cities', 'Country'))),
             ],
             options={
                 'ordering': ['name'],
+                'swappable': swapper.swappable_setting('cities', 'Country'),
                 'verbose_name_plural': 'countries',
             },
         ),
@@ -93,7 +99,7 @@ class Migration(migrations.Migration):
                 ('subregion_name', models.CharField(max_length=100, db_index=True)),
                 ('district_name', models.CharField(max_length=100, db_index=True)),
                 ('alt_names', models.ManyToManyField(to='cities.AlternativeName')),
-                ('country', models.ForeignKey(related_name='postal_codes', to='cities.Country')),
+                ('country', models.ForeignKey(related_name='postal_codes', to=swapper.get_model_name('cities', 'Country'))),
             ],
             options={
                 'abstract': False,
@@ -108,7 +114,7 @@ class Migration(migrations.Migration):
                 ('name_std', models.CharField(max_length=200, verbose_name='standard name', db_index=True)),
                 ('code', models.CharField(max_length=200, db_index=True)),
                 ('alt_names', models.ManyToManyField(to='cities.AlternativeName')),
-                ('country', models.ForeignKey(to='cities.Country')),
+                ('country', models.ForeignKey(to=swapper.get_model_name('cities', 'Country'))),
             ],
             options={
                 'abstract': False,
@@ -132,7 +138,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='city',
             name='country',
-            field=models.ForeignKey(to='cities.Country'),
+            field=models.ForeignKey(to=swapper.get_model_name('cities', 'Country')),
         ),
         migrations.AddField(
             model_name='city',

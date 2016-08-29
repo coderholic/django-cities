@@ -6,6 +6,9 @@ except (NameError, ImportError):
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
+
+import swapper
+
 from .conf import settings
 
 __all__ = [
@@ -39,14 +42,22 @@ class Place(models.Model):
         return force_text(self.name)
 
 
-class Continent(Place):
+class BaseContinent(Place):
     code = models.CharField(max_length=2, unique=True, db_index=True)
 
     def __str__(self):
         return force_text(self.name)
 
+    class Meta:
+        abstract = True
 
-class Country(Place):
+
+class Continent(BaseContinent):
+    class Meta(BaseContinent.Meta):
+        swappable = swapper.swappable_setting('cities', 'Continent')
+
+
+class BaseCountry(Place):
     code = models.CharField(max_length=2, db_index=True)
     code3 = models.CharField(max_length=3, db_index=True)
     population = models.IntegerField()
@@ -61,12 +72,18 @@ class Country(Place):
     neighbours = models.ManyToManyField("self")
 
     class Meta:
+        abstract = True
         ordering = ['name']
         verbose_name_plural = "countries"
 
     @property
     def parent(self):
         return None
+
+
+class Country(BaseCountry):
+    class Meta(BaseCountry.Meta):
+        swappable = swapper.swappable_setting('cities', 'Country')
 
 
 class Region(Place):
@@ -95,7 +112,7 @@ class Subregion(Place):
         return ".".join([self.parent.parent.code, self.parent.code, self.code])
 
 
-class City(Place):
+class BaseCity(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     location = models.PointField()
     population = models.IntegerField()
@@ -107,11 +124,17 @@ class City(Place):
     timezone = models.CharField(max_length=40)
 
     class Meta:
+        abstract = True
         verbose_name_plural = "cities"
 
     @property
     def parent(self):
         return self.region
+
+
+class City(BaseCity):
+    class Meta(BaseCity.Meta):
+        swappable = swapper.swappable_setting('cities', 'City')
 
 
 class District(Place):
