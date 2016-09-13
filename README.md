@@ -11,7 +11,7 @@ Authored by [Ben Dowling](http://www.coderholic.com), and some great [contributo
 
 ### 0.4 Release notes
 
-** This release of django-cities is not backwards compatible with previous versions **
+** **This release of django-cities is not backwards compatible with previous versions** **
 
 The country model has some new fields:
  - elevation
@@ -111,7 +111,26 @@ CITIES_PLUGINS = [
 
 # Import cities without region (default False)
 CITIES_IGNORE_EMPTY_REGIONS = True
+
+# This setting may be specified if you use 'cities.plugin.reset_queries.Plugin'
+CITIES_PLUGINS_RESET_QUERIES_CHANCE = 1.0 / 1000000
 ```
+
+
+### Writing plugins
+
+You can specify import path of any class in ``CITIES_PLUGINS``. to affect import it should have one of following methods:
+
+* ``FOO_pre(self, parser, item)``;
+* ``FOO_post(self, parser, model_instance, item)``,
+
+where "FOO" should be one of: "country", "region", "subregion", "city", "district", "alt_name" or "postal_code".
+
+Arguments passed to hooks:
+
+* ``parser``: instance of "cities" management command;
+* ``item``: dict instance with data for row being processed;
+* ``model_instance``: instance of model that was created based on ``item``.
 
 ### Examples
 
@@ -161,9 +180,29 @@ These are apps that build on top of the ``django-cities``. Useful for essentiall
 
 * [django-airports](https://github.com/bashu/django-airports) provides you with airport related model and data (from OpenFlights) that can be used in your django projects.
 
+### Running tests
+
+1. install postgres, postgis and libgdal-dev
+2. create django_cities database:
+
+        sudo su -l postgres
+        # Enter your password
+        createuser -d -s -P some_username
+        # Enter password
+        createdb -T template0 -E utf-8 -l en_US.UTF-8 -O multitest django_cities
+        psql  -c 'create extension postgis;' -d django_cities
+
+3. Run tests:
+
+        POSTGRES_USER=some_username POSTGRES_PASSWORD='password from createuser step' tox
+
+        # if you have changed example data files then you should push your changes to github and specify commit and repo variables:
+        TRAVIS_COMMIT=`git rev-parse HEAD` TRAVIS_REPO_SLUG='github-username/django-cities' POSTGRES_USER=some_username POSTGRES_PASSWORD='password from createuser ste' tox
+
+
 ### Notes
 
-Some datasets are very large (> 100 MB) and take time to download / import, and there's no progress display.
+Some datasets are very large (> 100 MB) and take time to download / import.
 
 Data will only be downloaded / imported if it is newer than your data, and only matching rows will be overwritten.
 

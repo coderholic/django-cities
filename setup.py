@@ -26,6 +26,9 @@ setup(
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.md'),
+    tests_require=[
+        'psycopg2'
+    ],
     license="MIT",
     keywords="django cities countries regions postal codes geonames",
     classifiers=[
