@@ -16,7 +16,7 @@ from django.db import transaction
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 
-from ...settings import DATA_DIR, FIXTURES_BASE_URL
+from ...settings import DATA_DIR, FIXTURES_BASE_URL, CITIES_LIGHT_APP_NAME
 from ...downloader import Downloader
 
 
@@ -122,9 +122,12 @@ It is possible to force fixture download by using the --force-fetch option:
 
     def dump_fixtures(self):
         """Dump Country/Region/City fixtures."""
-        self.dump_fixture('cities_light.Country', self.country_path)
-        self.dump_fixture('cities_light.Region', self.region_path)
-        self.dump_fixture('cities_light.City', self.city_path)
+        self.dump_fixture('{}.Country'.format(CITIES_LIGHT_APP_NAME),
+                          self.country_path)
+        self.dump_fixture('{}.Region'.format(CITIES_LIGHT_APP_NAME),
+                          self.region_path)
+        self.dump_fixture('{}.City'.format(CITIES_LIGHT_APP_NAME),
+                          self.city_path)
 
     def load_fixture(self, source, destination, force=False):
         """Download and import single fixture."""
