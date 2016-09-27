@@ -610,8 +610,8 @@ class Command(BaseCommand):
             alt = AlternativeName()
             alt.id = int(item['nameid'])
             alt.name = item['name']
-            alt.is_preferred = item['isPreferred']
-            alt.is_short = item['isShort']
+            alt.is_preferred = bool(item['isPreferred'])
+            alt.is_short = bool(item['isShort'])
             alt.language = locale
 
             if not self.call_hook('alt_name_post', alt, item):
