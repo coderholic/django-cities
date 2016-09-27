@@ -1,5 +1,3 @@
-from ..conf import *
-
 code_map = {
     'AB': '01',
     'BC': '02',

@@ -22,8 +22,6 @@ CITIES_PLUGINS_RESET_QUERIES_CHANCE = 1.0 / 1000000
 
 import random
 
-from ..conf import *
-
 from django.db import reset_queries
 from django.conf import settings
 

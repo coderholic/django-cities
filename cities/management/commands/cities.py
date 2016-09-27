@@ -63,24 +63,49 @@ class Command(BaseCommand):
         data_dir = os.path.join(app_dir, 'data')
     logger = logging.getLogger(LOGGER_NAME)
 
-    option_list = getattr(BaseCommand, 'option_list', ()) + (
-        make_option(
+    if django.VERSION < (1, 8):
+        option_list = getattr(BaseCommand, 'option_list', ()) + (
+            make_option(
+                '--force',
+                action='store_true',
+                default=False,
+                help='Import even if files are up-to-date.'),
+            make_option(
+                '--import',
+                metavar="DATA_TYPES",
+                default='all',
+                help='Selectively import data. Comma separated list of data ' +
+                     'types: ' + str(import_opts).replace("'", '')),
+            make_option(
+                '--flush',
+                metavar="DATA_TYPES",
+                default='',
+                help="Selectively flush data. Comma separated list of data types."),
+        )
+
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--force',
             action='store_true',
             default=False,
-            help='Import even if files are up-to-date.'),
-        make_option(
+            dest="force",
+            help='Import even if files are up-to-date.'
+        )
+        parser.add_argument(
             '--import',
             metavar="DATA_TYPES",
             default='all',
+            dest="import",
             help='Selectively import data. Comma separated list of data ' +
-                 'types: ' + str(import_opts).replace("'", '')),
-        make_option(
+                 'types: ' + str(import_opts).replace("'", '')
+        )
+        parser.add_argument(
             '--flush',
             metavar="DATA_TYPES",
             default='',
-            help="Selectively flush data. Comma separated list of data types."),
-    )
+            dest="flush",
+            help="Selectively flush data. Comma separated list of data types."
+        )
 
     @_transact
     def handle(self, *args, **options):
