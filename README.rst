@@ -101,6 +101,7 @@ Create development virtualenv (you need to have tox installed in your base syste
 
 Then run the full import::
 
+    test_project/manage.py migrate
     test_project/manage.py cities_light
 
 There are several environment variables which affect project settings (like DB_ENGINE and CI), you can find them all in test_project/settings.py.
