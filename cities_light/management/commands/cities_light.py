@@ -418,11 +418,11 @@ It is possible to force the import of files which weren't downloaded using the
 
     def translation_parse(self, items):
         if not hasattr(self, 'translation_data'):
-            self.country_ids = list(Country.objects.values_list('geoname_id',
+            self.country_ids = set(Country.objects.values_list('geoname_id',
                 flat=True))
-            self.region_ids = list(Region.objects.values_list('geoname_id',
+            self.region_ids = set(Region.objects.values_list('geoname_id',
                 flat=True))
-            self.city_ids = list(City.objects.values_list('geoname_id',
+            self.city_ids = set(City.objects.values_list('geoname_id',
                 flat=True))
 
             self.translation_data = collections.OrderedDict((
