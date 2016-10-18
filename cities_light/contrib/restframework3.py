@@ -21,10 +21,7 @@ from rest_framework import viewsets, relations
 from rest_framework.serializers import HyperlinkedModelSerializer
 from rest_framework import routers
 
-try:
-    from django.conf.urls.defaults import patterns, url, include
-except ImportError:
-    from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 
 from ..loading import get_cities_models
 

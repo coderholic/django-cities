@@ -25,5 +25,4 @@ class AdminTestCase(unittest.TestCase):
             cl_admin.CityAdmin.list_select_related, cl_admin.CityAdmin.list_per_page,
             cl_admin.CityAdmin.list_max_show_all, cl_admin.CityAdmin.list_editable, city_admin)
 
-        self.assertIsInstance(changelist.get_queryset(request), query.QuerySet)
         self.assertIsInstance(changelist.get_query_set(request), query.QuerySet)
