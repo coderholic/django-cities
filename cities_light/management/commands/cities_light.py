@@ -15,6 +15,7 @@ try:
 except ImportError:
     import pickle
 
+from django.conf import settings
 from django.db import transaction, connection
 from django.db import reset_queries, IntegrityError
 from django.core.management.base import BaseCommand
@@ -168,7 +169,11 @@ It is possible to force the import of files which weren't downloaded using the
                             del self._region_codes
                         self.translation_parse(items)
 
-                    reset_queries()
+                    # prevent memory leaks in DEBUG mode
+                    # https://docs.djangoproject.com/en/1.9/faq/models/
+                    # #how-can-i-see-the-raw-sql-queries-django-is-running
+                    if settings.DEBUG:
+                        reset_queries()
 
                     i += 1
                     progress.update(i)
