@@ -93,7 +93,7 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
                                          force=True)
 
     @mock.patch('cities_light.downloader.os.path.exists')
-    def test_incorrect_argument(self, m_exists):
+    def test_incorrect_subcommand(self, m_exists):
         """Test cities_light_fixtures fails on unsupported command."""
         m_exists.return_value = True
         with self.assertRaises(CommandError) as error:

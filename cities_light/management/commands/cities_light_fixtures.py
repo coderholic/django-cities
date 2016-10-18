@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import os
 import bz2
 import logging
-import optparse
+from argparse import RawTextHelpFormatter
 
 try:
     from cStringIO import StringIO
@@ -21,11 +21,9 @@ from ...downloader import Downloader
 
 
 class Command(BaseCommand):
-
     """Management command to dump or load fixtures with geonames data."""
 
-    args = '[--force-fetch] [--base-url BASE_URL] (load|dump)'
-    help = '''
+    help = """
 Dump or load fixtures with geonames data. Data dump is saved to
 DATA_DIR/fixtures/, resulting in the following fixtures:
 
@@ -46,7 +44,7 @@ by specifying --base-url argument (do not forget the trailing slash):
 It is possible to force fixture download by using the --force-fetch option:
 
     ./manage.py cities_light_fixtures load --force-fetch
-    '''.strip()
+    """.strip()
 
     logger = logging.getLogger('cities_light')
 
@@ -54,7 +52,17 @@ It is possible to force fixture download by using the --force-fetch option:
     REGION_FIXTURE = 'cities_light_region.json.bz2'
     CITY_FIXTURE = 'cities_light_city.json.bz2'
 
+    def create_parser(self, *args, **kwargs):
+        parser = super(Command, self).create_parser(*args, **kwargs)
+        parser.formatter_class = RawTextHelpFormatter
+        return parser
+
     def add_arguments(self, parser):
+        parser.add_argument(
+            'subcommand',
+            type=str,
+            help='Subcommand (load/dump)'
+        )
         parser.add_argument(
             '--force-fetch',
             action='store_true',
@@ -87,11 +95,13 @@ It is possible to force fixture download by using the --force-fetch option:
         self.city_path = os.path.join(fixtures_dir,
                                       self.CITY_FIXTURE)
 
-        if len(args) != 1 or args[0] not in ('load', 'dump'):
+        subcommand = options.get('subcommand')
+
+        if subcommand not in ('load', 'dump'):
             raise CommandError('Please specify either "load" '
                                'or "dump" command')
 
-        if args[0] == 'load':
+        if subcommand == 'load':
             base_url = options.get('base_url') or FIXTURES_BASE_URL
             if base_url is None:
                 raise CommandError('Please specify --base-url or '
@@ -102,7 +112,7 @@ It is possible to force fixture download by using the --force-fetch option:
             self.city_url = base_url + self.CITY_FIXTURE
 
             self.load_fixtures(**options)
-        elif args[0] == 'dump':
+        elif subcommand == 'dump':
             self.dump_fixtures()
 
     def dump_fixture(self, fixture, fixture_path):
