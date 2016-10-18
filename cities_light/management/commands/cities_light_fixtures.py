@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import os
 import bz2
 import logging
-import optparse
+from argparse import RawTextHelpFormatter
 
 try:
     from cStringIO import StringIO
@@ -21,11 +21,9 @@ from ...downloader import Downloader
 
 
 class Command(BaseCommand):
-
     """Management command to dump or load fixtures with geonames data."""
 
-    args = '[--force-fetch] [--base-url BASE_URL] (load|dump)'
-    help = '''
+    help = """
 Dump or load fixtures with geonames data. Data dump is saved to
 DATA_DIR/fixtures/, resulting in the following fixtures:
 
@@ -46,13 +44,18 @@ by specifying --base-url argument (do not forget the trailing slash):
 It is possible to force fixture download by using the --force-fetch option:
 
     ./manage.py cities_light_fixtures load --force-fetch
-    '''.strip()
+    """.strip()
 
     logger = logging.getLogger('cities_light')
 
     COUNTRY_FIXTURE = 'cities_light_country.json.bz2'
     REGION_FIXTURE = 'cities_light_region.json.bz2'
     CITY_FIXTURE = 'cities_light_city.json.bz2'
+
+    def create_parser(self, *args, **kwargs):
+        parser = super(Command, self).create_parser(*args, **kwargs)
+        parser.formatter_class = RawTextHelpFormatter
+        return parser
 
     def add_arguments(self, parser):
         parser.add_argument(

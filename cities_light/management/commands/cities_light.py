@@ -6,7 +6,7 @@ import os
 import datetime
 import time
 import logging
-import optparse
+from argparse import RawTextHelpFormatter
 import sys
 if sys.platform != 'win32':
     import resource
@@ -40,12 +40,7 @@ class MemoryUsageWidget(progressbar.widgets.WidgetBase):
 
 
 class Command(BaseCommand):
-    args = '''
-[--force-all] [--force-import-all \\]
-                              [--force-import countries.txt cities.txt ...] \\
-                              [--force countries.txt cities.txt ...]
-    '''.strip()
-    help = '''
+    help = """
 Download all files in CITIES_LIGHT_COUNTRY_SOURCES if they were updated or if
 --force-all option was used.
 Import country data if they were downloaded or if --force-import-all was used.
@@ -61,9 +56,14 @@ It is possible to force the import of files which weren't downloaded using the
 --force-import option:
 
     manage.py --force-import cities15000 --force-import country
-    '''.strip()
+    """.strip()
 
     logger = logging.getLogger('cities_light')
+
+    def create_parser(self, *args, **kwargs):
+        parser = super(Command, self).create_parser(*args, **kwargs)
+        parser.formatter_class = RawTextHelpFormatter
+        return parser
 
     def add_arguments(self, parser):
         parser.add_argument('--force-import-all', action='store_true',
