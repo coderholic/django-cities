@@ -59,6 +59,11 @@ It is possible to force fixture download by using the --force-fetch option:
 
     def add_arguments(self, parser):
         parser.add_argument(
+            'subcommand',
+            type=str,
+            help='Subcommand (load/dump)'
+        )
+        parser.add_argument(
             '--force-fetch',
             action='store_true',
             default=False,
@@ -90,11 +95,13 @@ It is possible to force fixture download by using the --force-fetch option:
         self.city_path = os.path.join(fixtures_dir,
                                       self.CITY_FIXTURE)
 
-        if len(args) != 1 or args[0] not in ('load', 'dump'):
+        subcommand = options.get('subcommand')
+
+        if subcommand not in ('load', 'dump'):
             raise CommandError('Please specify either "load" '
                                'or "dump" command')
 
-        if args[0] == 'load':
+        if subcommand == 'load':
             base_url = options.get('base_url') or FIXTURES_BASE_URL
             if base_url is None:
                 raise CommandError('Please specify --base-url or '
@@ -105,7 +112,7 @@ It is possible to force fixture download by using the --force-fetch option:
             self.city_url = base_url + self.CITY_FIXTURE
 
             self.load_fixtures(**options)
-        elif args[0] == 'dump':
+        elif subcommand == 'dump':
             self.dump_fixtures()
 
     def dump_fixture(self, fixture, fixture_path):
