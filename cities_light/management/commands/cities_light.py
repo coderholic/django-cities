@@ -85,6 +85,41 @@ It is possible to force the import of files which weren't downloaded using the
             default=False,
             help='Set this if you intend to import translations a lot'
         ),
+        parser.add_argument('--progress', action='store_true',
+            default=False,
+            help='Show progress bar'
+        ),
+
+    def progress_init(self):
+        """Initialize progress bar."""
+        if self.progress_enabled:
+            self.progress_widgets = [
+                'RAM used: ',
+                MemoryUsageWidget(),
+                ' ',
+                progressbar.ETA(),
+                ' Done: ',
+                progressbar.Percentage(),
+                progressbar.Bar(),
+            ]
+
+    def progress_start(self, max_value):
+        """Start progress bar."""
+        if self.progress_enabled:
+            self.progress = progressbar.ProgressBar(
+                max_value=max_value,
+                widgets=self.progress_widgets
+            ).start()
+
+    def progress_update(self, value):
+        """Update progress bar."""
+        if self.progress_enabled:
+            self.progress.update(value)
+
+    def progress_finish(self):
+        """Finalize progress bar."""
+        if self.progress_enabled:
+            self.progress.finish()
 
     def handle(self, *args, **options):
         if not os.path.exists(DATA_DIR):
@@ -95,15 +130,10 @@ It is possible to force the import of files which weren't downloaded using the
         translation_hack_path = os.path.join(DATA_DIR, 'translation_hack')
 
         self.noinsert = options.get('noinsert', False)
-        self.widgets = [
-            'RAM used: ',
-            MemoryUsageWidget(),
-            ' ',
-            progressbar.ETA(),
-            ' Done: ',
-            progressbar.Percentage(),
-            progressbar.Bar(),
-        ]
+        self.progress_enabled = options.get('progress')
+
+        self.progress_init()
+
         sources = list(itertools.chain(
             COUNTRY_SOURCES,
             REGION_SOURCES,
@@ -149,10 +179,7 @@ It is possible to force the import of files which weren't downloaded using the
                             continue
 
                 i = 0
-                progress = progressbar.ProgressBar(
-                    max_value=geonames.num_lines(),
-                    widgets=self.widgets
-                ).start()
+                self.progress_start(geonames.num_lines())
 
                 for items in geonames.parse():
                     if url in CITY_SOURCES:
@@ -176,9 +203,9 @@ It is possible to force the import of files which weren't downloaded using the
                         reset_queries()
 
                     i += 1
-                    progress.update(i)
+                    self.progress_update(i)
 
-                progress.finish()
+                self.progress_finish()
 
                 if url in TRANSLATION_SOURCES and options.get(
                         'hack_translations', False):
@@ -455,10 +482,7 @@ It is possible to force the import of files which weren't downloaded using the
             max += len(model_class_data.keys())
 
         i = 0
-        progress = progressbar.ProgressBar(
-            max_value=max,
-            widgets=self.widgets
-        ).start()
+        self.progress_start(max)
 
         for model_class, model_class_data in data.items():
             for geoname_id, geoname_data in model_class_data.items():
@@ -495,9 +519,9 @@ It is possible to force the import of files which weren't downloaded using the
                     model.save()
 
                 i += 1
-                progress.update(i)
+                self.progress_update(i)
 
-        progress.finish()
+        self.progress_finish()
 
     def save(self, model):
         try:
