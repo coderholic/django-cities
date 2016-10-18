@@ -12,7 +12,7 @@ FIXTURE_DIR = os.path.abspath(os.path.join(BASE_DIR, 'tests', 'fixtures'))
 
 def mock_source(setting, short_name):  # noqa
     return mock.patch(
-        'cities_light.settings.%s_SOURCES' %
+        'cities_light.management.commands.cities_light.%s_SOURCES' %
         setting.upper(), ['file://%s/%s.txt' % (FIXTURE_DIR, short_name)])
 
 
