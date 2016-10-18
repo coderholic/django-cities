@@ -4,7 +4,6 @@ import collections
 import itertools
 import os
 import datetime
-import time
 import logging
 from argparse import RawTextHelpFormatter
 import sys
@@ -85,17 +84,6 @@ It is possible to force the import of files which weren't downloaded using the
             default=False,
             help='Set this if you intend to import translations a lot'
         ),
-
-    def _travis(self):
-        if not os.environ.get('TRAVIS', False):
-            return
-
-        now = time.time()
-        last_output = getattr(self, '_travis_last_output', None)
-
-        if last_output is None or now - last_output >= 530:
-            print('Do not kill me !')
-            self._travis_last_output = now
 
     def handle(self, *args, **options):
         if not os.path.exists(DATA_DIR):
@@ -184,8 +172,6 @@ It is possible to force the import of files which weren't downloaded using the
 
                     i += 1
                     progress.update(i)
-
-                    self._travis()
 
                 progress.finish()
 
