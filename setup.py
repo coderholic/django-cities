@@ -20,7 +20,7 @@ setup(
     author='James Pic,Dominick Rivard,Alexey Evseev',
     author_email='jamespic@gmail.com, dominick.rivard@gmail.com, myhappydo@gmail.com',
     url='https://github.com/yourlabs/django-cities-light',
-    packages=find_packages(),
+    packages=['cities_light'],
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.rst'),
