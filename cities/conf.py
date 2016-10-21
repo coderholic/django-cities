@@ -245,7 +245,7 @@ def create_settings():
     if hasattr(django_settings, "CITIES_POSTAL_CODES"):
         res.postal_codes = set([e.upper() for e in django_settings.CITIES_POSTAL_CODES])
     else:
-        res.postal_codes = set()
+        res.postal_codes = set(['ALL'])
 
     return res
 
