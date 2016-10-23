@@ -4,7 +4,6 @@ import collections
 import itertools
 import os
 import datetime
-import time
 import logging
 from argparse import RawTextHelpFormatter
 import sys
@@ -16,6 +15,7 @@ try:
 except ImportError:
     import pickle
 
+from django.conf import settings
 from django.db import transaction, connection
 from django.db import reset_queries, IntegrityError
 from django.core.management.base import BaseCommand
@@ -85,17 +85,41 @@ It is possible to force the import of files which weren't downloaded using the
             default=False,
             help='Set this if you intend to import translations a lot'
         ),
+        parser.add_argument('--progress', action='store_true',
+            default=False,
+            help='Show progress bar'
+        ),
 
-    def _travis(self):
-        if not os.environ.get('TRAVIS', False):
-            return
+    def progress_init(self):
+        """Initialize progress bar."""
+        if self.progress_enabled:
+            self.progress_widgets = [
+                'RAM used: ',
+                MemoryUsageWidget(),
+                ' ',
+                progressbar.ETA(),
+                ' Done: ',
+                progressbar.Percentage(),
+                progressbar.Bar(),
+            ]
 
-        now = time.time()
-        last_output = getattr(self, '_travis_last_output', None)
+    def progress_start(self, max_value):
+        """Start progress bar."""
+        if self.progress_enabled:
+            self.progress = progressbar.ProgressBar(
+                max_value=max_value,
+                widgets=self.progress_widgets
+            ).start()
 
-        if last_output is None or now - last_output >= 530:
-            print('Do not kill me !')
-            self._travis_last_output = now
+    def progress_update(self, value):
+        """Update progress bar."""
+        if self.progress_enabled:
+            self.progress.update(value)
+
+    def progress_finish(self):
+        """Finalize progress bar."""
+        if self.progress_enabled:
+            self.progress.finish()
 
     def handle(self, *args, **options):
         if not os.path.exists(DATA_DIR):
@@ -106,15 +130,10 @@ It is possible to force the import of files which weren't downloaded using the
         translation_hack_path = os.path.join(DATA_DIR, 'translation_hack')
 
         self.noinsert = options.get('noinsert', False)
-        self.widgets = [
-            'RAM used: ',
-            MemoryUsageWidget(),
-            ' ',
-            progressbar.ETA(),
-            ' Done: ',
-            progressbar.Percentage(),
-            progressbar.Bar(),
-        ]
+        self.progress_enabled = options.get('progress')
+
+        self.progress_init()
+
         sources = list(itertools.chain(
             COUNTRY_SOURCES,
             REGION_SOURCES,
@@ -160,10 +179,7 @@ It is possible to force the import of files which weren't downloaded using the
                             continue
 
                 i = 0
-                progress = progressbar.ProgressBar(
-                    max_value=geonames.num_lines(),
-                    widgets=self.widgets
-                ).start()
+                self.progress_start(geonames.num_lines())
 
                 for items in geonames.parse():
                     if url in CITY_SOURCES:
@@ -180,14 +196,16 @@ It is possible to force the import of files which weren't downloaded using the
                             del self._region_codes
                         self.translation_parse(items)
 
-                    reset_queries()
+                    # prevent memory leaks in DEBUG mode
+                    # https://docs.djangoproject.com/en/1.9/faq/models/
+                    # #how-can-i-see-the-raw-sql-queries-django-is-running
+                    if settings.DEBUG:
+                        reset_queries()
 
                     i += 1
-                    progress.update(i)
+                    self.progress_update(i)
 
-                    self._travis()
-
-                progress.finish()
+                self.progress_finish()
 
                 if url in TRANSLATION_SOURCES and options.get(
                         'hack_translations', False):
@@ -400,11 +418,11 @@ It is possible to force the import of files which weren't downloaded using the
 
     def translation_parse(self, items):
         if not hasattr(self, 'translation_data'):
-            self.country_ids = list(Country.objects.values_list('geoname_id',
+            self.country_ids = set(Country.objects.values_list('geoname_id',
                 flat=True))
-            self.region_ids = list(Region.objects.values_list('geoname_id',
+            self.region_ids = set(Region.objects.values_list('geoname_id',
                 flat=True))
-            self.city_ids = list(City.objects.values_list('geoname_id',
+            self.city_ids = set(City.objects.values_list('geoname_id',
                 flat=True))
 
             self.translation_data = collections.OrderedDict((
@@ -413,7 +431,10 @@ It is possible to force the import of files which weren't downloaded using the
                 (City, {}),
             ))
 
-        connection.close()
+        # https://code.djangoproject.com/ticket/21597#comment:29
+        # https://github.com/yourlabs/django-cities-light/commit/e7f69af01760c450b4a72db84fda3d98d6731928
+        if 'mysql' in settings.DATABASES['default']['ENGINE']:
+            connection.close()
 
         try:
             translation_items_pre_import.send(sender=self, items=items)
@@ -464,10 +485,7 @@ It is possible to force the import of files which weren't downloaded using the
             max += len(model_class_data.keys())
 
         i = 0
-        progress = progressbar.ProgressBar(
-            max_value=max,
-            widgets=self.widgets
-        ).start()
+        self.progress_start(max)
 
         for model_class, model_class_data in data.items():
             for geoname_id, geoname_data in model_class_data.items():
@@ -504,9 +522,9 @@ It is possible to force the import of files which weren't downloaded using the
                     model.save()
 
                 i += 1
-                progress.update(i)
+                self.progress_update(i)
 
-        progress.finish()
+        self.progress_finish()
 
     def save(self, model):
         try:
