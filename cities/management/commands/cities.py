@@ -34,7 +34,7 @@ import django
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 from django.db import transaction
-from django.db.models import ForeignKey
+from django.db.models import CharField, ForeignKey
 from django.contrib.gis.gdal.envelope import Envelope
 from django.contrib.gis.geos import Point
 
@@ -276,7 +276,10 @@ class Command(BaseCommand):
             country.currency_name = item['currencyName']
             country.capital = item['capital']
             country.area = int(float(item['area'])) if item['area'] else None
-            country.languages = item['languages']
+            if hasattr(country, 'language_codes'):
+                country.language_codes = item['languages']
+            elif type(country, 'languages') == CharField:
+                country.languages = item['languages']
 
             neighbours[country] = item['neighbours'].split(",")
             countries[country.code] = country

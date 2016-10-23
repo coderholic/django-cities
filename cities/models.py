@@ -53,7 +53,7 @@ class Country(Place):
     area = models.IntegerField(null=True)
     currency = models.CharField(max_length=3, null=True)
     currency_name = models.CharField(max_length=50, null=True)
-    languages = models.CharField(max_length=250, null=True)
+    language_codes = models.CharField(max_length=250, null=True)
     phone = models.CharField(max_length=20)
     continent = models.ForeignKey(Continent, null=True,
                                   related_name='countries')
@@ -129,13 +129,13 @@ class District(Place):
 @python_2_unicode_compatible
 class AlternativeName(models.Model):
     name = models.CharField(max_length=256)
-    language = models.CharField(max_length=100)
+    language_code = models.CharField(max_length=100)
     is_preferred = models.BooleanField(default=False)
     is_short = models.BooleanField(default=False)
     is_colloquial = models.BooleanField(default=False)
 
     def __str__(self):
-        return "%s (%s)" % (force_text(self.name), force_text(self.language))
+        return "%s (%s)" % (force_text(self.name), force_text(self.language_code))
 
 
 @python_2_unicode_compatible

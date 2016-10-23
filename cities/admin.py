@@ -49,8 +49,8 @@ admin.site.register(District, DistrictAdmin)
 
 class AltNameAdmin(admin.ModelAdmin):
     ordering = ['name']
-    list_display = ['name', 'language', 'is_preferred', 'is_short']
-    list_filter = ['is_preferred', 'is_short', 'language']
+    list_display = ['name', 'language_code', 'is_preferred', 'is_short']
+    list_filter = ['is_preferred', 'is_short', 'language_code']
     search_fields = ['name']
 
 admin.site.register(AlternativeName, AltNameAdmin)
