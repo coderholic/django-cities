@@ -19,7 +19,6 @@ except ImportError:
 from django.db import transaction, connection
 from django.db import reset_queries, IntegrityError
 from django.core.management.base import BaseCommand
-from django.utils.encoding import force_text
 
 import progressbar
 
@@ -246,7 +245,7 @@ It is possible to force the import of files which weren't downloaded using the
                 return
             country = Country(code2=items[ICountry.code])
 
-        country.name = force_text(items[ICountry.name])
+        country.name = items[ICountry.name]
         # Strip + prefix for consistency. Note that some countries have several
         # prefixes ie. Puerto Rico
         country.phone = items[ICountry.phone].replace('+', '')
@@ -266,8 +265,6 @@ It is possible to force the import of files which weren't downloaded using the
             region_items_pre_import.send(sender=self, items=items)
         except InvalidItems:
             return
-
-        items = [force_text(x) for x in items]
 
         name = items[IRegion.name]
         if not items[IRegion.name]:
@@ -323,7 +320,7 @@ It is possible to force the import of files which weren't downloaded using the
                 raise
 
         try:
-            kwargs = dict(name=force_text(items[ICity.name]),
+            kwargs = dict(name=items[ICity.name],
                 country_id=self._get_country_id(items[ICity.countryCode]))
         except Country.DoesNotExist:
             if self.noinsert:
@@ -351,7 +348,7 @@ It is possible to force the import of files which weren't downloaded using the
         except City.DoesNotExist:
             try:
                 city = City.objects.get(geoname_id=items[ICity.geonameid])
-                city.name = force_text(items[ICity.name])
+                city.name = items[ICity.name]
                 city.country_id = self._get_country_id(
                     items[ICity.countryCode])
             except City.DoesNotExist:
@@ -387,7 +384,7 @@ It is possible to force the import of files which weren't downloaded using the
             save = True
 
         if not TRANSLATION_SOURCES and not city.alternate_names:
-            city.alternate_names = force_text(items[ICity.alternateNames])
+            city.alternate_names = items[ICity.alternateNames]
             save = True
 
         if not city.geoname_id:
@@ -493,8 +490,6 @@ It is possible to force the import of files which weren't downloaded using the
                         continue
 
                     for name in names:
-                        name = force_text(name)
-
                         if name == model.name:
                             continue
 
@@ -519,4 +514,6 @@ It is possible to force the import of files which weren't downloaded using the
                 self.logger.debug('Saving %s' % model.name)
                 model.save()
         except IntegrityError as e:
-            self.logger.warning('Saving %s failed: %s' % (model, e))
+            # Regarding %r see the https://code.djangoproject.com/ticket/20572
+            # Also related to http://bugs.python.org/issue2517
+            self.logger.warning('Saving %s failed: %r' % (model, e))

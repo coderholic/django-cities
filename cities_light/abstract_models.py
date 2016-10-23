@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import six
@@ -5,7 +6,6 @@ import re
 
 from django.utils.encoding import python_2_unicode_compatible
 
-from django.utils.encoding import force_text
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -34,9 +34,11 @@ ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
 
 
 def to_ascii(value):
-    if not six.PY3 and isinstance(value, str):
-        value = force_text(value)
+    """
+    Convert a unicode value to ASCII string.
 
+    For example, 'République Françaisen' would become 'Republique Francaisen'
+    """
     return unidecode(value)
 
 
