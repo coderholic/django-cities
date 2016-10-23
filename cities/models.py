@@ -150,6 +150,11 @@ class PostalCode(Place):
     subregion_name = models.CharField(max_length=100, db_index=True)
     district_name = models.CharField(max_length=100, db_index=True)
 
+    region = models.ForeignKey(Region, blank=True, null=True, related_name='postal_codes')
+    subregion = models.ForeignKey(Subregion, blank=True, null=True, related_name='postal_codes')
+    city = models.ForeignKey(City, blank=True, null=True, related_name='postal_codes')
+    district = models.ForeignKey(District, blank=True, null=True, related_name='postal_codes')
+
     objects = models.GeoManager()
 
     @property
