@@ -57,7 +57,7 @@ class Country(Place):
     phone = models.CharField(max_length=20)
     continent = models.ForeignKey(Continent, null=True,
                                   related_name='countries')
-    tld = models.CharField(max_length=5)
+    tld = models.CharField(max_length=5, verbose_name='TLD')
     capital = models.CharField(max_length=100)
     neighbours = models.ManyToManyField("self")
 
@@ -73,7 +73,7 @@ class Country(Place):
 class Region(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
-    country = models.ForeignKey(Country)
+    country = models.ForeignKey(Country, related_name='regions')
 
     @property
     def parent(self):
@@ -86,7 +86,7 @@ class Region(Place):
 class Subregion(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
-    region = models.ForeignKey(Region)
+    region = models.ForeignKey(Region, related_name='subregions')
 
     @property
     def parent(self):
@@ -100,9 +100,9 @@ class City(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     location = models.PointField()
     population = models.IntegerField()
-    region = models.ForeignKey(Region, null=True, blank=True)
-    subregion = models.ForeignKey(Subregion, null=True, blank=True)
-    country = models.ForeignKey(Country)
+    region = models.ForeignKey(Region, null=True, blank=True, related_name='cities')
+    subregion = models.ForeignKey(Subregion, null=True, blank=True, related_name='cities')
+    country = models.ForeignKey(Country, related_name='cities')
     elevation = models.IntegerField(null=True)
     kind = models.CharField(max_length=10)  # http://www.geonames.org/export/codes.html
     timezone = models.CharField(max_length=40)
@@ -119,7 +119,7 @@ class District(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     location = models.PointField()
     population = models.IntegerField()
-    city = models.ForeignKey(City)
+    city = models.ForeignKey(City, related_name='districts')
 
     @property
     def parent(self):
