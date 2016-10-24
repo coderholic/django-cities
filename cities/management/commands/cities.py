@@ -16,7 +16,7 @@ http://download.geonames.org/export/zip/
 
 import io
 import os
-import sys
+import re
 import logging
 import zipfile
 import time
@@ -659,7 +659,6 @@ class Command(BaseCommand):
 
             # Find country
             code = item['postalCode']
-            country = None
             try:
                 country = self.country_index[country_code]
             except:
@@ -683,14 +682,13 @@ class Command(BaseCommand):
             if hasattr(PostalCode, 'subregion'):
                 subreg_name_q |= Q(subregion__code=item['admin2Code'])
 
-            if hasattr(PostalCode, 'district'):
-                dst_name_q |= Q(district__code=item['admin3Code'])
-
-            return reg_name_q, subreg_name_q, dst_name_q
+            # TODO: uncomment after updating District model and management command
+            # if hasattr(PostalCode, 'district'):
+            #     dst_name_q |= Q(district__code=item['admin3Code'])
 
             try:
                 if item['longitude'] and item['latitude']:
-                    pa = PostalCode.objects.get(
+                    pc = PostalCode.objects.get(
                         reg_name_q, subreg_name_q, dst_name_q,
                         country=country,
                         code=code,
