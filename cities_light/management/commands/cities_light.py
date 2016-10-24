@@ -499,7 +499,7 @@ It is possible to force the import of files which weren't downloaded using the
                     alternate_names = set()
                 else:
                     alternate_names = set(sorted(
-                        model.alternate_names.split(',')))
+                        model.alternate_names.split(';')))
 
                 for lang, names in geoname_data.items():
                     if lang == 'post':
@@ -513,7 +513,7 @@ It is possible to force the import of files which weren't downloaded using the
 
                         alternate_names.add(name)
 
-                alternate_names = u','.join(sorted(alternate_names))
+                alternate_names = u';'.join(sorted(alternate_names))
                 if model.alternate_names != alternate_names:
                     model.alternate_names = alternate_names
                     save = True
