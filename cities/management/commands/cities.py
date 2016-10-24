@@ -35,6 +35,7 @@ import django
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 from django.db import transaction
+from django.db.models import Q
 from django.db.models import CharField, ForeignKey
 from django.contrib.gis.gdal.envelope import Envelope
 from django.contrib.gis.geos import Point
@@ -672,10 +673,98 @@ class Command(BaseCommand):
             pc.region_name = item['admin1Name']
             pc.subregion_name = item['admin2Name']
             pc.district_name = item['admin3Name']
+            reg_name_q = Q(region_name__iexact=item['admin1Name'])
+            subreg_name_q = Q(subregion_name__iexact=item['admin2Name'])
+            dst_name_q = Q(district_name__iexact=item['admin3Name'])
+
+            if hasattr(PostalCode, 'region'):
+                reg_name_q |= Q(region__code=item['admin1Code'])
+
+            if hasattr(PostalCode, 'subregion'):
+                subreg_name_q |= Q(subregion__code=item['admin2Code'])
+
+            if hasattr(PostalCode, 'district'):
+                dst_name_q |= Q(district__code=item['admin3Code'])
+
+            return reg_name_q, subreg_name_q, dst_name_q
 
             try:
+                if item['longitude'] and item['latitude']:
+                    pa = PostalCode.objects.get(
+                        reg_name_q, subreg_name_q, dst_name_q,
+                        country=country,
+                        code=code,
+                        location=Point(float(item['longitude']),
+                                       float(item['latitude'])))
+                else:
+                    pc = PostalCode.objects.get(
+                        reg_name_q, subreg_name_q, dst_name_q,
+                        country=country,
+                        code=code)
+            except PostalCode.DoesNotExist:
+                try:
+                    pc = PostalCode.objects.get(
+                        reg_name_q, subreg_name_q, dst_name_q,
+                        country=country,
+                        code=code,
+                        name__iexact=re.sub("'", '', item['placeName']))
+                except PostalCode.DoesNotExist:
+                    pc = PostalCode(
+                        country=country,
+                        code=code,
+                        name=item['placeName'],
+                        region_name=item['admin1Name'],
+                        subregion_name=item['admin2Name'],
+                        district_name=item['admin3Name'])
+
+            if pc.region_name != '':
+                with _transact():
+                    try:
+                        pc.region = Region.objects.get(
+                            Q(name_std__iexact=pc.region_name)
+                            | Q(name__iexact=pc.region_name),
+                            country=pc.country)
+                    except Region.DoesNotExist:
+                        pc.region = None
+            else:
+                pc.region = None
+
+            if pc.subregion_name != '':
+                with _transact():
+                    try:
+                        pc.subregion = Subregion.objects.get(
+                            Q(region__name_std__iexact=pc.region_name)
+                            | Q(region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.subregion_name)
+                            | Q(name__iexact=pc.subregion_name),
+                            region__country=pc.country)
+                    except Subregion.DoesNotExist:
+                        pc.subregion = None
+            else:
+                pc.subregion = None
+
+            if pc.district_name != '':
+                with _transact():
+                    try:
+                        pc.district = District.objects.get(
+                            Q(city__region__name_std__iexact=pc.region_name)
+                            | Q(city__region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.district_name)
+                            | Q(name__iexact=pc.district_name),
+                            city__country=pc.country)
+                    except District.DoesNotExist:
+                        pc.district = None
+            else:
+                pc.district = None
+
+            if pc.district is not None:
+                pc.city = pc.district.city
+            else:
+                pc.city = None
+
+            if pc.location is None:
                 pc.location = Point(float(item['longitude']), float(item['latitude']))
-            except:
+            else:
                 self.logger.warning("Postal code: %s, %s: Invalid location (%s, %s)",
                                     pc.country, pc.code, item['longitude'], item['latitude'])
                 continue
