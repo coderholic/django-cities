@@ -803,7 +803,7 @@ class Command(BaseCommand):
 
     def flush_alt_name(self):
         self.logger.info("Flushing alternate name data")
-        for type_ in (Country, Region, Subregion, City, District, PostalCode, Language):
+        for type_ in (Country, Region, Subregion, City, District, PostalCode):
             plural_type_name = type_.__name__ if type_.__name__[-1] != 'y' else '{}ies'.format(type_.__name__[:-1])
             for obj in tqdm(type_.objects.all(), total=type_.objects.count(),
                             desc="Flushing alternative names for {}".format(
