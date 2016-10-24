@@ -28,22 +28,28 @@ except ImportError:
 
 from itertools import chain
 from optparse import make_option
+from swapper import load_model
 from tqdm import tqdm
 
 import django
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 from django.db import transaction
-from django.db.models import ForeignKey
+from django.db.models import CharField, ForeignKey
 from django.contrib.gis.gdal.envelope import Envelope
 from django.contrib.gis.geos import Point
 
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
                      HookException, settings, CITIES_IGNORE_EMPTY_REGIONS,
                      CONTINENT_DATA, NO_LONGER_EXISTENT_COUNTRY_CODES)
-from ...models import (Continent, Country, Region, Subregion, District, City,
-                       PostalCode, AlternativeName)
+from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
+
+
+# Load swappable models
+Continent = load_model('cities', 'Continent')
+Country = load_model('cities', 'Country')
+City = load_model('cities', 'City')
 
 
 # Only log errors during Travis tests
@@ -164,7 +170,7 @@ class Command(BaseCommand):
 
         uptodate = False
         filepath = os.path.join(self.data_dir, filename)
-        if web_file is not None and 'last-modified' in web_file.headers:
+        if web_file is not None and web_file.headers.get('last-modified', None) is not None:
             web_file_time = time.strptime(web_file.headers['last-modified'], '%a, %d %b %Y %H:%M:%S %Z')
             web_file_size = int(web_file.headers['content-length'])
             if os.path.exists(filepath):
@@ -173,6 +179,9 @@ class Command(BaseCommand):
                 if file_time >= web_file_time and file_size == web_file_size:
                     self.logger.info("File up-to-date: " + filename)
                     uptodate = True
+        else:
+            self.logger.warning("Assuming file is up-to-date")
+            uptodate = True
 
         if not uptodate and web_file is not None:
             self.logger.info("Downloading: " + filename)
@@ -276,7 +285,10 @@ class Command(BaseCommand):
             country.currency_name = item['currencyName']
             country.capital = item['capital']
             country.area = int(float(item['area'])) if item['area'] else None
-            country.languages = item['languages']
+            if hasattr(country, 'language_codes'):
+                country.language_codes = item['languages']
+            elif type(country, 'languages') == CharField:
+                country.languages = item['languages']
 
             neighbours[country] = item['neighbours'].split(",")
             countries[country.code] = country

@@ -1,16 +1,29 @@
 from django.contrib import admin
-from .models import *
+
+import swapper
+
+from .models import (Continent, Country, Region, Subregion, City, District,
+                     PostalCode, AlternativeName)
 
 
 class CitiesAdmin(admin.ModelAdmin):
     raw_id_fields = ['alt_names']
 
 
+class ContinentAdmin(CitiesAdmin):
+    list_display = ['name', 'code']
+
+
+if not swapper.is_swapped('cities', 'City'):
+    admin.site.register(Continent, ContinentAdmin)
+
+
 class CountryAdmin(CitiesAdmin):
     list_display = ['name', 'code', 'code3', 'tld', 'phone', 'continent', 'area', 'population']
     search_fields = ['name', 'code', 'code3', 'tld', 'phone']
 
-admin.site.register(Country, CountryAdmin)
+if not swapper.is_swapped('cities', 'City'):
+    admin.site.register(Country, CountryAdmin)
 
 
 class RegionAdmin(CitiesAdmin):
@@ -36,7 +49,8 @@ class CityAdmin(CitiesAdmin):
     search_fields = ['name', 'name_std']
     raw_id_fields = ['alt_names', 'region', 'subregion']
 
-admin.site.register(City, CityAdmin)
+if not swapper.is_swapped('cities', 'City'):
+    admin.site.register(City, CityAdmin)
 
 
 class DistrictAdmin(CitiesAdmin):
@@ -49,8 +63,8 @@ admin.site.register(District, DistrictAdmin)
 
 class AltNameAdmin(admin.ModelAdmin):
     ordering = ['name']
-    list_display = ['name', 'language', 'is_preferred', 'is_short']
-    list_filter = ['is_preferred', 'is_short', 'language']
+    list_display = ['name', 'language_code', 'is_preferred', 'is_short']
+    list_filter = ['is_preferred', 'is_short', 'language_code']
     search_fields = ['name']
 
 admin.site.register(AlternativeName, AltNameAdmin)

@@ -7,12 +7,18 @@ from django.db import migrations, models
 import django.db.models.deletion
 import uuid
 
+import swapper
 
 from ..conf import CONTINENT_DATA
 
 
+def get_model(apps, name):
+    model_tuple = swapper.split(swapper.get_model_name('cities', name))
+    return apps.get_model(*model_tuple)
+
+
 def add_continents(apps, schema_editor):
-    Continent = apps.get_model('cities', 'Continent')
+    Continent = get_model(apps, 'Continent')
 
     for ccode, cdata in CONTINENT_DATA.items():
         try:
@@ -33,16 +39,16 @@ def rm_continents(apps, schema_editor):
 
 
 def add_continent_fks(apps, schema_editor):
-    Country = apps.get_model('cities', 'Country')
-    Continent = apps.get_model('cities', 'Continent')
+    Country = get_model(apps, 'Country')
+    Continent = get_model(apps, 'Continent')
 
     for continent in Continent.objects.all():
         Country.objects.filter(continent_code=continent.code).update(continent=continent)
 
 
 def rm_continent_fks(apps, schema_editor):
-    Country = apps.get_model('cities', 'Country')
-    Continent = apps.get_model('cities', 'Continent')
+    Country = get_model(apps, 'Country')
+    Continent = get_model(apps, 'Continent')
 
     for continent in Continent.objects.all():
         Country.objects.filter(continent=continent).update(continent_code=continent.code)
@@ -52,6 +58,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('cities', '0001_initial'),
+        swapper.dependency('cities', 'Country'),
     ]
 
     operations = [
@@ -65,6 +72,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'abstract': False,
+                'swappable': swapper.swappable_setting('cities', 'Continent'),
             },
         ),
         migrations.AddField(
@@ -80,7 +88,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='country',
             name='continent',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='countries', to='cities.Continent'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='countries', to=swapper.get_model_name('cities', 'Continent')),
         ),
         migrations.RunPython(add_continents, rm_continents),
         migrations.RunPython(add_continent_fks, rm_continent_fks),
