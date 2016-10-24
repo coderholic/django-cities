@@ -1,12 +1,19 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import os
 import mock
 import warnings
 
+import six
+import unidecode
+
 from django import test
 from django.core.management import call_command
-import unidecode
+from django.utils.encoding import force_text
+
+from ..abstract_models import to_ascii
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 FIXTURE_DIR = os.path.abspath(os.path.join(BASE_DIR, 'tests', 'fixtures'))
@@ -54,4 +61,12 @@ class TestUnicode(test.TransactionTestCase):
             warnings.simplefilter('always')
             call_command('cities_light', force_import_all=True)
             for w in warns:
-                self.assertTrue("not an unicode object" in w.message, w.message)
+                warn = force_text(w.message)
+                self.assertTrue("not an unicode object" not in warn, warn)
+
+    def test_to_ascii(self):
+        """Test to_ascii behavior."""
+        self.assertEqual(to_ascii('République Françaisen'), 'Republique Francaisen')
+        self.assertEqual(to_ascii('Кемерово'), 'Kemerovo')
+        # Check that return value is unicode on python 2.7 or str on python 3
+        self.assertTrue(isinstance(to_ascii('Кемерово'), six.text_type))
