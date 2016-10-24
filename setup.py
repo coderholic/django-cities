@@ -14,13 +14,14 @@ def read(fname):
 
 setup(
     name='django-cities',
-    version='0.4.1',
+    version='0.4.2',
     description='Place models and worldwide place data for Django',
     author='Ben Dowling',
     author_email='ben.m.dowling@gmail.com',
     url='https://github.com/coderholic/django-cities',
     packages=find_packages(exclude=['example']),
     install_requires=[
+        'swapper',
         'tqdm',
     ],
     include_package_data=True,
@@ -43,6 +44,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
