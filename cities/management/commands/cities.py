@@ -14,6 +14,8 @@ http://download.geonames.org/export/zip/
 - Postal Codes:         allCountries.zip
 """
 
+from __future__ import print_function
+
 import io
 import os
 import re
@@ -41,8 +43,9 @@ from django.contrib.gis.gdal.envelope import Envelope
 from django.contrib.gis.geos import Point
 
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
-                     HookException, settings, CITIES_IGNORE_EMPTY_REGIONS,
-                     CONTINENT_DATA, NO_LONGER_EXISTENT_COUNTRY_CODES)
+                     HookException, settings, ALTERNATIVE_NAME_TYPES,
+                     CONTINENT_DATA, IGNORE_EMPTY_REGIONS,
+                     NO_LONGER_EXISTENT_COUNTRY_CODES)
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
@@ -455,7 +458,7 @@ class Command(BaseCommand):
                 region = self.region_index[country_code + "." + region_code]
                 city.region = region
             except:
-                if CITIES_IGNORE_EMPTY_REGIONS:
+                if IGNORE_EMPTY_REGIONS:
                     city.region = None
                 else:
                     print("{}: {}: Cannot find region: {} -- skipping", country_code, city.name, region_code)
@@ -625,7 +628,63 @@ class Command(BaseCommand):
             alt.name = item['name']
             alt.is_preferred = bool(item['isPreferred'])
             alt.is_short = bool(item['isShort'])
-            alt.language = locale
+            try:
+                alt.language_code = locale
+            except:
+                alt.language = locale
+
+            try:
+                int(item['name'])
+            except:
+                pass
+            else:
+                print(
+                    "Trying to add a numeric alternative name to {} ({}): {}".format(
+                        geo_info['object'].name,
+                        geo_info['type'].__name__,
+                        item['name']),
+                    file=sys.stderr)
+            alt.is_historic = True if ((item['isHistoric']
+                                        and item['isHistoric'] != '\n')
+                                       or locale == 'fr_1793') else False
+
+            if hasattr(alt, 'type'):
+                if locale in ('link', 'abbr'):
+                    alt.kind = locale
+                elif INCLUDE_AIRPORT_CODES and locale in ('iana', 'icao', 'faac'):
+                    alt.kind = locale
+                else:
+                    alt.kind = 'name'
+            elif locale == 'post':
+                try:
+                    if geo_index[item['geonameid']]['type'] == Region:
+                        region = geo_index[item['geonameid']]['object']
+                        PostalCode.objects.get_or_create(
+                            code=item['name'],
+                            country=region.country,
+                            region=region,
+                            region_name=region.name)
+                    elif geo_index[item['geonameid']]['type'] == Subregion:
+                        subregion = geo_index[item['geonameid']]['object']
+                        PostalCode.objects.get_or_create(
+                            code=item['name'],
+                            country=subregion.region.country,
+                            region=subregion.region,
+                            subregion=subregion,
+                            region_name=subregion.region.name,
+                            subregion_name=subregion.name)
+                    elif geo_index[item['geonameid']]['type'] == City:
+                        PostalCode.objects.get_or_create(
+                            code=item['name'],
+                            country=city.country,
+                            region=city.region,
+                            subregion=city.subregion,
+                            region_name=city.region.name,
+                            subregion_name=city.subregion.name)
+                except KeyError:
+                    pass
+
+                continue
 
             if not self.call_hook('alt_name_post', alt, item):
                 continue

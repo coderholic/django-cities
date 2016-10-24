@@ -2,11 +2,12 @@ from importlib import import_module
 from collections import defaultdict
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import ugettext_lazy as _
 
 __all__ = [
     'city_types', 'district_types',
     'import_opts', 'import_opts_all', 'HookException', 'settings',
-    'CITIES_IGNORE_EMPTY_REGIONS', 'CONTINENT_DATA',
+    'IGNORE_EMPTY_REGIONS', 'ALTERNATIVE_NAME_TYPES', 'CONTINENT_DATA',
     'NO_LONGER_EXISTENT_COUNTRY_CODES',
 ]
 
@@ -158,7 +159,17 @@ country_codes = [
     'ZA', 'ZM', 'ZW',
 ]
 
-NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
+_ALTERNATIVE_NAME_TYPES = (
+    ('name', _("Name")),
+    ('abbr', _("Abbreviation")),
+    ('link', _("Link")),
+)
+
+_AIRPORT_TYPES = (
+    ('iata', _("IATA (Airport) Code")),
+    ('icao', _("ICAO (Airport) Code")),
+    ('faac', _("FAAC (Airport) Code")),
+)
 
 CONTINENT_DATA = {
     'AF': ('Africa', 6255146),
@@ -169,6 +180,8 @@ CONTINENT_DATA = {
     'SA': ('South America', 6255150),
     'AN': ('Antarctica', 6255152),
 }
+
+_NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
 
 # See http://www.geonames.org/export/codes.html
 city_types = ['PPL', 'PPLA', 'PPLC', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLG']
@@ -263,13 +276,18 @@ settings = create_settings()
 if hasattr(django_settings, "CITIES_PLUGINS"):
     create_plugins()
 
-if hasattr(django_settings, "CITIES_IGNORE_EMPTY_REGIONS"):
-    CITIES_IGNORE_EMPTY_REGIONS = django_settings.CITIES_IGNORE_EMPTY_REGIONS
-else:
-    CITIES_IGNORE_EMPTY_REGIONS = False
+IGNORE_EMPTY_REGIONS = getattr(django_settings, 'CITIES_IGNORE_EMPTY_REGIONS', False)
 
-if hasattr(django_settings, "CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES"):
-    NO_LONGER_EXISTENT_COUNTRY_CODES = django_settings.CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES
+# Users may way to import historical countries
+NO_LONGER_EXISTENT_COUNTRY_CODES = getattr(
+    django_settings, 'CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES',
+    _NO_LONGER_EXISTENT_COUNTRY_CODES)
+
+if getattr(django_settings, 'CITIES_INCLUDE_AIRPORT_CODES', True):
+    _ALTERNATIVE_NAME_TYPES += _AIRPORT_TYPES
+
+# A `Choices` object (from `django-model-utils`)
+ALTERNATIVE_NAME_TYPES = getattr(django_settings, 'CITIES_ALTERNATIVE_NAME_TYPES', _ALTERNATIVE_NAME_TYPES)
 
 # Allow users to override specified contents
 CONTINENT_DATA.update(getattr(django_settings, 'CITIES_CONTINENT_DATA', {}))
