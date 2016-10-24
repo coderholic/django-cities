@@ -65,12 +65,15 @@ class BaseCountry(Place):
     population = models.IntegerField()
     area = models.IntegerField(null=True)
     currency = models.CharField(max_length=3, null=True)
-    currency_name = models.CharField(max_length=50, null=True)
+    currency_name = models.CharField(max_length=50, blank=True, null=True)
+    currency_symbol = models.CharField(max_length=31, blank=True, null=True)
     language_codes = models.CharField(max_length=250, null=True)
     phone = models.CharField(max_length=20)
     continent = models.ForeignKey(swapper.get_model_name('cities', 'Continent'),
                                   null=True, related_name='countries')
     tld = models.CharField(max_length=5, verbose_name='TLD')
+    postal_code_format = models.CharField(max_length=127)
+    postal_code_regex = models.CharField(max_length=255)
     capital = models.CharField(max_length=100)
     neighbours = models.ManyToManyField("self")
 

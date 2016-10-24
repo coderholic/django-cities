@@ -19,6 +19,7 @@ from __future__ import print_function
 import io
 import os
 import re
+import sys
 import logging
 import zipfile
 import time
@@ -44,8 +45,8 @@ from django.contrib.gis.geos import Point
 
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
                      HookException, settings, ALTERNATIVE_NAME_TYPES,
-                     CONTINENT_DATA, IGNORE_EMPTY_REGIONS,
-                     NO_LONGER_EXISTENT_COUNTRY_CODES)
+                     CONTINENT_DATA, CURRENCY_SYMBOLS, IGNORE_EMPTY_REGIONS,
+                     INCLUDE_AIRPORT_CODES, NO_LONGER_EXISTENT_COUNTRY_CODES)
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
@@ -287,6 +288,16 @@ class Command(BaseCommand):
             country.phone = item['phone']
             country.currency = item['currencyCode']
             country.currency_name = item['currencyName']
+
+            # These fields shouldn't impact saving older models (that don't
+            # have these attributes)
+            try:
+                country.currency_symbol = CURRENCY_SYMBOLS.get(item['currencyCode'], None)
+                country.postal_code_format = item['postalCodeFormat']
+                country.postal_code_regex = item['postalCodeRegex']
+            except AttributeError:
+                pass
+
             country.capital = item['capital']
             country.area = int(float(item['area'])) if item['area'] else None
             if hasattr(country, 'language_codes'):
@@ -693,6 +704,24 @@ class Command(BaseCommand):
 
             self.logger.debug("Added alt name: %s, %s", locale, alt)
 
+    def build_postal_code_regex_index(self):
+        if hasattr(self, 'postal_code_regex_index') and self.postal_code_regex_index:
+            return
+
+        self.logger.info("Building postal code regex index")
+
+        self.build_country_index()
+
+        self.postal_code_regex_index = {}
+        for code, country in tqdm(self.country_index.items(),
+                                  total=len(self.country_index),
+                                  desc="Building postal code regex index"):
+            try:
+                self.postal_code_regex_index[code] = re.compile(country.postal_code_regex)
+            except Exception as e:
+                self.logger.error("Couldn't compile postal code regex for {}: {}".format(country.code, e.args))
+                self.postal_code_regex_index[code] = ''
+
     def import_postal_code(self):
         uptodate = self.download('postal_code')
         if uptodate and not self.force:
@@ -705,6 +734,8 @@ class Command(BaseCommand):
 
         self.build_country_index()
         self.build_region_index()
+        if VALIDATE_POSTAL_CODES:
+            self.build_postal_code_regex_index()
 
         self.logger.info("Importing postal codes")
 
@@ -731,6 +762,12 @@ class Command(BaseCommand):
             pc.region_name = item['admin1Name']
             pc.subregion_name = item['admin2Name']
             pc.district_name = item['admin3Name']
+            # Validate postal code against the country
+            code = item['postalCode']
+            if VALIDATE_POSTAL_CODES and self.postal_code_regex_index[country_code].match(code) is None:
+                self.logger.warning("Postal code didn't validate: {} ({})".format(code, country_code))
+                continue
+
             reg_name_q = Q(region_name__iexact=item['admin1Name'])
             subreg_name_q = Q(subregion_name__iexact=item['admin2Name'])
             dst_name_q = Q(district_name__iexact=item['admin3Name'])
