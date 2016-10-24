@@ -5,18 +5,23 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 import django.db.models.deletion
 
+import swapper
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('cities', '0002_continent_models_and_foreign_keys'),
+        swapper.dependency('cities', 'Continent'),
+        swapper.dependency('cities', 'Country'),
+        swapper.dependency('cities', 'City'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='city',
             name='country',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cities', to='cities.Country'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cities', to=swapper.get_model_name('cities', 'Country')),
         ),
         migrations.AlterField(
             model_name='city',
@@ -46,12 +51,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='district',
             name='city',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='districts', to='cities.City'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='districts', to=swapper.get_model_name('cities', 'City')),
         ),
         migrations.AlterField(
             model_name='region',
             name='country',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='regions', to='cities.Country'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='regions', to=swapper.get_model_name('cities', 'Country')),
         ),
         migrations.AlterField(
             model_name='subregion',

@@ -5,18 +5,21 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 import django.db.models.deletion
 
+import swapper
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('cities', '0004_rename_languages_to_language_codes'),
+        swapper.dependency('cities', 'Country'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='postalcode',
             name='city',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='postal_codes', to='cities.City'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='postal_codes', to=swapper.get_model_name('cities', 'Country')),
         ),
         migrations.AddField(
             model_name='postalcode',
