@@ -14,6 +14,7 @@ http://download.geonames.org/export/zip/
 - Postal Codes:         allCountries.zip
 """
 
+import re
 import io
 import os
 import sys
@@ -682,11 +683,6 @@ class Command(BaseCommand):
 
             if hasattr(PostalCode, 'subregion'):
                 subreg_name_q |= Q(subregion__code=item['admin2Code'])
-
-            if hasattr(PostalCode, 'district'):
-                dst_name_q |= Q(district__code=item['admin3Code'])
-
-            return reg_name_q, subreg_name_q, dst_name_q
 
             try:
                 if item['longitude'] and item['latitude']:
