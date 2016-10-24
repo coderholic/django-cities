@@ -7,6 +7,7 @@ import re
 from django.utils.encoding import python_2_unicode_compatible
 
 from django.db import models
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 
 from unidecode import unidecode
@@ -35,11 +36,11 @@ ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
 
 def to_ascii(value):
     """
-    Convert a unicode value to ASCII string.
+    Convert a unicode value to ASCII-only unicode string.
 
     For example, 'République Françaisen' would become 'Republique Francaisen'
     """
-    return unidecode(value)
+    return force_text(unidecode(value))
 
 
 def to_search(value):
