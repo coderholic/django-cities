@@ -42,6 +42,10 @@ from django.db.models import Q
 from django.db.models import CharField, ForeignKey
 from django.contrib.gis.gdal.envelope import Envelope
 from django.contrib.gis.geos import Point
+try:
+    from django.contrib.gis.db.models.functions import Distance
+except ImportError:
+    pass
 
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
                      HookException, settings, ALTERNATIVE_NAME_TYPES,
@@ -565,9 +569,15 @@ class Command(BaseCommand):
                 # we fall back to degree search, MYSQL has no support
                 # and Spatialite with SRID 4236.
                 try:
-                    city = City.objects.filter(population__gt=city_pop_min).distance(
-                        district.location).order_by('distance')[0]
-                except:
+                    if django.VERSION < (1, 9):
+                        city = City.objects.filter(population__gt=city_pop_min)\
+                                   .distance(district.location)\
+                                   .order_by('distance')[0]
+                    else:
+                        city = City.objects.filter(population__gt=city_pop_min)\
+                            .annotate(distance=Distance('location', district.location))\
+                            .order_by('distance')[0]
+                except:  # TODO: Restrict what this catches
                     self.logger.warning(
                         "District: %s: DB backend does not support native '.distance(...)' query "
                         "falling back to two degree search",
