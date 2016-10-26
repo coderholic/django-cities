@@ -147,6 +147,7 @@ class City(BaseCity):
 
 class District(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
+    code = models.CharField(blank=True, db_index=True, max_length=200, null=True)
     location = models.PointField()
     population = models.IntegerField()
     city = models.ForeignKey(swapper.get_model_name('cities', 'City'), related_name='districts')

@@ -545,6 +545,10 @@ class Command(BaseCommand):
             district = District()
             district.name = item['name']
             district.name_std = item['asciiName']
+            try:
+                district.code = item['admin3Code']
+            except AttributeError:
+                pass
             district.slug = slugify(district.name_std)
             district.location = Point(float(item['longitude']), float(item['latitude']))
             district.population = int(item['population'])
@@ -778,9 +782,8 @@ class Command(BaseCommand):
             if hasattr(PostalCode, 'subregion'):
                 subreg_name_q |= Q(subregion__code=item['admin2Code'])
 
-            # TODO: uncomment after updating District model and management command
-            # if hasattr(PostalCode, 'district'):
-            #     dst_name_q |= Q(district__code=item['admin3Code'])
+            if hasattr(PostalCode, 'district') and hasattr(District, 'code'):
+                dst_name_q |= Q(district__code=item['admin3Code'])
 
             try:
                 if item['longitude'] and item['latitude']:
