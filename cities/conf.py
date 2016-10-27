@@ -11,7 +11,8 @@ __all__ = [
     'import_opts', 'import_opts_all', 'HookException', 'settings',
     'IGNORE_EMPTY_REGIONS', 'ALTERNATIVE_NAME_TYPES', 'CONTINENT_DATA',
     'CURRENCY_SYMBOLS', 'INCLUDE_AIRPORT_CODES',
-    'NO_LONGER_EXISTENT_COUNTRY_CODES', 'VALIDATE_POSTAL_CODES',
+    'NO_LONGER_EXISTENT_COUNTRY_CODES', 'SLUGIFY_FUNCTION',
+    'VALIDATE_POSTAL_CODES',
 ]
 
 url_bases = {
@@ -228,6 +229,8 @@ _CURRENCY_SYMBOLS = {
 
 _NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
 
+_SLUGIFY_FUNCTION = getattr(django_settings, 'CITIES_SLUGIFY_FUNCTION', 'cities.util.default_slugify')
+
 # See http://www.geonames.org/export/codes.html
 city_types = ['PPL', 'PPLA', 'PPLC', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLG']
 district_types = ['PPLX']
@@ -341,6 +344,9 @@ ALTERNATIVE_NAME_TYPES = getattr(django_settings, 'CITIES_ALTERNATIVE_NAME_TYPES
 CONTINENT_DATA.update(getattr(django_settings, 'CITIES_CONTINENT_DATA', {}))
 
 CURRENCY_SYMBOLS = getattr(django_settings, 'CITIES_CURRENCY_SYMBOLS', _CURRENCY_SYMBOLS)
+
+module_name, _, function_name = _SLUGIFY_FUNCTION.rpartition('.')
+SLUGIFY_FUNCTION = getattr(import_module(module_name), function_name)
 
 # Users who want better postal codes can flip this on (developers of
 # django-cities itself probably will), but most probably won't want to

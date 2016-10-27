@@ -20,7 +20,7 @@ matrix:
     - python: "3.3"
       env: DJANGO=1.10
 install:
-  - pip install -q django-model-utils psycopg2 swapper tox tqdm
+  - pip install -q django-model-utils psycopg2 six swapper tox tqdm
   - pip install -q Django==$DJANGO
 before_script:
   - psql -U postgres -c "create extension postgis"

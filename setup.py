@@ -22,6 +22,7 @@ setup(
     packages=find_packages(exclude=['example']),
     install_requires=[
         'django-model-utils',
+        'six',
         'swapper',
         'tqdm',
     ],
