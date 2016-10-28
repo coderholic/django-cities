@@ -55,9 +55,9 @@ class Place(models.Model):
     @property
     def hierarchy(self):
         """Get hierarchy, root first"""
-        list = self.parent.hierarchy if self.parent else []
-        list.append(self)
-        return list
+        lst = self.parent.hierarchy if self.parent else []
+        lst.append(self)
+        return lst
 
     def get_absolute_url(self):
         return "/".join([place.slug for place in self.hierarchy])
