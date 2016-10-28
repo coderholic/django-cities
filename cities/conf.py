@@ -1,13 +1,18 @@
+# -*- coding: utf-8 -*-
+
 from importlib import import_module
 from collections import defaultdict
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import ugettext_lazy as _
 
 __all__ = [
     'city_types', 'district_types',
     'import_opts', 'import_opts_all', 'HookException', 'settings',
-    'CITIES_IGNORE_EMPTY_REGIONS', 'CONTINENT_DATA',
-    'NO_LONGER_EXISTENT_COUNTRY_CODES',
+    'IGNORE_EMPTY_REGIONS', 'ALTERNATIVE_NAME_TYPES', 'CONTINENT_DATA',
+    'CURRENCY_SYMBOLS', 'INCLUDE_AIRPORT_CODES',
+    'NO_LONGER_EXISTENT_COUNTRY_CODES', 'SLUGIFY_FUNCTION',
+    'VALIDATE_POSTAL_CODES',
 ]
 
 url_bases = {
@@ -158,7 +163,17 @@ country_codes = [
     'ZA', 'ZM', 'ZW',
 ]
 
-NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
+_ALTERNATIVE_NAME_TYPES = (
+    ('name', _("Name")),
+    ('abbr', _("Abbreviation")),
+    ('link', _("Link")),
+)
+
+_AIRPORT_TYPES = (
+    ('iata', _("IATA (Airport) Code")),
+    ('icao', _("ICAO (Airport) Code")),
+    ('faac', _("FAAC (Airport) Code")),
+)
 
 CONTINENT_DATA = {
     'AF': ('Africa', 6255146),
@@ -169,6 +184,52 @@ CONTINENT_DATA = {
     'SA': ('South America', 6255150),
     'AN': ('Antarctica', 6255152),
 }
+
+_CURRENCY_SYMBOLS = {
+    "AED": "د.إ", "AFN": "؋", "ALL": "L", "AMD": "դր.", "ANG": "ƒ", "AOA": "Kz",
+    "ARS": "$", "AUD": "$", "AWG": "ƒ", "AZN": "m",
+    "BAM": "KM", "BBD": "$", "BDT": "৳", "BGN": "лв", "BHD": "ب.د", "BIF": "Fr",
+    "BMD": "$", "BND": "$", "BOB": "Bs.", "BRL": "R$", "BSD": "$", "BTN": "Nu",
+    "BWP": "P", "BYR": "Br", "BZD": "$",
+    "CAD": "$", "CDF": "Fr", "CHF": "Fr", "CLP": "$", "CNY": "¥", "COP": "$",
+    "CRC": "₡", "CUP": "$", "CVE": "$, Esc", "CZK": "Kč",
+    "DJF": "Fr", "DKK": "kr", "DOP": "$", "DZD": "د.ج",
+    "EEK": "KR", "EGP": "£,ج.م", "ERN": "Nfk", "ETB": "Br", "EUR": "€",
+    "FJD": "$", "FKP": "£",
+    "GBP": "£", "GEL": "ლ", "GHS": "₵", "GIP": "£", "GMD": "D", "GNF": "Fr",
+    "GTQ": "Q", "GYD": "$",
+    "HKD": "$", "HNL": "L", "HRK": "kn", "HTG": "G", "HUF": "Ft",
+    "IDR": "Rp", "ILS": "₪", "INR": "₨", "IQD": "ع.د", "IRR": "﷼", "ISK": "kr",
+    "JMD": "$", "JOD": "د.ا", "JPY": "¥",
+    "KES": "Sh", "KGS": "лв", "KHR": "៛", "KMF": "Fr", "KPW": "₩", "KRW": "₩",
+    "KWD": "د.ك", "KYD": "$", "KZT": "Т",
+    "LAK": "₭", "LBP": "ل.ل", "LKR": "ரூ", "LRD": "$", "LSL": "L", "LTL": "Lt",
+    "LVL": "Ls", "LYD": "ل.د",
+    "MAD": "د.م.", "MDL": "L", "MGA": "Ar", "MKD": "ден", "MMK": "K",
+    "MNT": "₮", "MOP": "P", "MRO": "UM", "MUR": "₨", "MVR": "ރ.", "MWK": "MK",
+    "MXN": "$", "MYR": "RM", "MZN": "MT",
+    "NAD": "$", "NGN": "₦", "NIO": "C$", "NOK": "kr", "NPR": "₨", "NZD": "$",
+    "OMR": "ر.ع.",
+    "PAB": "B/.", "PEN": "S/.", "PGK": "K", "PHP": "₱", "PKR": "₨", "PLN": "zł",
+    "PYG": "₲",
+    "QAR": "ر.ق",
+    "RON": "RON", "RSD": "RSD", "RUB": "р.", "RWF": "Fr",
+    "SAR": "ر.س", "SBD": "$", "SCR": "₨", "SDG": "S$", "SEK": "kr", "SGD": "$",
+    "SHP": "£", "SLL": "Le", "SOS": "Sh", "SRD": "$", "STD": "Db",
+    "SYP": "£, ل.س", "SZL": "L",
+    "THB": "฿", "TJS": "ЅМ", "TMT": "m", "TND": "د.ت", "TOP": "T$", "TRY": "₤",
+    "TTD": "$", "TWD": "$", "TZS": "Sh",
+    "UAH": "₴", "UGX": "Sh", "USD": "$", "UYU": "$", "UZS": "лв",
+    "VEF": "Bs", "VND": "₫", "VUV": "Vt",
+    "WST": "T",
+    "XAF": "Fr", "XCD": "$", "XOF": "Fr", "XPF": "Fr",
+    "YER": "﷼",
+    "ZAR": "R", "ZMK": "ZK", "ZWL": "$",
+}
+
+_NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
+
+_SLUGIFY_FUNCTION = getattr(django_settings, 'CITIES_SLUGIFY_FUNCTION', 'cities.util.default_slugify')
 
 # See http://www.geonames.org/export/codes.html
 city_types = ['PPL', 'PPLA', 'PPLC', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLG']
@@ -263,13 +324,30 @@ settings = create_settings()
 if hasattr(django_settings, "CITIES_PLUGINS"):
     create_plugins()
 
-if hasattr(django_settings, "CITIES_IGNORE_EMPTY_REGIONS"):
-    CITIES_IGNORE_EMPTY_REGIONS = django_settings.CITIES_IGNORE_EMPTY_REGIONS
-else:
-    CITIES_IGNORE_EMPTY_REGIONS = False
+IGNORE_EMPTY_REGIONS = getattr(django_settings, 'CITIES_IGNORE_EMPTY_REGIONS', False)
 
-if hasattr(django_settings, "CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES"):
-    NO_LONGER_EXISTENT_COUNTRY_CODES = django_settings.CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES
+# Users may way to import historical countries
+NO_LONGER_EXISTENT_COUNTRY_CODES = getattr(
+    django_settings, 'CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES',
+    _NO_LONGER_EXISTENT_COUNTRY_CODES)
+
+# Users may not want to include airport codes as alternative city names
+INCLUDE_AIRPORT_CODES = getattr(django_settings, 'CITIES_INCLUDE_AIRPORT_CODES', True)
+
+if INCLUDE_AIRPORT_CODES:
+    _ALTERNATIVE_NAME_TYPES += _AIRPORT_TYPES
+
+# A `Choices` object (from `django-model-utils`)
+ALTERNATIVE_NAME_TYPES = getattr(django_settings, 'CITIES_ALTERNATIVE_NAME_TYPES', _ALTERNATIVE_NAME_TYPES)
 
 # Allow users to override specified contents
 CONTINENT_DATA.update(getattr(django_settings, 'CITIES_CONTINENT_DATA', {}))
+
+CURRENCY_SYMBOLS = getattr(django_settings, 'CITIES_CURRENCY_SYMBOLS', _CURRENCY_SYMBOLS)
+
+module_name, _, function_name = _SLUGIFY_FUNCTION.rpartition('.')
+SLUGIFY_FUNCTION = getattr(import_module(module_name), function_name)
+
+# Users who want better postal codes can flip this on (developers of
+# django-cities itself probably will), but most probably won't want to
+VALIDATE_POSTAL_CODES = getattr(django_settings, 'CITIES_VALIDATE_POSTAL_CODES', False)

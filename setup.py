@@ -21,6 +21,8 @@ setup(
     url='https://github.com/coderholic/django-cities',
     packages=find_packages(exclude=['example']),
     install_requires=[
+        'django-model-utils',
+        'six',
         'swapper',
         'tqdm',
     ],

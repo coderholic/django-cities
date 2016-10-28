@@ -14,9 +14,12 @@ http://download.geonames.org/export/zip/
 - Postal Codes:         allCountries.zip
 """
 
+from __future__ import print_function
+
 import io
 import os
 import re
+import sys
 import logging
 import zipfile
 import time
@@ -39,10 +42,15 @@ from django.db.models import Q
 from django.db.models import CharField, ForeignKey
 from django.contrib.gis.gdal.envelope import Envelope
 from django.contrib.gis.geos import Point
+try:
+    from django.contrib.gis.db.models.functions import Distance
+except ImportError:
+    pass
 
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
-                     HookException, settings, CITIES_IGNORE_EMPTY_REGIONS,
-                     CONTINENT_DATA, NO_LONGER_EXISTENT_COUNTRY_CODES)
+                     HookException, settings, ALTERNATIVE_NAME_TYPES,
+                     CONTINENT_DATA, CURRENCY_SYMBOLS, IGNORE_EMPTY_REGIONS,
+                     INCLUDE_AIRPORT_CODES, NO_LONGER_EXISTENT_COUNTRY_CODES)
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
@@ -284,6 +292,16 @@ class Command(BaseCommand):
             country.phone = item['phone']
             country.currency = item['currencyCode']
             country.currency_name = item['currencyName']
+
+            # These fields shouldn't impact saving older models (that don't
+            # have these attributes)
+            try:
+                country.currency_symbol = CURRENCY_SYMBOLS.get(item['currencyCode'], None)
+                country.postal_code_format = item['postalCodeFormat']
+                country.postal_code_regex = item['postalCodeRegex']
+            except AttributeError:
+                pass
+
             country.capital = item['capital']
             country.area = int(float(item['area'])) if item['area'] else None
             if hasattr(country, 'language_codes'):
@@ -455,7 +473,7 @@ class Command(BaseCommand):
                 region = self.region_index[country_code + "." + region_code]
                 city.region = region
             except:
-                if CITIES_IGNORE_EMPTY_REGIONS:
+                if IGNORE_EMPTY_REGIONS:
                     city.region = None
                 else:
                     print("{}: {}: Cannot find region: {} -- skipping", country_code, city.name, region_code)
@@ -531,6 +549,10 @@ class Command(BaseCommand):
             district = District()
             district.name = item['name']
             district.name_std = item['asciiName']
+            try:
+                district.code = item['admin3Code']
+            except AttributeError:
+                pass
             district.slug = slugify(district.name_std)
             district.location = Point(float(item['longitude']), float(item['latitude']))
             district.population = int(item['population'])
@@ -547,9 +569,15 @@ class Command(BaseCommand):
                 # we fall back to degree search, MYSQL has no support
                 # and Spatialite with SRID 4236.
                 try:
-                    city = City.objects.filter(population__gt=city_pop_min).distance(
-                        district.location).order_by('distance')[0]
-                except:
+                    if django.VERSION < (1, 9):
+                        city = City.objects.filter(population__gt=city_pop_min)\
+                                   .distance(district.location)\
+                                   .order_by('distance')[0]
+                    else:
+                        city = City.objects.filter(population__gt=city_pop_min)\
+                            .annotate(distance=Distance('location', district.location))\
+                            .order_by('distance')[0]
+                except:  # TODO: Restrict what this catches
                     self.logger.warning(
                         "District: %s: DB backend does not support native '.distance(...)' query "
                         "falling back to two degree search",
@@ -625,7 +653,63 @@ class Command(BaseCommand):
             alt.name = item['name']
             alt.is_preferred = bool(item['isPreferred'])
             alt.is_short = bool(item['isShort'])
-            alt.language = locale
+            try:
+                alt.language_code = locale
+            except:
+                alt.language = locale
+
+            try:
+                int(item['name'])
+            except:
+                pass
+            else:
+                print(
+                    "Trying to add a numeric alternative name to {} ({}): {}".format(
+                        geo_info['object'].name,
+                        geo_info['type'].__name__,
+                        item['name']),
+                    file=sys.stderr)
+            alt.is_historic = True if ((item['isHistoric']
+                                        and item['isHistoric'] != '\n')
+                                       or locale == 'fr_1793') else False
+
+            if hasattr(alt, 'type'):
+                if locale in ('link', 'abbr'):
+                    alt.kind = locale
+                elif INCLUDE_AIRPORT_CODES and locale in ('iana', 'icao', 'faac'):
+                    alt.kind = locale
+                else:
+                    alt.kind = 'name'
+            elif locale == 'post':
+                try:
+                    if geo_index[item['geonameid']]['type'] == Region:
+                        region = geo_index[item['geonameid']]['object']
+                        PostalCode.objects.get_or_create(
+                            code=item['name'],
+                            country=region.country,
+                            region=region,
+                            region_name=region.name)
+                    elif geo_index[item['geonameid']]['type'] == Subregion:
+                        subregion = geo_index[item['geonameid']]['object']
+                        PostalCode.objects.get_or_create(
+                            code=item['name'],
+                            country=subregion.region.country,
+                            region=subregion.region,
+                            subregion=subregion,
+                            region_name=subregion.region.name,
+                            subregion_name=subregion.name)
+                    elif geo_index[item['geonameid']]['type'] == City:
+                        PostalCode.objects.get_or_create(
+                            code=item['name'],
+                            country=city.country,
+                            region=city.region,
+                            subregion=city.subregion,
+                            region_name=city.region.name,
+                            subregion_name=city.subregion.name)
+                except KeyError:
+                    pass
+
+                continue
 
             if not self.call_hook('alt_name_post', alt, item):
                 continue
@@ -633,6 +717,24 @@ class Command(BaseCommand):
             geo_info['object'].alt_names.add(alt)
 
             self.logger.debug("Added alt name: %s, %s", locale, alt)
+
+    def build_postal_code_regex_index(self):
+        if hasattr(self, 'postal_code_regex_index') and self.postal_code_regex_index:
+            return
+
+        self.logger.info("Building postal code regex index")
+
+        self.build_country_index()
+
+        self.postal_code_regex_index = {}
+        for code, country in tqdm(self.country_index.items(),
+                                  total=len(self.country_index),
+                                  desc="Building postal code regex index"):
+            try:
+                self.postal_code_regex_index[code] = re.compile(country.postal_code_regex)
+            except Exception as e:
+                self.logger.error("Couldn't compile postal code regex for {}: {}".format(country.code, e.args))
+                self.postal_code_regex_index[code] = ''
 
     def import_postal_code(self):
         uptodate = self.download('postal_code')
@@ -646,6 +748,8 @@ class Command(BaseCommand):
 
         self.build_country_index()
         self.build_region_index()
+        if VALIDATE_POSTAL_CODES:
+            self.build_postal_code_regex_index()
 
         self.logger.info("Importing postal codes")
 
@@ -672,6 +776,12 @@ class Command(BaseCommand):
             pc.region_name = item['admin1Name']
             pc.subregion_name = item['admin2Name']
             pc.district_name = item['admin3Name']
+            # Validate postal code against the country
+            code = item['postalCode']
+            if VALIDATE_POSTAL_CODES and self.postal_code_regex_index[country_code].match(code) is None:
+                self.logger.warning("Postal code didn't validate: {} ({})".format(code, country_code))
+                continue
+
             reg_name_q = Q(region_name__iexact=item['admin1Name'])
             subreg_name_q = Q(subregion_name__iexact=item['admin2Name'])
             dst_name_q = Q(district_name__iexact=item['admin3Name'])
@@ -682,9 +792,8 @@ class Command(BaseCommand):
             if hasattr(PostalCode, 'subregion'):
                 subreg_name_q |= Q(subregion__code=item['admin2Code'])
 
-            # TODO: uncomment after updating District model and management command
-            # if hasattr(PostalCode, 'district'):
-            #     dst_name_q |= Q(district__code=item['admin3Code'])
+            if hasattr(PostalCode, 'district') and hasattr(District, 'code'):
+                dst_name_q |= Q(district__code=item['admin3Code'])
 
             try:
                 if item['longitude'] and item['latitude']:
