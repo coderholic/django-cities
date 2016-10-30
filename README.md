@@ -7,6 +7,8 @@ django-cities provides you with place related models (eg. Country, Region, City)
 
 Authored by [Ben Dowling](http://www.coderholic.com), and some great [contributors](https://github.com/coderholic/django-cities/contributors).
 
+See some of the data in action at [city.io](http://city.io) and [country.io](http://country.io).
+
 ----
 
 ### 0.4 Release notes
