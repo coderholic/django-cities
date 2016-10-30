@@ -157,7 +157,7 @@ class ICountry:
     """
     Country field indexes in geonames.
     """
-    code = 0
+    code2 = 0
     code3 = 1
     codeNum = 2
     fips = 3

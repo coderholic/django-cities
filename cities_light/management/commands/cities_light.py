@@ -257,11 +257,11 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
         try:
-            country = Country.objects.get(code2=items[ICountry.code])
+            country = Country.objects.get(code2=items[ICountry.code2])
         except Country.DoesNotExist:
             if self.noinsert:
                 return
-            country = Country(code2=items[ICountry.code])
+            country = Country(code2=items[ICountry.code2])
 
         country.name = items[ICountry.name]
         # Strip + prefix for consistency. Note that some countries have several
