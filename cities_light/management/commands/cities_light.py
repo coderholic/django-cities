@@ -122,6 +122,9 @@ It is possible to force the import of files which weren't downloaded using the
             self.progress.finish()
 
     def handle(self, *args, **options):
+        # initialize lazy identity maps
+        self._clear_identity_maps()
+
         if not os.path.exists(DATA_DIR):
             self.logger.info('Creating %s' % DATA_DIR)
             os.mkdir(DATA_DIR)
@@ -142,6 +145,10 @@ It is possible to force the import of files which weren't downloaded using the
         ))
 
         for url in sources:
+            if url in TRANSLATION_SOURCES:
+                # free some memory
+                self._clear_identity_maps()
+
             destination_file_name = url.split('/')[-1]
 
             force = options.get('force_all', False)
@@ -189,11 +196,6 @@ It is possible to force the import of files which weren't downloaded using the
                     elif url in COUNTRY_SOURCES:
                         self.country_import(items)
                     elif url in TRANSLATION_SOURCES:
-                        # free some memory
-                        if getattr(self, '_country_codes', False):
-                            del self._country_codes
-                        if getattr(self, '_region_codes', False):
-                            del self._region_codes
                         self.translation_parse(items)
 
                     # prevent memory leaks in DEBUG mode
@@ -222,29 +224,29 @@ It is possible to force the import of files which weren't downloaded using the
         with open(install_file_path, 'wb+') as f:
             pickle.dump(datetime.datetime.now(), f)
 
-    def _get_country_id(self, code2):
-        '''
-        Simple lazy identity map for code2->country
-        '''
-        if not hasattr(self, '_country_codes'):
-            self._country_codes = {}
+    def _clear_identity_maps(self):
+        """Clear identity maps and free some memory."""
+        if getattr(self, '_country_codes', False):
+            del self._country_codes
+        if getattr(self, '_region_codes', False):
+            del self._region_codes
+        self._country_codes = {}
+        self._region_codes = collections.defaultdict(dict)
 
-        if code2 not in self._country_codes.keys():
+    def _get_country_id(self, code2):
+        """
+        Simple lazy identity map for code2->country
+        """
+        if code2 not in self._country_codes:
             self._country_codes[code2] = Country.objects.get(code2=code2).pk
 
         return self._country_codes[code2]
 
     def _get_region_id(self, country_code2, region_id):
-        '''
+        """
         Simple lazy identity map for (country_code2, region_id)->region
-        '''
-        if not hasattr(self, '_region_codes'):
-            self._region_codes = {}
-
+        """
         country_id = self._get_country_id(country_code2)
-        if country_id not in self._region_codes:
-            self._region_codes[country_id] = {}
-
         if region_id not in self._region_codes[country_id]:
             self._region_codes[country_id][region_id] = Region.objects.get(
                 country_id=country_id, geoname_code=region_id).pk
