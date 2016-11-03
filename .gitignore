@@ -1,13 +1,14 @@
+# Compiled Python files
 *.pyc
+__pycache__
 
 *.egg-info
 .tox
 build
 dist
-cities/data
 
 # WebDAV file system cache
 .DAV/
 
-
-__pycache__
+# Data files
+cities/data/*
