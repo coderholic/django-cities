@@ -13,5 +13,6 @@ class ManageCommandTestCase(TestCase):
         call_command('cities', force=True, **{
             'import': 'country,region,subregion,city',
         })
+        self.assertEquals(Region.objects.filter(country__code='AD').count(), 1)
         self.assertEquals(Region.objects.filter(country__code='UA').count(), 27)
         self.assertEquals(City.objects.filter(region__country__code='UA').count(), 2)

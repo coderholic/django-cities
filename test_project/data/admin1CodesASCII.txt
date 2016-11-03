@@ -1,5 +1,6 @@
 # truncated version of http://download.geonames.org/export/dump/admin1CodesASCII.txt
 # please read http://www.geonames.org/export/zip/readme.txt for license info
+AD.06	Sant Julià de Loria	Sant Julia de Loria	3039162
 UA.27 Zhytomyr	Zhytomyr	686966
 UA.26 Zaporizhia	Zaporizhia	687699
 UA.25 Zakarpattia Zakarpattia 687869

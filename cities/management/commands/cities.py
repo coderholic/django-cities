@@ -168,8 +168,9 @@ class Command(BaseCommand):
         for url in urls:
             try:
                 web_file = urlopen(url)
-                if 'html' in web_file.headers['content-type']:
+                if 'html' in web_file.headers['Content-Type']:
                     raise Exception()
+                self.logger.debug("Downloaded: {}".format(url))
                 break
             except:
                 web_file = None
@@ -177,50 +178,15 @@ class Command(BaseCommand):
         else:
             self.logger.error("Web file not found: %s. Tried URLs:\n%s", filename, '\n'.join(urls))
 
-        uptodate = False
-        filepath = os.path.join(self.data_dir, filename)
-        if web_file is not None and web_file.headers.get('last-modified', None) is not None:
-            web_file_time = time.strptime(web_file.headers['last-modified'], '%a, %d %b %Y %H:%M:%S %Z')
-            web_file_size = int(web_file.headers['content-length'])
-            if os.path.exists(filepath):
-                file_time = time.gmtime(os.path.getmtime(filepath))
-                file_size = os.path.getsize(filepath)
-                if file_time >= web_file_time and file_size == web_file_size:
-                    self.logger.info("File up-to-date: " + filename)
-                    uptodate = True
-        else:
-            self.logger.warning("Assuming file is up-to-date")
-            uptodate = True
-
-        if not uptodate and web_file is not None:
-            self.logger.info("Downloading: " + filename)
+        if web_file is not None:
+            self.logger.debug("Saving: {}/{}".format(self.data_dir, filename))
             if not os.path.exists(self.data_dir):
                 os.makedirs(self.data_dir)
             file = io.open(os.path.join(self.data_dir, filename), 'wb')
             file.write(web_file.read())
             file.close()
         elif not os.path.exists(filepath):
-            raise Exception("File not found and download failed: " + filename)
-
-        return uptodate
-
-    def download_once(self, filekey):
-
-        if 'filename' in settings.files[filekey]:
-            download_args = [(filekey, None)]
-        else:
-            download_args = []
-            for i, name in enumerate(settings.files[filekey]['filenames']):
-                download_args.append((filekey, i))
-
-        uptodate = True
-        for filekey, i in download_args:
-            download_key = '%s-%s' % (filekey, i)
-            if download_key in self.download_cache:
-                continue
-            self.download_cache[filekey] = self.download(filekey, i)
-            uptodate = uptodate and self.download_cache[filekey]
-        return uptodate
+            raise Exception("File not found and download failed: {} [{}]".format(filename, url))
 
     def get_data(self, filekey):
         if 'filename' in settings.files[filekey]:
@@ -248,10 +214,7 @@ class Command(BaseCommand):
             yield items
 
     def import_country(self):
-        uptodate = self.download('country')
-        if uptodate and not self.force:
-            return
-
+        self.download('country')
         data = self.get_data('country')
 
         total = sum(1 for _ in data)
@@ -332,10 +295,9 @@ class Command(BaseCommand):
             self.country_index[obj.code] = obj
 
     def import_region(self):
-        uptodate = self.download('region')
-        if uptodate and not self.force:
-            return
+        self.download('region')
         data = self.get_data('region')
+
         self.build_country_index()
 
         total = sum(1 for _ in data)
@@ -380,10 +342,7 @@ class Command(BaseCommand):
             self.region_index[obj.full_code()] = obj
 
     def import_subregion(self):
-        uptodate = self.download('subregion')
-        if uptodate and not self.force:
-            return
-
+        self.download('subregion')
         data = self.get_data('subregion')
 
         total = sum(1 for _ in data)
@@ -422,9 +381,7 @@ class Command(BaseCommand):
         del self.region_index
 
     def import_city(self):
-        uptodate = self.download_once('city')
-        if uptodate and not self.force:
-            return
+        self.download('city')
         data = self.get_data('city')
 
         total = sum(1 for _ in data)
@@ -518,10 +475,7 @@ class Command(BaseCommand):
             self.hierarchy[child_id] = parent_id
 
     def import_district(self):
-        uptodate = self.download_once('city')
-        if uptodate and not self.force:
-            return
-
+        self.download('city')
         data = self.get_data('city')
 
         total = sum(1 for _ in data)
@@ -607,9 +561,7 @@ class Command(BaseCommand):
             self.logger.debug("Added district: %s", district)
 
     def import_alt_name(self):
-        uptodate = self.download('alt_name')
-        if uptodate and not self.force:
-            return
+        self.download('alt_name')
         data = self.get_data('alt_name')
 
         total = sum(1 for _ in data)
@@ -737,9 +689,7 @@ class Command(BaseCommand):
                 self.postal_code_regex_index[code] = ''
 
     def import_postal_code(self):
-        uptodate = self.download('postal_code')
-        if uptodate and not self.force:
-            return
+        self.download('postal_code')
         data = self.get_data('postal_code')
 
         total = sum(1 for _ in data)
