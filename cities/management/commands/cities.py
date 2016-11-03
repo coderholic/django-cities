@@ -541,8 +541,8 @@ class Command(BaseCommand):
             if not self.call_hook('district_pre', item):
                 continue
 
-            type = item['featureCode']
-            if type not in district_types:
+            item_type = item['featureCode']
+            if item_type not in district_types:
                 continue
 
             district = District()
