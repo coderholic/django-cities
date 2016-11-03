@@ -546,6 +546,10 @@ class Command(BaseCommand):
                 continue
 
             district = District()
+            try:
+                district.id = int(item['geonameid'])
+            except:
+                continue
             district.name = item['name']
             district.name_std = item['asciiName']
             try:
