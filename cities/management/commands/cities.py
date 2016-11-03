@@ -231,8 +231,9 @@ class Command(BaseCommand):
         for filename in filenames:
             name, ext = filename.rsplit('.', 1)
             if (ext == 'zip'):
-                zipfile.ZipFile(os.path.join(self.data_dir, filename)).extractall(self.data_dir)
-                file_obj = io.open(os.path.join(self.data_dir, name + '.txt'), 'r', encoding='utf-8')
+                zip_archive = zipfile.ZipFile(os.path.join(self.data_dir, filename))
+                zip_member = zip_archive.open(name + '.txt', 'r')
+                file_obj = io.TextIOWrapper(zip_member, encoding='utf-8')
             else:
                 file_obj = io.open(os.path.join(self.data_dir, filename), 'r', encoding='utf-8')
 
