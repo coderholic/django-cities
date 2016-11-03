@@ -499,7 +499,7 @@ class Command(BaseCommand):
             self.logger.debug("Added city: %s", city)
 
     def build_hierarchy(self):
-        if hasattr(self, 'hierarchy'):
+        if hasattr(self, 'hierarchy') and self.hierarchy:
             return
 
         self.download('hierarchy')
@@ -509,9 +509,6 @@ class Command(BaseCommand):
 
         data = self.get_data('hierarchy')
         self.logger.info("Building hierarchy index")
-
-        if hasattr(self, 'hierarchy') and self.hierarchy:
-            return
 
         self.hierarchy = {}
         for item in tqdm(data, total=total, desc="Building hierarchy index"):
