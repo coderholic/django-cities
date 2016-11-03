@@ -412,8 +412,8 @@ class Command(BaseCommand):
             try:
                 subregion.region = self.region_index[country_code + "." + region_code]
             except:
-                self.logger.warning("Subregion: %s: Cannot find region: %s",
-                                    subregion.name, region_code)
+                self.logger.warning("Subregion: %s %s: Cannot find region",
+                                    item['code'], subregion.name)
                 continue
 
             if not self.call_hook('subregion_post', subregion, item):
@@ -478,7 +478,7 @@ class Command(BaseCommand):
                 if IGNORE_EMPTY_REGIONS:
                     city.region = None
                 else:
-                    print("{}: {}: Cannot find region: {} -- skipping", country_code, city.name, region_code)
+                    print("{}: {}: Cannot find region: {} -- skipping".format(country_code, city.name, region_code))
                     self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
                                         country_code, city.name, region_code)
                     continue
@@ -567,7 +567,7 @@ class Command(BaseCommand):
             try:
                 city = city_index[self.hierarchy[district.id]]
             except:
-                self.logger.warning("District: %s: Cannot find city in hierarchy, using nearest", district.name)
+                self.logger.warning("District: %d %s: Cannot find city in hierarchy, using nearest", district.id, district.name)
                 city_pop_min = 100000
                 # we are going to try to find closet city using native
                 # database .distance(...) query but if that fails then
