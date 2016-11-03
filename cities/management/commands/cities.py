@@ -533,7 +533,9 @@ class Command(BaseCommand):
 
         self.logger.info("Building city index")
         city_index = {}
-        for obj in City.objects.all():
+        for obj in tqdm(City.objects.iterator(),
+                         total=City.objects.count(),
+                         desc="Building City index"):
             city_index[obj.id] = obj
 
         self.logger.info("Importing district data")
