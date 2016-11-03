@@ -375,7 +375,8 @@ class Command(BaseCommand):
 
         self.logger.info("Building region index")
         self.region_index = {}
-        for obj in tqdm(chain(Region.objects.all(), Subregion.objects.all()),
+        for obj in tqdm(chain(Region.objects.all().prefetch_related('country'),
+                              Subregion.objects.all().prefetch_related('region__country')),
                         total=Region.objects.count() + Subregion.objects.count(),
                         desc="Building region index"):
             self.region_index[obj.full_code()] = obj
