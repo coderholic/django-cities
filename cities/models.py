@@ -81,7 +81,7 @@ class BaseContinent(Place, SlugModel):
         abstract = True
 
     def slugify(self):
-        return slugify_func(self, self.name)
+        return slugify_func(self, self.name.encode('utf-8'))
 
 
 class Continent(BaseContinent):
@@ -90,8 +90,8 @@ class Continent(BaseContinent):
 
 
 class BaseCountry(Place, SlugModel):
-    code = models.CharField(max_length=2, db_index=True)
-    code3 = models.CharField(max_length=3, db_index=True)
+    code = models.CharField(max_length=2, db_index=True, unique=True)
+    code3 = models.CharField(max_length=3, db_index=True, unique=True)
     population = models.IntegerField()
     area = models.IntegerField(null=True)
     currency = models.CharField(max_length=3, null=True)
@@ -123,7 +123,7 @@ class BaseCountry(Place, SlugModel):
         self.tld = self.tld.lower()
 
     def slugify(self):
-        return slugify_func(self, self.name)
+        return slugify_func(self, self.name.encode('utf-8'))
 
 
 class Country(BaseCountry):
@@ -137,6 +137,9 @@ class Region(Place, SlugModel):
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
                                 related_name='regions')
 
+    class Meta:
+        unique_together = (('country', 'name'),)
+
     @property
     def parent(self):
         return self.country
@@ -146,14 +149,17 @@ class Region(Place, SlugModel):
 
     def slugify(self):
         return slugify_func(self, '{}_({})'.format(
-            unicode(self.name),
-            unicode(self.full_code())))
+            unicode(self.name.encode('utf-8')),
+            unicode(self.full_code().encode('utf-8'))))
 
 
 class Subregion(Place, SlugModel):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
     region = models.ForeignKey(Region, related_name='subregions')
+
+    class Meta:
+        unique_together = (('region', 'name'),)
 
     @property
     def parent(self):
@@ -163,23 +169,26 @@ class Subregion(Place, SlugModel):
         return ".".join([self.parent.parent.code, self.parent.code, self.code])
 
     def slugify(self):
-        return slugify_func(self, unicode('{}_({})').format(self.name, self.full_code()))
+        return slugify_func(self, unicode('{}_({})').format(
+            self.name.encode('utf-8'),
+            self.full_code().encode('utf-8')))
 
 
 class BaseCity(Place, SlugModel):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
-    location = models.PointField()
-    population = models.IntegerField()
-    region = models.ForeignKey(Region, null=True, blank=True, related_name='cities')
-    subregion = models.ForeignKey(Subregion, null=True, blank=True, related_name='cities')
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
                                 related_name='cities')
+    region = models.ForeignKey(Region, null=True, blank=True, related_name='cities')
+    subregion = models.ForeignKey(Subregion, null=True, blank=True, related_name='cities')
+    location = models.PointField()
+    population = models.IntegerField()
     elevation = models.IntegerField(null=True)
     kind = models.CharField(max_length=10)  # http://www.geonames.org/export/codes.html
     timezone = models.CharField(max_length=40)
 
     class Meta:
         abstract = True
+        unique_together = (('country', 'region', 'subregion', 'name'),)
         verbose_name_plural = "cities"
 
     @property
@@ -201,6 +210,9 @@ class District(Place, SlugModel):
     location = models.PointField()
     population = models.IntegerField()
     city = models.ForeignKey(swapper.get_model_name('cities', 'City'), related_name='districts')
+
+    class Meta:
+        unique_together = (('city', 'name'),)
 
     @property
     def parent(self):
@@ -251,6 +263,12 @@ class PostalCode(Place, SlugModel):
     district = models.ForeignKey(District, blank=True, null=True, related_name='postal_codes')
 
     objects = models.GeoManager()
+
+    class Meta:
+        unique_together = (
+            ('country', 'region', 'subregion', 'city', 'district', 'name'),
+            ('country', 'region_name', 'subregion_name', 'district_name', 'name'),
+        )
 
     @property
     def parent(self):

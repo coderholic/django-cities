@@ -1,14 +1,101 @@
-# truncated version of http://download.geonames.org/export/dump/admin1CodesASCII.txt
-# please read http://www.geonames.org/export/zip/readme.txt for license info
 AD.06	Sant Julià de Loria	Sant Julia de Loria	3039162
+AD.05	Ordino	Ordino	3039676
+AD.04	La Massana	La Massana	3040131
+AD.03	Encamp	Encamp	3040684
+AD.02	Canillo	Canillo	3041203
+AD.07	Andorra la Vella	Andorra la Vella	3041566
+AD.08	Escaldes-Engordany	Escaldes-Engordany	3338529
+RU.88	Jaroslavl	Jaroslavl	468898
+RU.86	Voronezj	Voronezj	472039
+RU.85	Vologda	Vologda	472454
+RU.84	Volgograd	Volgograd	472755
+RU.81	Ulyanovsk	Ulyanovsk	479119
+RU.80	Udmurtiya	Udmurtiya	479613
+RU.77	Tverskaya	Tverskaya	480041
+RU.76	Tula	Tula	480508
+RU.73	Tatarstan	Tatarstan	484048
+RU.72	Tambov	Tambov	484638
+RU.70	Stavropol'skiy	Stavropol'skiy	487839
+RU.69	Smolensk	Smolensk	491684
+RU.67	Saratov	Saratov	498671
+RU.65	Samara	Samara	499068
+RU.62	Rjazan	Rjazan	500059
+RU.61	Rostov	Rostov	501165
+RU.60	Pskov	Pskov	504338
+RU.90	Perm	Perm	511180
+RU.57	Penza	Penza	511555
+RU.56	Orjol	Orjol	514801
+RU.55	Orenburg	Orenburg	515001
+RU.52	Novgorod	Novgorod	519324
+RU.68	North Ossetia	North Ossetia	519969
+RU.50	Nenetskiy Avtonomnyy Okrug	Nenetskiy Avtonomnyy Okrug	522652
+RU.49	Murmansk	Murmansk	524304
+RU.48	Moscow	Moscow	524894
+RU.47	Moscow Oblast	Moscow Oblast	524925
+RU.46	Mordoviya	Mordoviya	525369
+RU.45	Mariy-El	Mariy-El	529352
+RU.43	Lipetsk	Lipetsk	535120
+RU.42	Leningradskaya Oblast'	Leningradskaya Oblast'	536199
+RU.66	St.-Petersburg	St.-Petersburg	536203
+RU.41	Kursk	Kursk	538555
+RU.38	Krasnodarskiy	Krasnodarskiy	542415
+RU.37	Kostroma	Kostroma	543871
+RU.34	Komi	Komi	545854
+RU.33	Kirov	Kirov	548389
+RU.28	Karelia	Karelia	552548
+RU.27	Karachayevo-Cherkesiya	Karachayevo-Cherkesiya	552927
+RU.25	Kaluga	Kaluga	553899
+RU.24	Kalmykiya	Kalmykiya	553972
+RU.23	Kaliningrad	Kaliningrad	554230
+RU.22	Kabardino-Balkariya	Kabardino-Balkariya	554667
+RU.21	Ivanovo	Ivanovo	555235
+RU.19	Ingushetiya	Ingushetiya	556349
+RU.51	Nizjnij Novgorod	Nizjnij Novgorod	559838
+RU.17	Dagestan	Dagestan	567293
+RU.16	Chuvashia	Chuvashia	567395
+RU.12	Chechnya	Chechnya	569665
+RU.10	Brjansk	Brjansk	571473
+RU.09	Belgorod	Belgorod	578071
+RU.08	Bashkortostan	Bashkortostan	578853
+RU.07	Astrakhan	Astrakhan	580491
+RU.06	Arkhangelskaya	Arkhangelskaya	581043
+RU.01	Adygeya	Adygeya	584222
+RU.83	Vladimir	Vladimir	826294
+RU.87	Yamalo-Nenets	Yamalo-Nenets	1486462
+RU.78	Tyumenskaya	Tyumenskaya	1488747
+RU.79	Tyva	Tyva	1488873
+RU.75	Tomsk	Tomsk	1489421
+RU.71	Sverdlovsk	Sverdlovsk	1490542
+RU.54	Omsk	Omsk	1496152
+RU.53	Novosibirsk	Novosibirsk	1496745
+RU.40	Kurgan	Kurgan	1501312
+RU.91	Krasnoyarskiy	Krasnoyarskiy	1502020
+RU.32	Khanty-Mansia	Khanty-Mansia	1503773
+RU.31	Khakasiya	Khakasiya	1503834
+RU.29	Kemerovo	Kemerovo	1503900
+RU.03	Altai	Altai	1506272
+RU.13	Chelyabinsk	Chelyabinsk	1508290
+RU.04	Altai Krai	Altai Krai	1511732
+RU.63	Chukot	Chukot	2013162
+RU.59	Primorskiy	Primorskiy	2017623
+RU.30	Khabarovsk	Khabarovsk	2022888
+RU.20	Irkutsk	Irkutsk	2023468
+RU.89	Jewish Autonomous Oblast	Jewish Autonomous Oblast	2026639
+RU.05	Amur	Amur	2027748
+RU.11	Respublika Buryatiya	Respublika Buryatiya	2050915
+RU.64	Sakhalin	Sakhalin	2121529
+RU.44	Magadan	Magadan	2123627
+RU.92	Kamtsjatka	Kamtsjatka	2125072
+RU.15	Chukotka	Chukotka	2126099
+RU.93	Transbaikal Territory	Transbaikal Territory	7779061
 UA.27	Zhytomyr	Zhytomyr	686966
 UA.26	Zaporizhia	Zaporizhia	687699
-UA.25	Zakarpattia	Zakarpattia	687869
+UA.25	Transcarpathia	Transcarpathia	687869
 UA.24	Volyn	Volyn	689064
 UA.23	Vinnyts'ka	Vinnyts'ka	689559
 UA.22	Ternopil	Ternopil	691649
 UA.21	Sumy	Sumy	692196
-UA.20	Misto Sevastopol’	Misto Sevastopol'	694422
+UA.20	Gorod Sevastopol	Gorod Sevastopol	694422
 UA.19	Rivne	Rivne	695592
 UA.18	Poltava	Poltava	696634
 UA.17	Odessa	Odessa	698738
@@ -17,7 +104,7 @@ UA.15	Lviv	Lviv	702549
 UA.14	Luhansk	Luhansk	702657
 UA.13	Kiev	Kiev	703446
 UA.12	Kyiv City	Kyiv City	703447
-UA.11	Crimea	Crimea	703883
+UA.11	Republic of Crimea	Republic of Crimea	703883
 UA.10	Kirovohrad	Kirovohrad	705811
 UA.09	Khmelnytskyi	Khmelnytskyi	706370
 UA.08	Kherson	Kherson	706442
@@ -28,3 +115,54 @@ UA.04	Dnipropetrovsk	Dnipropetrovsk	709929
 UA.03	Chernivtsi	Chernivtsi	710720
 UA.02	Chernihiv	Chernihiv	710734
 UA.01	Cherkasy	Cherkasy	710802
+US.AR	Arkansas	Arkansas	4099753
+US.DC	Washington, D.C.	Washington, D.C.	4138106
+US.DE	Delaware	Delaware	4142224
+US.FL	Florida	Florida	4155751
+US.GA	Georgia	Georgia	4197000
+US.KS	Kansas	Kansas	4273857
+US.LA	Louisiana	Louisiana	4331987
+US.MD	Maryland	Maryland	4361885
+US.MO	Missouri	Missouri	4398678
+US.MS	Mississippi	Mississippi	4436296
+US.NC	North Carolina	North Carolina	4482348
+US.OK	Oklahoma	Oklahoma	4544379
+US.SC	South Carolina	South Carolina	4597040
+US.TN	Tennessee	Tennessee	4662168
+US.TX	Texas	Texas	4736286
+US.WV	West Virginia	West Virginia	4826850
+US.AL	Alabama	Alabama	4829764
+US.CT	Connecticut	Connecticut	4831725
+US.IA	Iowa	Iowa	4862182
+US.IL	Illinois	Illinois	4896861
+US.IN	Indiana	Indiana	4921868
+US.ME	Maine	Maine	4971068
+US.MI	Michigan	Michigan	5001836
+US.MN	Minnesota	Minnesota	5037779
+US.NE	Nebraska	Nebraska	5073708
+US.NH	New Hampshire	New Hampshire	5090174
+US.NJ	New Jersey	New Jersey	5101760
+US.NY	New York	New York	5128638
+US.OH	Ohio	Ohio	5165418
+US.RI	Rhode Island	Rhode Island	5224323
+US.VT	Vermont	Vermont	5242283
+US.WI	Wisconsin	Wisconsin	5279468
+US.CA	California	California	5332921
+US.CO	Colorado	Colorado	5417618
+US.NM	New Mexico	New Mexico	5481136
+US.NV	Nevada	Nevada	5509151
+US.UT	Utah	Utah	5549030
+US.AZ	Arizona	Arizona	5551752
+US.ID	Idaho	Idaho	5596512
+US.MT	Montana	Montana	5667009
+US.ND	North Dakota	North Dakota	5690763
+US.OR	Oregon	Oregon	5744337
+US.SD	South Dakota	South Dakota	5769223
+US.WA	Washington	Washington	5815135
+US.WY	Wyoming	Wyoming	5843591
+US.HI	Hawaii	Hawaii	5855797
+US.AK	Alaska	Alaska	5879092
+US.KY	Kentucky	Kentucky	6254925
+US.MA	Massachusetts	Massachusetts	6254926
+US.PA	Pennsylvania	Pennsylvania	6254927
+US.VA	Virginia	Virginia	6254928

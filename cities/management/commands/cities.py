@@ -17,6 +17,7 @@ http://download.geonames.org/export/zip/
 from __future__ import print_function
 
 import io
+import json
 import os
 import re
 import sys
@@ -34,18 +35,19 @@ from optparse import make_option
 from swapper import load_model
 from tqdm import tqdm
 
-import django
-from django.core.management.base import BaseCommand
-from django.template.defaultfilters import slugify
-from django.db import transaction
-from django.db.models import Q
-from django.db.models import CharField, ForeignKey
+from django import VERSION as django_version
 from django.contrib.gis.gdal.envelope import Envelope
 from django.contrib.gis.geos import Point
 try:
     from django.contrib.gis.db.models.functions import Distance
 except ImportError:
     pass
+from django.core.management.base import BaseCommand
+from django.db import transaction
+from django.db.models import Q
+from django.db.models import CharField, ForeignKey
+from django.db.utils import IntegrityError
+from django.forms.models import model_to_dict
 
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
                      HookException, settings, ALTERNATIVE_NAME_TYPES,
@@ -55,6 +57,11 @@ from ...conf import (city_types, district_types, import_opts, import_opts_all,
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
+
+# Interpret all files as utf-8
+if sys.version_info < (3,):
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
 # Load swappable models
 Continent = load_model('cities', 'Continent')
@@ -67,8 +74,8 @@ LOGGER_NAME = os.environ.get('TRAVIS_LOGGER_NAME', 'cities')
 
 # TODO: Remove backwards compatibility once django-cities requires Django 1.7
 # or 1.8 LTS.
-_transact = (transaction.commit_on_success if django.VERSION < (1, 6) else
-             transaction.atomic)
+# _transact = (transaction.commit_on_success if django_version < (1, 6) else
+#              transaction.atomic)
 
 
 class Command(BaseCommand):
@@ -79,7 +86,7 @@ class Command(BaseCommand):
         data_dir = os.path.join(app_dir, 'data')
     logger = logging.getLogger(LOGGER_NAME)
 
-    if django.VERSION < (1, 8):
+    if django_version < (1, 8):
         option_list = getattr(BaseCommand, 'option_list', ()) + (
             make_option(
                 '--force',
@@ -123,7 +130,7 @@ class Command(BaseCommand):
             help="Selectively flush data. Comma separated list of data types."
         )
 
-    @_transact
+    @transaction.atomic
     def handle(self, *args, **options):
         self.download_cache = {}
         self.options = options
@@ -198,14 +205,18 @@ class Command(BaseCommand):
         for filename in filenames:
             name, ext = filename.rsplit('.', 1)
             if (ext == 'zip'):
-                zipfile.ZipFile(os.path.join(self.data_dir, filename)).extractall(self.data_dir)
-                file_obj = io.open(os.path.join(self.data_dir, name + '.txt'), 'r', encoding='utf-8')
+                filepath = os.path.join(self.data_dir, filename)
+                zipfile.ZipFile(filepath).extractall(self.data_dir)
+                file_obj = io.open(os.path.join(self.data_dir, name + '.txt'),
+                                   'r', encoding='utf-8')
             else:
-                file_obj = io.open(os.path.join(self.data_dir, filename), 'r', encoding='utf-8')
+                file_obj = io.open(os.path.join(self.data_dir, filename),
+                                   'r', encoding='utf-8')
 
             for row in file_obj:
                 if not row.startswith('#'):
-                    yield dict(list(zip(settings.files[filekey]['fields'], row.split("\t"))))
+                    yield dict(list(zip(settings.files[filekey]['fields'],
+                                        row.rstrip('\n').split("\t"))))
 
     def parse(self, data):
         for line in data:
@@ -235,52 +246,60 @@ class Command(BaseCommand):
         self.logger.info("Importing country data")
         for item in tqdm([d for d in data if d['code'] not in NO_LONGER_EXISTENT_COUNTRY_CODES],
                          total=total,
-                         desc="Importing countries..."):
-            self.logger.info(item)
+                         desc="Importing countries"):
             if not self.call_hook('country_pre', item):
                 continue
 
-            country = Country()
             try:
-                country.id = int(item['geonameid'])
+                country_id = int(item['geonameid'])
             except:
+                self.logger.warning("Country has no geonameid: {} -- skipping".format(item))
                 continue
 
-            country.name = item['name']
-            country.slug = slugify(country.name)
-            country.code = item['code']
-            country.code3 = item['code3']
-            country.population = item['population']
-            country.continent = continents[item['continent']] if import_continents_as_fks else item['continent']
-            country.tld = item['tld'][1:]  # strip the leading .
-            country.phone = item['phone']
-            country.currency = item['currencyCode']
-            country.currency_name = item['currencyName']
+            defaults = {
+                'name': item['name'],
+                'code': item['code'],
+                'code3': item['code3'],
+                'population': item['population'],
+                'continent': continents[item['continent']] if import_continents_as_fks else item['continent'],
+                'tld': item['tld'][1:],  # strip the leading .
+                'phone': item['phone'],
+                'currency': item['currencyCode'],
+                'currency_name': item['currencyName'],
+                'capital': item['capital'],
+                'area': int(float(item['area'])) if item['area'] else None,
+            }
+
+            if hasattr(Country, 'language_codes'):
+                defaults['language_codes'] = item['languages']
+            elif hasattr(Country, 'languages') and type(getattr(Country, 'languages')) == CharField:
+                defaults['languages'] = item['languages']
 
             # These fields shouldn't impact saving older models (that don't
             # have these attributes)
             try:
-                country.currency_symbol = CURRENCY_SYMBOLS.get(item['currencyCode'], None)
-                country.postal_code_format = item['postalCodeFormat']
-                country.postal_code_regex = item['postalCodeRegex']
+                defaults['currency_symbol'] = CURRENCY_SYMBOLS.get(item['currencyCode'], None)
+                defaults['postal_code_format'] = item['postalCodeFormat']
+                defaults['postal_code_regex'] = item['postalCodeRegex']
             except AttributeError:
                 pass
 
-            country.capital = item['capital']
-            country.area = int(float(item['area'])) if item['area'] else None
-            if hasattr(country, 'language_codes'):
-                country.language_codes = item['languages']
-            elif type(country, 'languages') == CharField:
-                country.languages = item['languages']
+            # Make importing countries idempotent
+            country, created = Country.objects.update_or_create(id=country_id, defaults=defaults)
+
+            self.logger.debug("%s country '%s'",
+                              "Added" if created else "Updated",
+                              defaults['name'])
 
             neighbours[country] = item['neighbours'].split(",")
             countries[country.code] = country
 
             if not self.call_hook('country_post', country, item):
                 continue
-            country.save()
 
-        for country, neighbour_codes in list(neighbours.items()):
+        for country, neighbour_codes in tqdm(list(neighbours.items()),
+                                             total=len(neighbours),
+                                             desc="Importing country neighbours"):
             neighbours = [x for x in [countries.get(x) for x in neighbour_codes if x] if x]
             country.neighbours.add(*neighbours)
 
@@ -291,7 +310,7 @@ class Command(BaseCommand):
         self.logger.info("Building country index")
         self.country_index = {}
         for obj in tqdm(Country.objects.all(),
-                        total=Country.objects.count(),
+                        total=Country.objects.all().count(),
                         desc="Building country index"):
             self.country_index[obj.code] = obj
 
@@ -306,30 +325,50 @@ class Command(BaseCommand):
         data = self.get_data('region')
 
         self.logger.info("Importing region data")
+        countries_not_found = {}
         for item in tqdm(data, total=total, desc="Importing regions"):
             if not self.call_hook('region_pre', item):
                 continue
 
-            region = Region()
-
-            region.id = int(item['geonameid'])
-            region.name = item['name']
-            region.name_std = item['asciiName']
-            region.slug = slugify(region.name_std)
+            try:
+                region_id = int(item['geonameid'])
+            except:
+                self.logger.warning("Region has no geonameid: {} -- skipping".format(item))
+                continue
 
             country_code, region_code = item['code'].split(".")
-            region.code = region_code
+
+            defaults = {
+                'name': item['name'],
+                'name_std': item['asciiName'],
+                'code': region_code,
+            }
+
             try:
-                region.country = self.country_index[country_code]
-            except:
+                defaults['country'] = self.country_index[country_code]
+            except KeyError:
+                countries_not_found.setdefault(country_code, []).append(region.name)
                 self.logger.warning("Region: %s: Cannot find country: %s -- skipping",
                                     region.name, country_code)
                 continue
 
+            region, created = Region.objects.update_or_create(id=region_id, defaults=defaults)
+
             if not self.call_hook('region_post', region, item):
                 continue
-            region.save()
-            self.logger.debug("Added region: %s, %s", item['code'], region)
+
+            self.logger.debug("%s region: %s, %s",
+                              "Added" if created else "Updated",
+                              item['code'], region)
+
+        if countries_not_found:
+            countries_not_found_file = os.path.join(self.data_dir, 'countries_not_found.json')
+            try:
+                with open(countries_not_found_file, 'w+') as fp:
+                    json.dump(countries_not_found, fp)
+            except Exception as e:
+                self.logger.warning("Unable to write log file '{}': {}".format(
+                                    countries_not_found_file, e))
 
     def build_region_index(self):
         if hasattr(self, 'region_index'):
@@ -338,7 +377,7 @@ class Command(BaseCommand):
         self.logger.info("Building region index")
         self.region_index = {}
         for obj in tqdm(chain(Region.objects.all(), Subregion.objects.all()),
-                        total=Region.objects.count() + Subregion.objects.count(),
+                        total=Region.objects.all().count() + Subregion.objects.all().count(),
                         desc="Building region index"):
             self.region_index[obj.full_code()] = obj
 
@@ -354,30 +393,51 @@ class Command(BaseCommand):
         self.build_region_index()
 
         self.logger.info("Importing subregion data")
+        regions_not_found = {}
         for item in tqdm(data, total=total, desc="Importing subregions"):
             if not self.call_hook('subregion_pre', item):
                 continue
 
-            subregion = Subregion()
-
-            subregion.id = int(item['geonameid'])
-            subregion.name = item['name']
-            subregion.name_std = item['asciiName']
-            subregion.slug = slugify(subregion.name_std)
+            try:
+                subregion_id = int(item['geonameid'])
+            except:
+                self.logger.warning("Subregion has no geonameid: {} -- skipping".format(item))
+                continue
 
             country_code, region_code, subregion_code = item['code'].split(".")
-            subregion.code = subregion_code
+
+            defaults = {
+                'name': item['name'],
+                'name_std': item['asciiName'],
+                'code': subregion_code,
+            }
+
             try:
-                subregion.region = self.region_index[country_code + "." + region_code]
+                defaults['region'] = self.region_index[country_code + "." + region_code]
             except:
-                self.logger.warning("Subregion: %s: Cannot find region: %s",
-                                    subregion.name, region_code)
+                regions_not_found.setdefault(country_code, {})
+                regions_not_found[country_code].setdefault(region_code, []).append(subregion.name)
+                self.logger.warning("Subregion: %s: Cannot find [%s] region: %s",
+                                    subregion.name, country_code, region_code)
                 continue
+
+            subregion, created = Subregion.objects.update_or_create(id=subregion_id, defaults=defaults)
 
             if not self.call_hook('subregion_post', subregion, item):
                 continue
-            subregion.save()
-            self.logger.debug("Added subregion: %s, %s", item['code'], subregion)
+
+            self.logger.debug("%s subregion: %s, %s",
+                              "Added" if created else "Updated",
+                              item['code'], subregion)
+
+        if regions_not_found:
+            regions_not_found_file = os.path.join(self.data_dir, 'regions_not_found.json')
+            try:
+                with open(regions_not_found_file, 'w+') as fp:
+                    json.dump(regions_not_found, fp)
+            except Exception as e:
+                self.logger.warning("Unable to write log file '{}': {}".format(
+                                    regions_not_found_file, e))
 
         del self.region_index
 
@@ -400,27 +460,30 @@ class Command(BaseCommand):
             if item['featureCode'] not in city_types:
                 continue
 
-            city = City()
             try:
-                city.id = int(item['geonameid'])
+                city_id = int(item['geonameid'])
             except:
+                self.logger.warning("City has no geonameid: {} -- skipping".format(item))
                 continue
-            city.name = item['name']
-            city.kind = item['featureCode']
-            city.name_std = item['asciiName']
-            city.slug = slugify(city.name_std)
-            city.location = Point(float(item['longitude']), float(item['latitude']))
-            city.population = int(item['population'])
-            city.timezone = item['timezone']
+
+            defaults = {
+                'name': item['name'],
+                'kind': item['featureCode'],
+                'name_std': item['asciiName'],
+                'location': Point(float(item['longitude']), float(item['latitude'])),
+                'population': int(item['population']),
+                'timezone': item['timezone'],
+            }
+
             try:
-                city.elevation = int(item['elevation'])
+                defaults['elevation'] = int(item['elevation'])
             except:
                 pass
 
             country_code = item['countryCode']
             try:
                 country = self.country_index[country_code]
-                city.country = country
+                defaults['country'] = country
             except:
                 self.logger.warning("City: %s: Cannot find country: %s -- skipping",
                                     city.name, country_code)
@@ -429,12 +492,11 @@ class Command(BaseCommand):
             region_code = item['admin1Code']
             try:
                 region = self.region_index[country_code + "." + region_code]
-                city.region = region
+                defaults['region'] = region
             except:
                 if IGNORE_EMPTY_REGIONS:
                     city.region = None
                 else:
-                    print("{}: {}: Cannot find region: {} -- skipping", country_code, city.name, region_code)
                     self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
                                         country_code, city.name, region_code)
                     continue
@@ -442,17 +504,20 @@ class Command(BaseCommand):
             subregion_code = item['admin2Code']
             try:
                 subregion = self.region_index[country_code + "." + region_code + "." + subregion_code]
-                city.subregion = subregion
+                defaults['subregion'] = subregion
             except:
                 if subregion_code:
-                    self.logger.warning("%s: %s: Cannot find subregion: %s -- skipping",
+                    self.logger.warning("%s: %s: Cannot find subregion: %s",
                                         country_code, city.name, subregion_code)
                 pass
 
+            city, created = City.objects.update_or_create(id=city_id, defaults=defaults)
+
             if not self.call_hook('city_post', city, item):
                 continue
-            city.save()
-            self.logger.debug("Added city: %s", city)
+
+            self.logger.debug("%s city: %s",
+                              "Added" if created else "Updated", city)
 
     def build_hierarchy(self):
         if hasattr(self, 'hierarchy'):
@@ -489,7 +554,8 @@ class Command(BaseCommand):
 
         self.logger.info("Building city index")
         city_index = {}
-        for obj in City.objects.all():
+        for obj in tqdm(City.objects.all(), total=City.objects.all().count(),
+                        desc="Building city index"):
             city_index[obj.id] = obj
 
         self.logger.info("Importing district data")
@@ -497,69 +563,83 @@ class Command(BaseCommand):
             if not self.call_hook('district_pre', item):
                 continue
 
-            type = item['featureCode']
-            if type not in district_types:
+            _type = item['featureCode']
+            if _type not in district_types:
                 continue
 
-            district = District()
-            district.name = item['name']
-            district.name_std = item['asciiName']
-            try:
-                district.code = item['admin3Code']
-            except AttributeError:
-                pass
-            district.slug = slugify(district.name_std)
-            district.location = Point(float(item['longitude']), float(item['latitude']))
-            district.population = int(item['population'])
+            defaults = {
+                'name': item['name'],
+                'name_std': item['asciiName'],
+                'location': Point(float(item['longitude']), float(item['latitude'])),
+                'population': int(item['population']),
+            }
+
+            if hasattr(District, 'code'):
+                defaults['code'] = item['admin3Code'],
 
             # Find city
             city = None
             try:
-                city = city_index[self.hierarchy[district.id]]
+                city = city_index[self.hierarchy[defaults['geonameid']]]
             except:
-                self.logger.warning("District: %s: Cannot find city in hierarchy, using nearest", district.name)
+                self.logger.warning("District: %s: Cannot find city in hierarchy, using nearest", defaults['name'])
                 city_pop_min = 100000
                 # we are going to try to find closet city using native
                 # database .distance(...) query but if that fails then
                 # we fall back to degree search, MYSQL has no support
                 # and Spatialite with SRID 4236.
                 try:
-                    if django.VERSION < (1, 9):
+                    if django_version < (1, 9):
                         city = City.objects.filter(population__gt=city_pop_min)\
-                                   .distance(district.location)\
+                                   .distance(defaults['location'])\
                                    .order_by('distance')[0]
                     else:
                         city = City.objects.filter(population__gt=city_pop_min)\
-                            .annotate(distance=Distance('location', district.location))\
+                            .annotate(distance=Distance('location', defaults['location']))\
                             .order_by('distance')[0]
                 except:  # TODO: Restrict what this catches
                     self.logger.warning(
                         "District: %s: DB backend does not support native '.distance(...)' query "
                         "falling back to two degree search",
-                        district.name
+                        defaults['name']
                     )
                     search_deg = 2
                     min_dist = float('inf')
                     bounds = Envelope(
-                        district.location.x - search_deg, district.location.y - search_deg,
-                        district.location.x + search_deg, district.location.y + search_deg)
+                        defaults['location'].x - search_deg, defaults['location'].y - search_deg,
+                        defaults['location'].x + search_deg, defaults['location'].y + search_deg)
                     for e in City.objects.filter(population__gt=city_pop_min).filter(
                             location__intersects=bounds.wkt):
-                        dist = geo_distance(district.location, e.location)
+                        dist = geo_distance(defaults['location'], e.location)
                         if dist < min_dist:
                             min_dist = dist
                             city = e
 
             if not city:
-                self.logger.warning("District: %s: Cannot find city -- skipping", district.name)
+                self.logger.warning("District: %s: Cannot find city -- skipping", defaults['name'])
                 continue
 
-            district.city = city
+            defaults['city'] = city
+
+            try:
+                with transaction.atomic():
+                    district = District.objects.get(city=defaults['city'], name=defaults['name'])
+            except District.DoesNotExist:
+                # If the district doesn't exist, create it with the geonameid
+                # as its id
+                district, created = District.objects.update_or_create(id=item['geonameid'], defaults=defaults)
+            else:
+                # Since the district already exists, but doesn't have its
+                # geonameid as its id, we need to update all of its attributes
+                # *except* for its id
+                for key, value in defaults.items():
+                    setattr(district, key, value)
+                created = False
 
             if not self.call_hook('district_post', district, item):
                 continue
-            district.save()
-            self.logger.debug("Added district: %s", district)
+
+            self.logger.debug("%s district: %s", "Added" if created else "Updated", district)
 
     def import_alt_name(self):
         self.download('alt_name')
@@ -574,7 +654,7 @@ class Command(BaseCommand):
         for type_ in (Country, Region, Subregion, City, District):
             plural_type_name = '{}s'.format(type_.__name__) if type_.__name__[-1] != 'y' else '{}ies'.format(type_.__name__[:-1])
             for obj in tqdm(type_.objects.all(),
-                            total=type_.objects.count(),
+                            total=type_.objects.all().count(),
                             desc="Building geo index for {}".format(plural_type_name.lower())):
                 geo_index[obj.id] = {
                     'type': type_,
@@ -601,8 +681,17 @@ class Command(BaseCommand):
             except:
                 continue
 
-            alt = AlternativeName()
-            alt.id = int(item['nameid'])
+            try:
+                alt_id = int(item['nameid'])
+            except KeyError:
+                self.logger.warning("Alternative name has no nameid: {} -- skipping".format(item))
+                continue
+
+            try:
+                alt = AlternativeName.objects.get(id=alt_id)
+            except AlternativeName.DoesNotExist:
+                alt = AlternativeName(id=alt_id)
+
             alt.name = item['name']
             alt.is_preferred = bool(item['isPreferred'])
             alt.is_short = bool(item['isShort'])
@@ -616,7 +705,7 @@ class Command(BaseCommand):
             except:
                 pass
             else:
-                print(
+                self.logger.warning(
                     "Trying to add a numeric alternative name to {} ({}): {}".format(
                         geo_info['object'].name,
                         geo_info['type'].__name__,
@@ -664,10 +753,11 @@ class Command(BaseCommand):
 
                 continue
 
-            if not self.call_hook('alt_name_post', alt, item):
-                continue
             alt.save()
             geo_info['object'].alt_names.add(alt)
+
+            if not self.call_hook('alt_name_post', alt, item):
+                continue
 
             self.logger.debug("Added alt name: %s, %s", locale, alt)
 
@@ -704,6 +794,8 @@ class Command(BaseCommand):
 
         self.logger.info("Importing postal codes")
 
+        districts_to_delete = []
+
         for item in tqdm(data, total=total, desc="Importing postal codes"):
             if not self.call_hook('postal_code_pre', item):
                 continue
@@ -712,21 +804,19 @@ class Command(BaseCommand):
             if country_code not in settings.postal_codes and 'ALL' not in settings.postal_codes:
                 continue
 
+            try:
+                code = item['postalCode']
+            except KeyError:
+                self.logger.warning("Postal code has no code: {} -- skipping".format(item))
+                continue
+
             # Find country
-            code = item['postalCode']
             try:
                 country = self.country_index[country_code]
             except:
-                self.logger.warning("Postal code: %s: Cannot find country: %s -- skipping", code, country_code)
+                self.logger.warning("Postal code '%s': Cannot find country: %s -- skipping", code, country_code)
                 continue
 
-            pc = PostalCode()
-            pc.country = country
-            pc.code = code
-            pc.name = item['placeName']
-            pc.region_name = item['admin1Name']
-            pc.subregion_name = item['admin2Name']
-            pc.district_name = item['admin3Name']
             # Validate postal code against the country
             code = item['postalCode']
             if VALIDATE_POSTAL_CODES and self.postal_code_regex_index[country_code].match(code) is None:
@@ -747,71 +837,162 @@ class Command(BaseCommand):
                 dst_name_q |= Q(district__code=item['admin3Code'])
 
             try:
-                if item['longitude'] and item['latitude']:
+                location = Point(float(item['longitude']),
+                                 float(item['latitude']))
+            except:
+                location = None
+
+            if len(item['placeName']) >= 200:
+                self.logger.warning("Postal code name has more than 200 characters: {}".format(item))
+
+            postal_code_args = (
+                {
+                    'args': (reg_name_q, subreg_name_q, dst_name_q),
+                    'country': country,
+                    'code': code,
+                    'location': location,
+                }, {
+                    'args': (reg_name_q, subreg_name_q, dst_name_q),
+                    'country': country,
+                    'code': code,
+                }, {
+                    'args': (reg_name_q, subreg_name_q, dst_name_q),
+                    'country': country,
+                    'code': code,
+                    'name__iexact': re.sub("'", '', item['placeName']),
+                }, {
+                    'args': tuple(),
+                    'country': country,
+                    'region__code': item['admin1Code'],
+                }, {
+                    'args': tuple(),
+                    'country': country,
+                    'code': code,
+                    'name': item['placeName'],
+                    'region__code': item['admin1Code'],
+                    'subregion__code': item['admin2Code'],
+                }, {
+                    'args': tuple(),
+                    'country': country,
+                    'code': code,
+                    'name': item['placeName'],
+                    'region__code': item['admin1Code'],
+                    'subregion__code': item['admin2Code'],
+                    'district__code': item['admin3Code'],
+                }, {
+                    'args': tuple(),
+                    'country': country,
+                    'code': code,
+                    'name': item['placeName'],
+                    'region_name': item['admin1Name'],
+                    'subregion_name': item['admin2Name'],
+                }, {
+                    'args': tuple(),
+                    'country': country,
+                    'code': code,
+                    'name': item['placeName'],
+                    'region_name': item['admin1Name'],
+                    'subregion_name': item['admin2Name'],
+                    'district_name': item['admin3Name'],
+                }
+            )
+
+            # We do this so we don't have to deal with exceptions being thrown
+            # in the middle of transactions
+            for args_dict in postal_code_args:
+                num_pcs = PostalCode.objects.filter(
+                    *args_dict['args'],
+                    **{k: v for k, v in args_dict.items() if k != 'args'})\
+                    .count()
+                if num_pcs == 1:
                     pc = PostalCode.objects.get(
-                        reg_name_q, subreg_name_q, dst_name_q,
-                        country=country,
-                        code=code,
-                        location=Point(float(item['longitude']),
-                                       float(item['latitude'])))
-                else:
-                    pc = PostalCode.objects.get(
-                        reg_name_q, subreg_name_q, dst_name_q,
-                        country=country,
-                        code=code)
-            except PostalCode.DoesNotExist:
-                try:
-                    pc = PostalCode.objects.get(
-                        reg_name_q, subreg_name_q, dst_name_q,
-                        country=country,
-                        code=code,
-                        name__iexact=re.sub("'", '', item['placeName']))
-                except PostalCode.DoesNotExist:
-                    pc = PostalCode(
-                        country=country,
-                        code=code,
-                        name=item['placeName'],
-                        region_name=item['admin1Name'],
-                        subregion_name=item['admin2Name'],
-                        district_name=item['admin3Name'])
+                        *args_dict['args'],
+                        **{k: v for k, v in args_dict.items() if k != 'args'})
+                    break
+                elif num_pcs > 1:
+                    pcs = PostalCode.objects.filter(
+                        *args_dict['args'],
+                        **{k: v for k, v in args_dict.items() if k != 'args'})
+                    self.logger.debug("item: {}\nresults: {}".format(item, pcs))
+            else:
+                self.logger.debug("Creating postal code: {}".format(item))
+                pc = PostalCode()
+                pc.country = country
+                pc.code = code
+                pc.name = item['placeName']
+                pc.region_name = item['admin1Name']
+                pc.subregion_name = item['admin2Name']
+                pc.district_name = item['admin3Name']
 
             if pc.region_name != '':
-                with _transact():
-                    try:
+                try:
+                    with transaction.atomic():
                         pc.region = Region.objects.get(
                             Q(name_std__iexact=pc.region_name)
                             | Q(name__iexact=pc.region_name),
                             country=pc.country)
-                    except Region.DoesNotExist:
-                        pc.region = None
+                except Region.DoesNotExist:
+                    pc.region = None
             else:
                 pc.region = None
 
             if pc.subregion_name != '':
-                with _transact():
-                    try:
+                try:
+                    with transaction.atomic():
                         pc.subregion = Subregion.objects.get(
                             Q(region__name_std__iexact=pc.region_name)
                             | Q(region__name__iexact=pc.region_name),
                             Q(name_std__iexact=pc.subregion_name)
                             | Q(name__iexact=pc.subregion_name),
                             region__country=pc.country)
-                    except Subregion.DoesNotExist:
-                        pc.subregion = None
+                except Subregion.DoesNotExist:
+                    pc.subregion = None
             else:
                 pc.subregion = None
 
             if pc.district_name != '':
-                with _transact():
-                    try:
+                try:
+                    with transaction.atomic():
                         pc.district = District.objects.get(
                             Q(city__region__name_std__iexact=pc.region_name)
                             | Q(city__region__name__iexact=pc.region_name),
                             Q(name_std__iexact=pc.district_name)
                             | Q(name__iexact=pc.district_name),
                             city__country=pc.country)
-                    except District.DoesNotExist:
-                        pc.district = None
+                except District.MultipleObjectsReturned as e:
+                    self.logger.debug("item: {}\ndistricts: {}".format(
+                        item,
+                        District.objects.filter(
+                            Q(city__region__name_std__iexact=pc.region_name)
+                            | Q(city__region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.district_name)
+                            | Q(name__iexact=pc.district_name),
+                            city__country=pc.country).values_list('id', flat=True)))
+                    # If they're both part of the same city
+                    if District.objects.filter(Q(city__region__name_std__iexact=pc.region_name)
+                                               | Q(city__region__name__iexact=pc.region_name),
+                                               Q(name_std__iexact=pc.district_name)
+                                               | Q(name__iexact=pc.district_name),
+                                               city__country=pc.country)\
+                               .values_list('city').distinct().count() == 1:
+                        # Use the one with the lower ID
+                        pc.district = District.objects.filter(
+                            Q(city__region__name_std__iexact=pc.region_name)
+                            | Q(city__region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.district_name)
+                            | Q(name__iexact=pc.district_name),
+                            city__country=pc.country).order_by('city__id').first()
+
+                        districts_to_delete.append(District.objects.filter(
+                            Q(city__region__name_std__iexact=pc.region_name)
+                            | Q(city__region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.district_name)
+                            | Q(name__iexact=pc.district_name),
+                            city__country=pc.country).order_by('city__id').last().id)
+                    else:
+                        raise e
+                except District.DoesNotExist:
+                    pc.district = None
             else:
                 pc.district = None
 
@@ -820,20 +1001,25 @@ class Command(BaseCommand):
             else:
                 pc.city = None
 
-            if pc.location is None:
+            try:
                 pc.location = Point(float(item['longitude']), float(item['latitude']))
-            else:
-                self.logger.warning("Postal code: %s, %s: Invalid location (%s, %s)",
-                                    pc.country, pc.code, item['longitude'], item['latitude'])
-                continue
+            except Exception as e:
+                self.logger.warning("Postal code %s (%s) - invalid location ('%s', '%s'): %s",
+                                    pc.code, pc.country, item['longitude'],
+                                    item['latitude'], str(e))
+                pc.location = None
+
+            self.logger.info("Saving postal code: {}".format(pc.country.code, pc.code))
+            pc.save()
+            self.logger.info("...done")
 
             if not self.call_hook('postal_code_post', pc, item):
                 continue
-            self.logger.debug("Adding postal code: %s, %s", pc.country, pc)
-            try:
-                pc.save()
-            except Exception as e:
-                print(e)
+
+            self.logger.debug("Added postal code: %s, %s", pc.country, pc)
+
+        if districts_to_delete:
+            print('districts to delete:\n{}'.format(districts_to_delete))
 
     def flush_country(self):
         self.logger.info("Flushing country data")

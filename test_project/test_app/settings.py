@@ -125,7 +125,7 @@ LOGGING = {
             'propagate': False,
         },
         'cities': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
             'propagate': False,
         },
