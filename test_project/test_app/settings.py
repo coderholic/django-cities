@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'cities',
+    'model_utils',
     'test_app',
 )
 
@@ -131,7 +132,7 @@ LOGGING = {
     },
 }
 # Cities config:
-travis_commit = os.environ.get('TRAVIS_COMMIT',)
+travis_commit = os.environ.get('TRAVIS_COMMIT')
 travis_repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'coderholic/django-cities')
 travis_repo_branch = os.environ.get('TRAVIS_PULL_REQUEST_BRANCH', '')
 if travis_repo_branch == '':

@@ -11,4 +11,4 @@ dist
 .DAV/
 
 # Data files
-cities/data/*
+/cities/data/*
