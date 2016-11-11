@@ -231,8 +231,9 @@ class Command(BaseCommand):
         for filename in filenames:
             name, ext = filename.rsplit('.', 1)
             if (ext == 'zip'):
-                zipfile.ZipFile(os.path.join(self.data_dir, filename)).extractall(self.data_dir)
-                file_obj = io.open(os.path.join(self.data_dir, name + '.txt'), 'r', encoding='utf-8')
+                zip_archive = zipfile.ZipFile(os.path.join(self.data_dir, filename))
+                zip_member = zip_archive.open(name + '.txt', 'r')
+                file_obj = io.TextIOWrapper(zip_member, encoding='utf-8')
             else:
                 file_obj = io.open(os.path.join(self.data_dir, filename), 'r', encoding='utf-8')
 
@@ -374,7 +375,8 @@ class Command(BaseCommand):
 
         self.logger.info("Building region index")
         self.region_index = {}
-        for obj in tqdm(chain(Region.objects.all(), Subregion.objects.all()),
+        for obj in tqdm(chain(Region.objects.all().prefetch_related('country'),
+                              Subregion.objects.all().prefetch_related('region__country')),
                         total=Region.objects.count() + Subregion.objects.count(),
                         desc="Building region index"):
             self.region_index[obj.full_code()] = obj
@@ -410,8 +412,8 @@ class Command(BaseCommand):
             try:
                 subregion.region = self.region_index[country_code + "." + region_code]
             except:
-                self.logger.warning("Subregion: %s: Cannot find region: %s",
-                                    subregion.name, region_code)
+                self.logger.warning("Subregion: %s %s: Cannot find region",
+                                    item['code'], subregion.name)
                 continue
 
             if not self.call_hook('subregion_post', subregion, item):
@@ -476,7 +478,7 @@ class Command(BaseCommand):
                 if IGNORE_EMPTY_REGIONS:
                     city.region = None
                 else:
-                    print("{}: {}: Cannot find region: {} -- skipping", country_code, city.name, region_code)
+                    print("{}: {}: Cannot find region: {} -- skipping".format(country_code, city.name, region_code))
                     self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
                                         country_code, city.name, region_code)
                     continue
@@ -497,7 +499,7 @@ class Command(BaseCommand):
             self.logger.debug("Added city: %s", city)
 
     def build_hierarchy(self):
-        if hasattr(self, 'hierarchy'):
+        if hasattr(self, 'hierarchy') and self.hierarchy:
             return
 
         self.download('hierarchy')
@@ -507,9 +509,6 @@ class Command(BaseCommand):
 
         data = self.get_data('hierarchy')
         self.logger.info("Building hierarchy index")
-
-        if hasattr(self, 'hierarchy') and self.hierarchy:
-            return
 
         self.hierarchy = {}
         for item in tqdm(data, total=total, desc="Building hierarchy index"):
@@ -534,7 +533,9 @@ class Command(BaseCommand):
 
         self.logger.info("Building city index")
         city_index = {}
-        for obj in City.objects.all():
+        for obj in tqdm(City.objects.iterator(),
+                         total=City.objects.count(),
+                         desc="Building City index"):
             city_index[obj.id] = obj
 
         self.logger.info("Importing district data")
@@ -542,11 +543,15 @@ class Command(BaseCommand):
             if not self.call_hook('district_pre', item):
                 continue
 
-            type = item['featureCode']
-            if type not in district_types:
+            item_type = item['featureCode']
+            if item_type not in district_types:
                 continue
 
             district = District()
+            try:
+                district.id = int(item['geonameid'])
+            except:
+                continue
             district.name = item['name']
             district.name_std = item['asciiName']
             try:
@@ -562,7 +567,7 @@ class Command(BaseCommand):
             try:
                 city = city_index[self.hierarchy[district.id]]
             except:
-                self.logger.warning("District: %s: Cannot find city in hierarchy, using nearest", district.name)
+                self.logger.warning("District: %d %s: Cannot find city in hierarchy, using nearest", district.id, district.name)
                 city_pop_min = 100000
                 # we are going to try to find closet city using native
                 # database .distance(...) query but if that fails then
