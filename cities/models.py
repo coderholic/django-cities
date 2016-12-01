@@ -1,5 +1,4 @@
 import sys
-import uuid
 
 try:
     from django.utils.encoding import force_unicode as force_text
@@ -20,7 +19,6 @@ __all__ = [
     'Point', 'Continent', 'Country', 'Region', 'Subregion', 'City', 'District',
     'PostalCode', 'AlternativeName',
 ]
-
 
 if sys.version_info >= (3, 0):
     unicode = str
@@ -195,7 +193,7 @@ class City(BaseCity):
         swappable = swapper.swappable_setting('cities', 'City')
 
 
-class District(Place, SlugModel):
+class District(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(blank=True, db_index=True, max_length=200, null=True)
     location = models.PointField()
@@ -205,9 +203,6 @@ class District(Place, SlugModel):
     @property
     def parent(self):
         return self.city
-
-    def slugify(self):
-        return slugify_func(self, unicode(self.id))
 
 
 @python_2_unicode_compatible
@@ -232,7 +227,7 @@ class AlternativeName(SlugModel):
 
 
 @python_2_unicode_compatible
-class PostalCode(Place, SlugModel):
+class PostalCode(Place):
     code = models.CharField(max_length=20)
     location = models.PointField()
 
@@ -274,6 +269,3 @@ class PostalCode(Place, SlugModel):
 
     def __str__(self):
         return force_text(self.code)
-
-    def slugify(self):
-        return slugify_func(self, unicode(self.id))

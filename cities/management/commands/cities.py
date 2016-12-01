@@ -50,7 +50,7 @@ except ImportError:
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
                      HookException, settings, ALTERNATIVE_NAME_TYPES,
                      CONTINENT_DATA, CURRENCY_SYMBOLS, IGNORE_EMPTY_REGIONS,
-                     INCLUDE_AIRPORT_CODES, NO_LONGER_EXISTENT_COUNTRY_CODES)
+                     INCLUDE_AIRPORT_CODES, NO_LONGER_EXISTENT_COUNTRY_CODES, VALIDATE_POSTAL_CODES)
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
@@ -553,7 +553,6 @@ class Command(BaseCommand):
                 district.code = item['admin3Code']
             except AttributeError:
                 pass
-            district.slug = slugify(district.name_std)
             district.location = Point(float(item['longitude']), float(item['latitude']))
             district.population = int(item['population'])
 
