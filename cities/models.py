@@ -231,7 +231,7 @@ class AlternativeName(SlugModel):
 
 
 @python_2_unicode_compatible
-class PostalCode(Place, SlugModel):
+class PostalCode(Place):
     code = models.CharField(max_length=20)
     location = models.PointField()
 
@@ -273,20 +273,3 @@ class PostalCode(Place, SlugModel):
 
     def __str__(self):
         return force_text(self.code)
-
-    def slugify(self):
-        return slugify_func(self, unicode(self.id))
-
-    def save(self, *args, **kwargs):
-        slug = slugify_func(self, self.slugify())
-        for x in itertools.count(1):
-            if self.id:
-                exists = PostalCode.objects.filter(slug=slug).exclude(id=self.id).exists()
-            else:
-                exists = PostalCode.objects.filter(slug=slug).exists()
-            if exists:
-                slug = '%s-%d' % (self.slug, x)
-            else:
-                break
-        self.slug = slug
-        super(SlugModel, self).save(*args, **kwargs)

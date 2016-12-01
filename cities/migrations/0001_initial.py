@@ -92,7 +92,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200, verbose_name='ascii name', db_index=True)),
-                ('slug', models.CharField(max_length=200)),
                 ('code', models.CharField(max_length=20)),
                 ('location', django.contrib.gis.db.models.fields.PointField(srid=4326)),
                 ('region_name', models.CharField(max_length=100, db_index=True)),
