@@ -1,5 +1,4 @@
 import sys
-import itertools
 
 try:
     from django.utils.encoding import force_unicode as force_text
