@@ -1,5 +1,5 @@
 import sys
-import uuid
+import itertools
 
 try:
     from django.utils.encoding import force_unicode as force_text
@@ -20,7 +20,6 @@ __all__ = [
     'Point', 'Continent', 'Country', 'Region', 'Subregion', 'City', 'District',
     'PostalCode', 'AlternativeName',
 ]
-
 
 if sys.version_info >= (3, 0):
     unicode = str
@@ -277,3 +276,17 @@ class PostalCode(Place, SlugModel):
 
     def slugify(self):
         return slugify_func(self, unicode(self.id))
+
+    def save(self, *args, **kwargs):
+        slug = slugify_func(self, self.slugify())
+        for x in itertools.count(1):
+            if self.id:
+                exists = PostalCode.objects.filter(slug=slug).exclude(id=self.id).exists()
+            else:
+                exists = PostalCode.objects.filter(slug=slug).exists()
+            if exists:
+                slug = '%s-%d' % (self.slug, x)
+            else:
+                break
+        self.slug = slug
+        super(SlugModel, self).save(*args, **kwargs)
