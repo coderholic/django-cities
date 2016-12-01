@@ -76,7 +76,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200, verbose_name='ascii name', db_index=True)),
-                ('slug', models.CharField(max_length=200)),
                 ('name_std', models.CharField(max_length=200, verbose_name='standard name', db_index=True)),
                 ('location', django.contrib.gis.db.models.fields.PointField(srid=4326)),
                 ('population', models.IntegerField()),

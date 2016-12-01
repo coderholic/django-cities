@@ -34,11 +34,6 @@ class Migration(migrations.Migration):
             field=models.CharField(max_length=255, unique=True),
         ),
         migrations.AlterField(
-            model_name='district',
-            name='slug',
-            field=models.CharField(max_length=255, unique=True),
-        ),
-        migrations.AlterField(
             model_name='region',
             name='slug',
             field=models.CharField(max_length=255, unique=True),

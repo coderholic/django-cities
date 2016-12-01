@@ -553,7 +553,6 @@ class Command(BaseCommand):
                 district.code = item['admin3Code']
             except AttributeError:
                 pass
-            district.slug = slugify(district.name_std)
             district.location = Point(float(item['longitude']), float(item['latitude']))
             district.population = int(item['population'])
 

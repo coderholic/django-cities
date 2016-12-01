@@ -193,7 +193,7 @@ class City(BaseCity):
         swappable = swapper.swappable_setting('cities', 'City')
 
 
-class District(Place, SlugModel):
+class District(Place):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(blank=True, db_index=True, max_length=200, null=True)
     location = models.PointField()
@@ -203,9 +203,6 @@ class District(Place, SlugModel):
     @property
     def parent(self):
         return self.city
-
-    def slugify(self):
-        return slugify_func(self, unicode(self.id))
 
 
 @python_2_unicode_compatible
