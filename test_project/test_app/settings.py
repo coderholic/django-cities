@@ -159,7 +159,7 @@ CITIES_FILES = {
         'urls': [url_base + '{filename}', ],
     },
     'city': {
-        'filename': 'UA.txt',
+        'filename': 'cities1000.txt',
         'urls': [url_base + '{filename}', ],
     },
     'hierarchy': {

@@ -486,7 +486,7 @@ class Command(BaseCommand):
                 defaults['country'] = country
             except:
                 self.logger.warning("City: %s: Cannot find country: %s -- skipping",
-                                    city.name, country_code)
+                                    item['name'], country_code)
                 continue
 
             region_code = item['admin1Code']
@@ -498,7 +498,7 @@ class Command(BaseCommand):
                     city.region = None
                 else:
                     self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
-                                        country_code, city.name, region_code)
+                                        country_code, item['name'], region_code)
                     continue
 
             subregion_code = item['admin2Code']
@@ -508,7 +508,7 @@ class Command(BaseCommand):
             except:
                 if subregion_code:
                     self.logger.warning("%s: %s: Cannot find subregion: %s",
-                                        country_code, city.name, subregion_code)
+                                        country_code, item['name'], subregion_code)
                 pass
 
             city, created = City.objects.update_or_create(id=city_id, defaults=defaults)

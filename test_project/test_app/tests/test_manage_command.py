@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import logging
-import os
-
 from django.test import TestCase
 from django.core.management import call_command
 
 from cities.models import Country, Region, City, PostalCode
-
-
-# Only log errors during Travis tests
-logger = logging.getLogger(os.environ.get('TRAVIS_LOGGER_NAME', 'cities'))
 
 
 class ManageCommandTestCase(TestCase):
