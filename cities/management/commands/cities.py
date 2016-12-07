@@ -417,8 +417,8 @@ class Command(BaseCommand):
             except:
                 regions_not_found.setdefault(country_code, {})
                 regions_not_found[country_code].setdefault(region_code, []).append(subregion.name)
-                self.logger.warning("Subregion: %s: Cannot find [%s] region: %s",
-                                    subregion.name, country_code, region_code)
+                self.logger.info("Subregion: %s: Cannot find [%s] region: %s",
+                                 subregion.name, country_code, region_code)
                 continue
 
             subregion, created = Subregion.objects.update_or_create(id=subregion_id, defaults=defaults)
@@ -497,8 +497,8 @@ class Command(BaseCommand):
                 if IGNORE_EMPTY_REGIONS:
                     city.region = None
                 else:
-                    self.logger.warning("%s: %s: Cannot find region: %s -- skipping",
-                                        country_code, item['name'], region_code)
+                    self.logger.info("%s: %s: Cannot find region: %s -- skipping",
+                                     country_code, item['name'], region_code)
                     continue
 
             subregion_code = item['admin2Code']
@@ -507,7 +507,7 @@ class Command(BaseCommand):
                 defaults['subregion'] = subregion
             except:
                 if subregion_code:
-                    self.logger.warning("%s: %s: Cannot find subregion: %s",
+                    self.logger.info("%s: %s: Cannot find subregion: %s",
                                         country_code, item['name'], subregion_code)
                 pass
 
@@ -582,7 +582,7 @@ class Command(BaseCommand):
             try:
                 city = city_index[self.hierarchy[defaults['geonameid']]]
             except:
-                self.logger.warning("District: %s: Cannot find city in hierarchy, using nearest", defaults['name'])
+                self.logger.info("District: %s: Cannot find city in hierarchy, using nearest", defaults['name'])
                 city_pop_min = 100000
                 # we are going to try to find closet city using native
                 # database .distance(...) query but if that fails then
@@ -1009,9 +1009,7 @@ class Command(BaseCommand):
                                     item['latitude'], str(e))
                 pc.location = None
 
-            self.logger.info("Saving postal code: {}".format(pc.country.code, pc.code))
             pc.save()
-            self.logger.info("...done")
 
             if not self.call_hook('postal_code_post', pc, item):
                 continue
@@ -1019,7 +1017,7 @@ class Command(BaseCommand):
             self.logger.debug("Added postal code: %s, %s", pc.country, pc)
 
         if districts_to_delete:
-            print('districts to delete:\n{}'.format(districts_to_delete))
+            self.logger.debug('districts to delete:\n{}'.format(districts_to_delete))
 
     def flush_country(self):
         self.logger.info("Flushing country data")
