@@ -145,7 +145,7 @@ class Region(Place, SlugModel):
         return unicode(".".join([self.parent.code, self.code]))
 
     def slugify(self):
-        return slugify_func(self, '{}_({})'.format(
+        return slugify_func(self, u'{}_({})'.format(
             unicode(self.name),
             unicode(self.full_code())))
 
