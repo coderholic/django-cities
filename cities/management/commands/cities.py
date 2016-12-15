@@ -50,7 +50,8 @@ except ImportError:
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
                      HookException, settings, ALTERNATIVE_NAME_TYPES,
                      CONTINENT_DATA, CURRENCY_SYMBOLS, IGNORE_EMPTY_REGIONS,
-                     INCLUDE_AIRPORT_CODES, NO_LONGER_EXISTENT_COUNTRY_CODES)
+                     INCLUDE_AIRPORT_CODES, NO_LONGER_EXISTENT_COUNTRY_CODES,
+                     VALIDATE_POSTAL_CODES)
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
@@ -699,6 +700,7 @@ class Command(BaseCommand):
                             region_name=subregion.region.name,
                             subregion_name=subregion.name)
                     elif geo_index[item['geonameid']]['type'] == City:
+                        city = geo_index[item['geonameid']]['object']
                         PostalCode.objects.get_or_create(
                             code=item['name'],
                             country=city.country,
