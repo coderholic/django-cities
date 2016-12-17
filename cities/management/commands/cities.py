@@ -500,11 +500,25 @@ class Command(BaseCommand):
             try:
                 subregion = self.region_index[country_code + "." + region_code + "." + subregion_code]
                 defaults['subregion'] = subregion
-            except:
-                if subregion_code:
-                    self.logger.info("%s: %s: Cannot find subregion: %s",
-                                        country_code, item['name'], subregion_code)
-                pass
+            except KeyError:
+                try:
+                    with transaction.atomic():
+                        defaults['subregion'] = Subregion.objects.get(
+                            Q(name=subregion_code) |
+                            Q(name=subregion_code.replace(' (undefined)', '')),
+                            region=defaults['region'])
+                except Subregion.DoesNotExist:
+                    try:
+                        with transaction.atomic():
+                            defaults['subregion'] = Subregion.objects.get(
+                                Q(name_std=subregion_code) |
+                                Q(name_std=subregion_code.replace(' (undefined)', '')),
+                                region=defaults['region'])
+                    except Subregion.DoesNotExist:
+                        if subregion_code:
+                            self.logger.info("%s: %s: Cannot find subregion: %s",
+                                             country_code, item['name'], subregion_code)
+                        pass
 
             city, created = City.objects.update_or_create(id=city_id, defaults=defaults)
 
