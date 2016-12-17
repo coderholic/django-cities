@@ -243,7 +243,6 @@ class Command(BaseCommand):
         # they are still the CharField(max_length=2) and import them the old way
         import_continents_as_fks = type(Country._meta.get_field('continent')) == ForeignKey
 
-        self.logger.info("Importing country data")
         for item in tqdm([d for d in data if d['code'] not in NO_LONGER_EXISTENT_COUNTRY_CODES],
                          total=total,
                          desc="Importing countries"):
@@ -307,7 +306,6 @@ class Command(BaseCommand):
         if hasattr(self, 'country_index'):
             return
 
-        self.logger.info("Building country index")
         self.country_index = {}
         for obj in tqdm(Country.objects.all(),
                         total=Country.objects.all().count(),
@@ -324,7 +322,6 @@ class Command(BaseCommand):
 
         data = self.get_data('region')
 
-        self.logger.info("Importing region data")
         countries_not_found = {}
         for item in tqdm(data, total=total, desc="Importing regions"):
             if not self.call_hook('region_pre', item):
@@ -374,7 +371,6 @@ class Command(BaseCommand):
         if hasattr(self, 'region_index'):
             return
 
-        self.logger.info("Building region index")
         self.region_index = {}
         for obj in tqdm(chain(Region.objects.all(), Subregion.objects.all()),
                         total=Region.objects.all().count() + Subregion.objects.all().count(),
@@ -392,7 +388,6 @@ class Command(BaseCommand):
         self.build_country_index()
         self.build_region_index()
 
-        self.logger.info("Importing subregion data")
         regions_not_found = {}
         for item in tqdm(data, total=total, desc="Importing subregions"):
             if not self.call_hook('subregion_pre', item):
@@ -452,7 +447,6 @@ class Command(BaseCommand):
         self.build_country_index()
         self.build_region_index()
 
-        self.logger.info("Importing city data")
         for item in tqdm(data, total=total, desc="Importing cities"):
             if not self.call_hook('city_pre', item):
                 continue
@@ -529,7 +523,6 @@ class Command(BaseCommand):
         total = sum(1 for _ in data)
 
         data = self.get_data('hierarchy')
-        self.logger.info("Building hierarchy index")
 
         if hasattr(self, 'hierarchy') and self.hierarchy:
             return
@@ -552,13 +545,11 @@ class Command(BaseCommand):
         self.build_region_index()
         self.build_hierarchy()
 
-        self.logger.info("Building city index")
         city_index = {}
         for obj in tqdm(City.objects.all(), total=City.objects.all().count(),
                         desc="Building city index"):
             city_index[obj.id] = obj
 
-        self.logger.info("Importing district data")
         for item in tqdm(data, total=total, desc="Importing districts"):
             if not self.call_hook('district_pre', item):
                 continue
@@ -649,7 +640,6 @@ class Command(BaseCommand):
 
         data = self.get_data('alt_name')
 
-        self.logger.info("Building geo index")
         geo_index = {}
         for type_ in (Country, Region, Subregion, City, District):
             plural_type_name = '{}s'.format(type_.__name__) if type_.__name__[-1] != 'y' else '{}ies'.format(type_.__name__[:-1])
@@ -661,7 +651,6 @@ class Command(BaseCommand):
                     'object': obj,
                 }
 
-        self.logger.info("Importing alternate name data")
         for item in tqdm(data, total=total, desc="Importing data for alternative names"):
             if not self.call_hook('alt_name_pre', item):
                 continue
@@ -765,8 +754,6 @@ class Command(BaseCommand):
         if hasattr(self, 'postal_code_regex_index') and self.postal_code_regex_index:
             return
 
-        self.logger.info("Building postal code regex index")
-
         self.build_country_index()
 
         self.postal_code_regex_index = {}
@@ -791,8 +778,6 @@ class Command(BaseCommand):
         self.build_region_index()
         if VALIDATE_POSTAL_CODES:
             self.build_postal_code_regex_index()
-
-        self.logger.info("Importing postal codes")
 
         districts_to_delete = []
 
