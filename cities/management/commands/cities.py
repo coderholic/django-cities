@@ -18,12 +18,13 @@ from __future__ import print_function
 
 import io
 import json
+import logging
+import math
 import os
 import re
 import sys
-import logging
-import zipfile
 import time
+import zipfile
 
 try:
     from urllib.request import urlopen
@@ -781,8 +782,9 @@ class Command(BaseCommand):
 
         districts_to_delete = []
 
-        num_postal_codes = PostalCode.objects.count()
-        if num_postal_codes == 0:
+        query_statistics = [0 for i in range(8)]
+        num_existing_postal_codes = PostalCode.objects.count()
+        if num_existing_postal_codes == 0:
             self.logger.debug("Zero postal codes found - using only-create "
                               "postal code optimization")
         for item in tqdm(data, total=total, desc="Importing postal codes"):
@@ -834,7 +836,7 @@ class Command(BaseCommand):
             if len(item['placeName']) >= 200:
                 self.logger.warning("Postal code name has more than 200 characters: {}".format(item))
 
-            if num_postal_codes > 0:
+            if num_existing_postal_codes > 0:
                 postal_code_args = (
                     {
                         'args': (reg_name_q, subreg_name_q, dst_name_q),
@@ -1014,6 +1016,17 @@ class Command(BaseCommand):
                 continue
 
             self.logger.debug("Added postal code: %s, %s", pc.country, pc)
+
+        if num_existing_postal_codes > 0 and max(query_statistics) > 0:
+            width = int(math.log10(max(query_statistics)))
+
+            stats_str = ""
+            for i, count in enumerate(query_statistics):
+                stats_str = "{{}}\n{{:>2}} [{{:>{}}}]: {{}}".format(width)\
+                    .format(stats_str, i, count,
+                            ''.join(['=' for i in range(count)]))
+
+                self.logger.info("Postal code query statistics:\n{}".format(stats_str))
 
         if districts_to_delete:
             self.logger.debug('districts to delete:\n{}'.format(districts_to_delete))
