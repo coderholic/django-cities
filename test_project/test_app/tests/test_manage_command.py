@@ -16,6 +16,13 @@ class ManageCommandTestCase(TestCase):
         call_command('cities', force=True, **{
             'import': 'country,region,subregion,city,postal_code',
         })
+        cls.counts = {
+            'countries': Country.objects.count(),
+            'regions': Region.objects.count(),
+            'subregions': Subregion.objects.count(),
+            'cities': City.objects.count(),
+            'postal_codes': PostalCode.objects.count(),
+        }
 
     def test_no_invalid_slugs(self):
         self.assertEqual(Country.objects.filter(slug__startswith='invalid').count(), 0)
@@ -40,3 +47,13 @@ class ManageCommandTestCase(TestCase):
         self.assertEqual(PostalCode.objects.get(country__code='RU', code='102104').code, '102104')
         self.assertTrue(len(PostalCode.objects.get(country__code='RU', code='102104').slug) <= 255)
         self.assertEqual(PostalCode.objects.get(country__code='RU', code='102104').slug, unicode_func('1-102104'))
+
+    def test_idempotence(self):
+        call_command('cities', force=True, **{
+            'import': 'country,region,subregion,city,postal_code',
+        })
+        self.assertEqual(Country.objects.count(), self.counts['countries'])
+        self.assertEqual(Region.objects.count(), self.counts['regions'])
+        self.assertEqual(Subregion.objects.count(), self.counts['subregions'])
+        self.assertEqual(City.objects.count(), self.counts['cities'])
+        self.assertEqual(PostalCode.objects.count(), self.counts['postal_codes'])
