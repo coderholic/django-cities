@@ -781,6 +781,10 @@ class Command(BaseCommand):
 
         districts_to_delete = []
 
+        num_postal_codes = PostalCode.objects.count()
+        if num_postal_codes == 0:
+            self.logger.debug("Zero postal codes found - using only-create "
+                              "postal code optimization")
         for item in tqdm(data, total=total, desc="Importing postal codes"):
             if not self.call_hook('postal_code_pre', item):
                 continue
@@ -830,84 +834,94 @@ class Command(BaseCommand):
             if len(item['placeName']) >= 200:
                 self.logger.warning("Postal code name has more than 200 characters: {}".format(item))
 
-            postal_code_args = (
-                {
-                    'args': (reg_name_q, subreg_name_q, dst_name_q),
-                    'country': country,
-                    'code': code,
-                    'location': location,
-                }, {
-                    'args': (reg_name_q, subreg_name_q, dst_name_q),
-                    'country': country,
-                    'code': code,
-                }, {
-                    'args': (reg_name_q, subreg_name_q, dst_name_q),
-                    'country': country,
-                    'code': code,
-                    'name__iexact': re.sub("'", '', item['placeName']),
-                }, {
-                    'args': tuple(),
-                    'country': country,
-                    'region__code': item['admin1Code'],
-                }, {
-                    'args': tuple(),
-                    'country': country,
-                    'code': code,
-                    'name': item['placeName'],
-                    'region__code': item['admin1Code'],
-                    'subregion__code': item['admin2Code'],
-                }, {
-                    'args': tuple(),
-                    'country': country,
-                    'code': code,
-                    'name': item['placeName'],
-                    'region__code': item['admin1Code'],
-                    'subregion__code': item['admin2Code'],
-                    'district__code': item['admin3Code'],
-                }, {
-                    'args': tuple(),
-                    'country': country,
-                    'code': code,
-                    'name': item['placeName'],
-                    'region_name': item['admin1Name'],
-                    'subregion_name': item['admin2Name'],
-                }, {
-                    'args': tuple(),
-                    'country': country,
-                    'code': code,
-                    'name': item['placeName'],
-                    'region_name': item['admin1Name'],
-                    'subregion_name': item['admin2Name'],
-                    'district_name': item['admin3Name'],
-                }
-            )
+            if num_postal_codes > 0:
+                postal_code_args = (
+                    {
+                        'args': (reg_name_q, subreg_name_q, dst_name_q),
+                        'country': country,
+                        'code': code,
+                        'location': location,
+                    }, {
+                        'args': (reg_name_q, subreg_name_q, dst_name_q),
+                        'country': country,
+                        'code': code,
+                    }, {
+                        'args': (reg_name_q, subreg_name_q, dst_name_q),
+                        'country': country,
+                        'code': code,
+                        'name__iexact': re.sub("'", '', item['placeName']),
+                    }, {
+                        'args': tuple(),
+                        'country': country,
+                        'region__code': item['admin1Code'],
+                    }, {
+                        'args': tuple(),
+                        'country': country,
+                        'code': code,
+                        'name': item['placeName'],
+                        'region__code': item['admin1Code'],
+                        'subregion__code': item['admin2Code'],
+                    }, {
+                        'args': tuple(),
+                        'country': country,
+                        'code': code,
+                        'name': item['placeName'],
+                        'region__code': item['admin1Code'],
+                        'subregion__code': item['admin2Code'],
+                        'district__code': item['admin3Code'],
+                    }, {
+                        'args': tuple(),
+                        'country': country,
+                        'code': code,
+                        'name': item['placeName'],
+                        'region_name': item['admin1Name'],
+                        'subregion_name': item['admin2Name'],
+                    }, {
+                        'args': tuple(),
+                        'country': country,
+                        'code': code,
+                        'name': item['placeName'],
+                        'region_name': item['admin1Name'],
+                        'subregion_name': item['admin2Name'],
+                        'district_name': item['admin3Name'],
+                    }
+                )
 
-            # We do this so we don't have to deal with exceptions being thrown
-            # in the middle of transactions
-            for args_dict in postal_code_args:
-                num_pcs = PostalCode.objects.filter(
-                    *args_dict['args'],
-                    **{k: v for k, v in args_dict.items() if k != 'args'})\
-                    .count()
-                if num_pcs == 1:
-                    pc = PostalCode.objects.get(
+                # We do this so we don't have to deal with exceptions being thrown
+                # in the middle of transactions
+                for args_dict in postal_code_args:
+                    num_pcs = PostalCode.objects.filter(
                         *args_dict['args'],
-                        **{k: v for k, v in args_dict.items() if k != 'args'})
-                    break
-                elif num_pcs > 1:
-                    pcs = PostalCode.objects.filter(
-                        *args_dict['args'],
-                        **{k: v for k, v in args_dict.items() if k != 'args'})
-                    self.logger.debug("item: {}\nresults: {}".format(item, pcs))
+                        **{k: v for k, v in args_dict.items() if k != 'args'})\
+                        .count()
+                    if num_pcs == 1:
+                        pc = PostalCode.objects.get(
+                            *args_dict['args'],
+                            **{k: v for k, v in args_dict.items() if k != 'args'})
+                        break
+                    elif num_pcs > 1:
+                        pcs = PostalCode.objects.filter(
+                            *args_dict['args'],
+                            **{k: v for k, v in args_dict.items() if k != 'args'})
+                        self.logger.debug("item: {}\nresults: {}".format(item, pcs))
+                else:
+                    self.logger.debug("Creating postal code: {}".format(item))
+                    pc = PostalCode(
+                        country=country,
+                        code=code,
+                        name=item['placeName'],
+                        region_name=item['admin1Name'],
+                        subregion_name=item['admin2Name'],
+                        district_name=item['admin3Name'])
             else:
                 self.logger.debug("Creating postal code: {}".format(item))
-                pc = PostalCode()
-                pc.country = country
-                pc.code = code
-                pc.name = item['placeName']
-                pc.region_name = item['admin1Name']
-                pc.subregion_name = item['admin2Name']
-                pc.district_name = item['admin3Name']
+                pc = PostalCode(
+                    country=country,
+                    code=code,
+                    name=item['placeName'],
+                    region_name=item['admin1Name'],
+                    subregion_name=item['admin2Name'],
+                    district_name=item['admin3Name'])
 
             if pc.region_name != '':
                 try:
