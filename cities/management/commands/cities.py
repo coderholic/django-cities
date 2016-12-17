@@ -719,14 +719,7 @@ class Command(BaseCommand):
                                         and item['isHistoric'] != '\n')
                                        or locale == 'fr_1793') else False
 
-            if hasattr(alt, 'type'):
-                if locale in ('link', 'abbr'):
-                    alt.kind = locale
-                elif INCLUDE_AIRPORT_CODES and locale in ('iana', 'icao', 'faac'):
-                    alt.kind = locale
-                else:
-                    alt.kind = 'name'
-            elif locale == 'post':
+            if locale == 'post':
                 try:
                     if geo_index[item['geonameid']]['type'] == Region:
                         region = geo_index[item['geonameid']]['object']
@@ -756,6 +749,14 @@ class Command(BaseCommand):
                     pass
 
                 continue
+
+            if hasattr(alt, 'kind'):
+                if (locale in ('abbr', 'link', 'name') or
+                   INCLUDE_AIRPORT_CODES and locale in ('iana', 'icao', 'faac')):
+                    alt.kind = locale
+                else:
+                    self.logger.debug("Unknown alternative name type: {} -- skipping".format(locale))
+                    continue
 
             alt.save()
             geo_info['object'].alt_names.add(alt)
