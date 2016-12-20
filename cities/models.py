@@ -29,7 +29,7 @@ slugify_func = SLUGIFY_FUNCTION
 
 
 class SlugModel(models.Model):
-    slug = models.CharField(max_length=255, unique=True)
+    slug = models.CharField(max_length=255)
 
     class Meta:
         abstract = True
@@ -174,7 +174,7 @@ class Subregion(Place, SlugModel):
     region = models.ForeignKey(Region, related_name='subregions')
 
     class Meta:
-        unique_together = (('region', 'name'),)
+        unique_together = (('region', 'id', 'name'),)
 
     @property
     def parent(self):
@@ -205,7 +205,7 @@ class BaseCity(Place, SlugModel):
 
     class Meta:
         abstract = True
-        unique_together = (('country', 'region', 'subregion', 'name'),)
+        unique_together = (('country', 'region', 'subregion', 'id', 'name'),)
         verbose_name_plural = "cities"
 
     @property
