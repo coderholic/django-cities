@@ -167,6 +167,8 @@ class Region(Place, SlugModel):
 
 
 class Subregion(Place, SlugModel):
+    slug_contains_id = True
+
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
     region = models.ForeignKey(Region, related_name='subregions')
@@ -182,9 +184,9 @@ class Subregion(Place, SlugModel):
         return ".".join([self.parent.parent.code, self.parent.code, self.code])
 
     def slugify(self):
-        return unicode_func('{}_({})').format(
-            unicode_func(self.name),
-            unicode_func(self.full_code()))
+        return unicode_func('{}-{}').format(
+            unicode_func(self.id),
+            unicode_func(self.name))
 
 
 class BaseCity(Place, SlugModel):
