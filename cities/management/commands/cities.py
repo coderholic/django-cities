@@ -490,7 +490,7 @@ class Command(BaseCommand):
                 defaults['region'] = region
             except:
                 if IGNORE_EMPTY_REGIONS:
-                    city.region = None
+                    defaults['region'] = None
                 else:
                     self.logger.info("%s: %s: Cannot find region: %s -- skipping",
                                      country_code, item['name'], region_code)
@@ -518,7 +518,7 @@ class Command(BaseCommand):
                         if subregion_code:
                             self.logger.info("%s: %s: Cannot find subregion: %s",
                                              country_code, item['name'], subregion_code)
-                        pass
+                        defaults['subregion'] = None
 
             city, created = City.objects.update_or_create(id=city_id, defaults=defaults)
 
