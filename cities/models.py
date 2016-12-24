@@ -295,8 +295,8 @@ class PostalCode(Place, SlugModel):
 
     class Meta:
         unique_together = (
-            ('country', 'region', 'subregion', 'city', 'district', 'name'),
-            ('country', 'region_name', 'subregion_name', 'district_name', 'name'),
+            ('country', 'region', 'subregion', 'city', 'district', 'name', 'id', 'code'),
+            ('country', 'region_name', 'subregion_name', 'district_name', 'name', 'id', 'code'),
         )
 
     @property

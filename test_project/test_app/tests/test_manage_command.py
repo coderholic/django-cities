@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import re
+import sys
+from unittest import skipIf
+
 from django.test import TestCase, override_settings
 from django.core.management import call_command
 
@@ -62,9 +66,22 @@ class ManageCommandTestCase(IgnoreEmptyRegionManageCommandTestCase):
         }
 
     def test_postal_code_slugs(self):
-        self.assertEqual(PostalCode.objects.get(country__code='RU', code='102104').code, '102104')
-        self.assertTrue(len(PostalCode.objects.get(country__code='RU', code='102104').slug) <= 255)
-        self.assertEqual(PostalCode.objects.get(country__code='RU', code='102104').slug, unicode_func('1-102104'))
+        pc = PostalCode.objects.get(country__code='RU', code='102104')
+        self.assertEqual(pc.code, '102104')
+        self.assertTrue(len(pc.slug) <= 255)
+
+        slug_rgx = re.compile(r'\d+-102104', re.UNICODE)
+
+        slug = PostalCode.objects.get(country__code='RU', code='102104').slug
+
+        # The unittest module in Python 2 does not have an assertRegex
+        if hasattr(self, 'assertRegex'):
+            self.assertRegex(slug, slug_rgx)
+        else:
+            m = slug_rgx.match(slug)
+
+            self.assertIsNotNone(m)
+            self.assertEqual(m.group(0)[-7:], '-102104')
 
     def test_idempotence(self):
         call_command('cities', force=True, **{

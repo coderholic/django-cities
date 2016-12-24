@@ -36,7 +36,10 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='postalcode',
-            unique_together=set([('country', 'region_name', 'subregion_name', 'district_name', 'name'), ('country', 'region', 'subregion', 'city', 'district', 'name')]),
+            unique_together=set([
+                ('country', 'region_name', 'subregion_name', 'district_name', 'name', 'id', 'code'),
+                ('country', 'region', 'subregion', 'city', 'district', 'name', 'id', 'code'),
+            ]),
         ),
         migrations.AlterUniqueTogether(
             name='region',
