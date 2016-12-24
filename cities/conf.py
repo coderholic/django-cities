@@ -9,10 +9,10 @@ from django.utils.translation import ugettext_lazy as _
 __all__ = [
     'city_types', 'district_types',
     'import_opts', 'import_opts_all', 'HookException', 'settings',
-    'IGNORE_EMPTY_REGIONS', 'ALTERNATIVE_NAME_TYPES', 'CONTINENT_DATA',
-    'CURRENCY_SYMBOLS', 'INCLUDE_AIRPORT_CODES',
-    'NO_LONGER_EXISTENT_COUNTRY_CODES', 'SLUGIFY_FUNCTION',
-    'VALIDATE_POSTAL_CODES',
+    'ALTERNATIVE_NAME_TYPES', 'CONTINENT_DATA', 'CURRENCY_SYMBOLS',
+    'IGNORE_EMPTY_REGIONS', 'INCLUDE_AIRPORT_CODES',
+    'INCLUDE_NUMERIC_ALTERNATIVE_NAMES', 'NO_LONGER_EXISTENT_COUNTRY_CODES',
+    'SLUGIFY_FUNCTION', 'VALIDATE_POSTAL_CODES',
 ]
 
 url_bases = {
@@ -98,7 +98,8 @@ files = {
         'urls': [url_bases['geonames']['dump'] + '{filename}', ],
         'fields': [
             'parent',
-            'child'
+            'child',
+            'type',
         ]
     },
     'alt_name': {
@@ -341,6 +342,8 @@ if INCLUDE_AIRPORT_CODES:
 
 # A `Choices` object (from `django-model-utils`)
 ALTERNATIVE_NAME_TYPES = getattr(django_settings, 'CITIES_ALTERNATIVE_NAME_TYPES', _ALTERNATIVE_NAME_TYPES)
+
+INCLUDE_NUMERIC_ALTERNATIVE_NAMES = getattr(django_settings, 'CITIES_INCLUDE_NUMERIC_ALTERNATIVE_NAMES', True)
 
 # Allow users to override specified contents
 CONTINENT_DATA.update(getattr(django_settings, 'CITIES_CONTINENT_DATA', {}))

@@ -50,6 +50,7 @@ from django.db.models import CharField, ForeignKey
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
                      HookException, settings, CURRENCY_SYMBOLS,
                      IGNORE_EMPTY_REGIONS, INCLUDE_AIRPORT_CODES,
+                     INCLUDE_NUMERIC_ALTERNATIVE_NAMES,
                      NO_LONGER_EXISTENT_COUNTRY_CODES, VALIDATE_POSTAL_CODES)
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
@@ -706,12 +707,13 @@ class Command(BaseCommand):
             except:
                 pass
             else:
-                self.logger.warning(
-                    "Trying to add a numeric alternative name to {} ({}): {}".format(
-                        geo_info['object'].name,
-                        geo_info['type'].__name__,
-                        item['name']),
-                    file=sys.stderr)
+                if not INCLUDE_NUMERIC_ALTERNATIVE_NAMES:
+                    self.logger.debug(
+                        "Trying to add a numeric alternative name to {} ({}): {} -- skipping".format(
+                            geo_info['object'].name,
+                            geo_info['type'].__name__,
+                            item['name']))
+                    continue
             alt.is_historic = True if ((item['isHistoric']and
                                         item['isHistoric'] != '\n') or
                                        locale == 'fr_1793') else False
