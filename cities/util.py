@@ -3,21 +3,23 @@ import six
 import sys
 import unicodedata
 from math import radians, sin, cos, acos
-from django import VERSION
-from django.contrib.gis.geos import Point
+from django import VERSION as DJANGO_VERSION
 try:
     from django.utils.encoding import force_unicode as force_text
 except (NameError, ImportError):
     from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe, SafeText
 
-earth_radius_km = 6371.009
-
 
 if sys.version_info < (3, 0):
-    unicode_func = unicode
+    unicode_func = unicode  # noqa: F821
 else:
     unicode_func = str
+
+
+# GEO DISTANCE
+
+earth_radius_km = 6371.009
 
 
 def geo_distance(a, b):
@@ -30,13 +32,15 @@ def geo_distance(a, b):
     return acos(cos_x) * earth_radius_km
 
 
-to_und_rgx = re.compile(r"[']",  re.UNICODE)
+# SLUGIFY REGEXES
+
+to_und_rgx = re.compile(r"[']", re.UNICODE)
 slugify_rgx = re.compile(r'[^-\w._~]', re.UNICODE)
-multi_dash_rgx = re.compile(r'-{2,}',  re.UNICODE)
-dash_und_rgx = re.compile(r'[-_]_',  re.UNICODE)
-und_dash_rgx = re.compile(r'[-_]-',  re.UNICODE)
-starting_chars_rgx = re.compile(r'^[-._]*',  re.UNICODE)
-ending_chars_rgx = re.compile(r'[-._]*$',  re.UNICODE)
+multi_dash_rgx = re.compile(r'-{2,}', re.UNICODE)
+dash_und_rgx = re.compile(r'[-_]_', re.UNICODE)
+und_dash_rgx = re.compile(r'[-_]-', re.UNICODE)
+starting_chars_rgx = re.compile(r'^[-._]*', re.UNICODE)
+ending_chars_rgx = re.compile(r'[-._]*$', re.UNICODE)
 
 
 def default_slugify(obj, value):
@@ -54,9 +58,23 @@ def default_slugify(obj, value):
     value = re.sub(ending_chars_rgx, '', value)
     return mark_safe(value)
 
-if VERSION < (1, 10):
+
+if DJANGO_VERSION < (1, 10):
     from django.utils.functional import allow_lazy
     default_slugify = allow_lazy(default_slugify, six.text_type, SafeText)
 else:
     from django.utils.functional import keep_lazy
     default_slugify = keep_lazy(six.text_type, SafeText)(default_slugify)
+
+
+# DJANGO BACKWARDS-COMPATIBLE PATTERNS
+
+def patterns(prefix, *args):
+    if DJANGO_VERSION < (1, 9):
+        from django.conf.urls import patterns as django_patterns
+        return django_patterns(prefix, *args)
+    elif prefix != '':
+        raise Exception("You need to update your URLConf to be a list of URL "
+                        "objects")
+    else:
+        return list(args)

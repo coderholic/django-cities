@@ -23,7 +23,6 @@ import math
 import os
 import re
 import sys
-import time
 import zipfile
 
 try:
@@ -47,21 +46,18 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models import Q
 from django.db.models import CharField, ForeignKey
-from django.db.utils import IntegrityError
-from django.forms.models import model_to_dict
 
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
-                     HookException, settings, ALTERNATIVE_NAME_TYPES,
-                     CONTINENT_DATA, CURRENCY_SYMBOLS, IGNORE_EMPTY_REGIONS,
-                     INCLUDE_AIRPORT_CODES, NO_LONGER_EXISTENT_COUNTRY_CODES,
-                     VALIDATE_POSTAL_CODES)
+                     HookException, settings, CURRENCY_SYMBOLS,
+                     IGNORE_EMPTY_REGIONS, INCLUDE_AIRPORT_CODES,
+                     NO_LONGER_EXISTENT_COUNTRY_CODES, VALIDATE_POSTAL_CODES)
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
 
 # Interpret all files as utf-8
 if sys.version_info < (3,):
-    reload(sys)
+    reload(sys)  # noqa: F821
     sys.setdefaultencoding('utf-8')
 
 # Load swappable models
@@ -172,6 +168,7 @@ class Command(BaseCommand):
             filename = settings.files[filekey]['filename']
         else:
             filename = settings.files[filekey]['filenames'][key_index]
+
         web_file = None
         urls = [e.format(filename=filename) for e in settings.files[filekey]['urls']]
         for url in urls:
@@ -194,7 +191,7 @@ class Command(BaseCommand):
             file = io.open(os.path.join(self.data_dir, filename), 'wb')
             file.write(web_file.read())
             file.close()
-        elif not os.path.exists(filepath):
+        elif not os.path.exists(os.path.join(self.data_dir, filename)):
             raise Exception("File not found and download failed: {} [{}]".format(filename, url))
 
     def get_data(self, filekey):
@@ -345,9 +342,9 @@ class Command(BaseCommand):
             try:
                 defaults['country'] = self.country_index[country_code]
             except KeyError:
-                countries_not_found.setdefault(country_code, []).append(region.name)
+                countries_not_found.setdefault(country_code, []).append(defaults['name'])
                 self.logger.warning("Region: %s: Cannot find country: %s -- skipping",
-                                    region.name, country_code)
+                                    defaults['name'], country_code)
                 continue
 
             region, created = Region.objects.update_or_create(id=region_id, defaults=defaults)
@@ -412,9 +409,9 @@ class Command(BaseCommand):
                 defaults['region'] = self.region_index[country_code + "." + region_code]
             except:
                 regions_not_found.setdefault(country_code, {})
-                regions_not_found[country_code].setdefault(region_code, []).append(subregion.name)
+                regions_not_found[country_code].setdefault(region_code, []).append(defaults['name'])
                 self.logger.info("Subregion: %s: Cannot find [%s] region: %s",
-                                 subregion.name, country_code, region_code)
+                                 defaults['name'], country_code, region_code)
                 continue
 
             subregion, created = Subregion.objects.update_or_create(id=subregion_id, defaults=defaults)
@@ -715,9 +712,9 @@ class Command(BaseCommand):
                         geo_info['type'].__name__,
                         item['name']),
                     file=sys.stderr)
-            alt.is_historic = True if ((item['isHistoric']
-                                        and item['isHistoric'] != '\n')
-                                       or locale == 'fr_1793') else False
+            alt.is_historic = True if ((item['isHistoric']and
+                                        item['isHistoric'] != '\n') or
+                                       locale == 'fr_1793') else False
 
             if locale == 'post':
                 try:
@@ -738,6 +735,7 @@ class Command(BaseCommand):
                             region_name=subregion.region.name,
                             subregion_name=subregion.name)
                     elif geo_index[item['geonameid']]['type'] == City:
+                        city = geo_index[item['geonameid']]['object']
                         PostalCode.objects.get_or_create(
                             code=item['name'],
                             country=city.country,
@@ -921,6 +919,10 @@ class Command(BaseCommand):
                             *args_dict['args'],
                             **{k: v for k, v in args_dict.items() if k != 'args'})
                         self.logger.debug("item: {}\nresults: {}".format(item, pcs))
+                        # Raise a MultipleObjectsReturned exception
+                        PostalCode.objects.get(
+                            *args_dict['args'],
+                            **{k: v for k, v in args_dict.items() if k != 'args'})
                 else:
                     self.logger.debug("Creating postal code: {}".format(item))
                     pc = PostalCode(
@@ -944,8 +946,8 @@ class Command(BaseCommand):
                 try:
                     with transaction.atomic():
                         pc.region = Region.objects.get(
-                            Q(name_std__iexact=pc.region_name)
-                            | Q(name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.region_name) |
+                            Q(name__iexact=pc.region_name),
                             country=pc.country)
                 except Region.DoesNotExist:
                     pc.region = None
@@ -956,10 +958,10 @@ class Command(BaseCommand):
                 try:
                     with transaction.atomic():
                         pc.subregion = Subregion.objects.get(
-                            Q(region__name_std__iexact=pc.region_name)
-                            | Q(region__name__iexact=pc.region_name),
-                            Q(name_std__iexact=pc.subregion_name)
-                            | Q(name__iexact=pc.subregion_name),
+                            Q(region__name_std__iexact=pc.region_name) |
+                            Q(region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.subregion_name) |
+                            Q(name__iexact=pc.subregion_name),
                             region__country=pc.country)
                 except Subregion.DoesNotExist:
                     pc.subregion = None
@@ -970,40 +972,40 @@ class Command(BaseCommand):
                 try:
                     with transaction.atomic():
                         pc.district = District.objects.get(
-                            Q(city__region__name_std__iexact=pc.region_name)
-                            | Q(city__region__name__iexact=pc.region_name),
-                            Q(name_std__iexact=pc.district_name)
-                            | Q(name__iexact=pc.district_name),
+                            Q(city__region__name_std__iexact=pc.region_name) |
+                            Q(city__region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.district_name) |
+                            Q(name__iexact=pc.district_name),
                             city__country=pc.country)
                 except District.MultipleObjectsReturned as e:
                     self.logger.debug("item: {}\ndistricts: {}".format(
                         item,
                         District.objects.filter(
-                            Q(city__region__name_std__iexact=pc.region_name)
-                            | Q(city__region__name__iexact=pc.region_name),
-                            Q(name_std__iexact=pc.district_name)
-                            | Q(name__iexact=pc.district_name),
+                            Q(city__region__name_std__iexact=pc.region_name) |
+                            Q(city__region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.district_name) |
+                            Q(name__iexact=pc.district_name),
                             city__country=pc.country).values_list('id', flat=True)))
                     # If they're both part of the same city
-                    if District.objects.filter(Q(city__region__name_std__iexact=pc.region_name)
-                                               | Q(city__region__name__iexact=pc.region_name),
-                                               Q(name_std__iexact=pc.district_name)
-                                               | Q(name__iexact=pc.district_name),
+                    if District.objects.filter(Q(city__region__name_std__iexact=pc.region_name) |
+                                               Q(city__region__name__iexact=pc.region_name),
+                                               Q(name_std__iexact=pc.district_name) |
+                                               Q(name__iexact=pc.district_name),
                                                city__country=pc.country)\
                                .values_list('city').distinct().count() == 1:
                         # Use the one with the lower ID
                         pc.district = District.objects.filter(
-                            Q(city__region__name_std__iexact=pc.region_name)
-                            | Q(city__region__name__iexact=pc.region_name),
-                            Q(name_std__iexact=pc.district_name)
-                            | Q(name__iexact=pc.district_name),
+                            Q(city__region__name_std__iexact=pc.region_name) |
+                            Q(city__region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.district_name) |
+                            Q(name__iexact=pc.district_name),
                             city__country=pc.country).order_by('city__id').first()
 
                         districts_to_delete.append(District.objects.filter(
-                            Q(city__region__name_std__iexact=pc.region_name)
-                            | Q(city__region__name__iexact=pc.region_name),
-                            Q(name_std__iexact=pc.district_name)
-                            | Q(name__iexact=pc.district_name),
+                            Q(city__region__name_std__iexact=pc.region_name) |
+                            Q(city__region__name__iexact=pc.region_name),
+                            Q(name_std__iexact=pc.district_name) |
+                            Q(name__iexact=pc.district_name),
                             city__country=pc.country).order_by('city__id').last().id)
                     else:
                         raise e

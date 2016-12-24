@@ -1,4 +1,3 @@
-import uuid
 from random import choice
 from string import ascii_uppercase, digits
 
@@ -15,7 +14,7 @@ from django.contrib.gis.geos import Point
 from model_utils import Choices
 import swapper
 
-from .conf import (settings, ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION)
+from .conf import (ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION)
 from .managers import AlternativeNameManager
 from .util import unicode_func
 
@@ -45,7 +44,7 @@ class SlugModel(models.Model):
             with transaction.atomic():
                 # We first give a randomized slug with a prefix just in case
                 # users need to find invalid slugs
-                self.slug = 'invalid-{}'.format(''.join(choice(ascii_uppercase+digits) for i in range(20)))
+                self.slug = 'invalid-{}'.format(''.join(choice(ascii_uppercase + digits) for i in range(20)))
                 super(SlugModel, self).save(*args, **kwargs)
                 self.slug = slugify_func(self, self.slugify())
                 super(SlugModel, self).save(*args, **kwargs)

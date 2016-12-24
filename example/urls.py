@@ -1,9 +1,19 @@
 from django import VERSION as DJANGO_VERSION
-from django.conf.urls.defaults import *
-from django.conf.urls import patterns
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import ListView
-from cities.models import Country, Region, City, District, PostalCode
+from cities.models import (Country, Region, City, District, PostalCode)
+
+
+def patterns(prefix, *args):
+    if DJANGO_VERSION < (1, 9):
+        from django.conf.urls import patterns as django_patterns
+        return django_patterns(prefix, *args)
+    elif prefix != '':
+        raise Exception("You need to update your URLConf to be a list of URL "
+                        "objects")
+    else:
+        return list(args)
 
 
 class PlaceListView(ListView):
@@ -38,15 +48,11 @@ class PlaceListView(ListView):
             context['postal'] = PostalCode.objects.distance(self.place.location).order_by('distance')[:10]
         return context
 
+
 admin.autodiscover()
-if DJANGO_VERSION < (1, 9, 0):
-    urlpatterns = patterns(
-        '',
-        (r'^admin/', include(admin.site.urls)),
-        (r'^(.*)$', PlaceListView.as_view()),
-    )
-else:
-    urlpatterns = [
-        (r'^admin/', include(admin.site.urls)),
-        (r'^(.*)$', PlaceListView.as_view()),
-    ]
+
+urlpatterns = patterns(
+    '',
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^(.*)$', PlaceListView.as_view()),
+)

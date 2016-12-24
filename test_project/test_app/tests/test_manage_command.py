@@ -2,14 +2,11 @@
 from __future__ import unicode_literals
 
 import re
-import sys
-from unittest import skipIf
 
 from django.test import TestCase, override_settings
 from django.core.management import call_command
 
 from cities.models import Country, Region, Subregion, City, PostalCode
-from cities.util import unicode_func
 
 
 @override_settings(CITIES_IGNORE_EMPTY_REGIONS=True)

@@ -12,6 +12,7 @@ def read(fname):
     """
     return codecs.open(os.path.join(os.path.dirname(__file__), fname), encoding='utf-8').read()
 
+
 setup(
     name='django-cities',
     version='0.4.2',
@@ -30,7 +31,9 @@ setup(
     zip_safe=False,
     long_description=read('README.md'),
     tests_require=[
-        'psycopg2'
+        'flake8',
+        'psycopg2',
+        'tox',
     ],
     license="MIT",
     keywords="django cities countries regions postal codes geonames",

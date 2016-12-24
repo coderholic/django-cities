@@ -262,15 +262,16 @@ import_opts_all = [
 class HookException(Exception):
     pass
 
+
 # Hook functions that a plugin class may define
 plugin_hooks = [
-    'country_pre',     'country_post',
-    'region_pre',      'region_post',
-    'subregion_pre',   'subregion_post',
-    'city_pre',        'city_post',
-    'district_pre',    'district_post',
-    'alt_name_pre',    'alt_name_post',
-    'postal_code_pre', 'postal_code_post',
+    'country_pre',     'country_post',  # noqa: E241
+    'region_pre',      'region_post',  # noqa: E241
+    'subregion_pre',   'subregion_post',  # noqa: E241
+    'city_pre',        'city_post',  # noqa: E241
+    'district_pre',    'district_post',  # noqa: E241
+    'alt_name_pre',    'alt_name_post',  # noqa: E241
+    'postal_code_pre', 'postal_code_post',  # noqa: E241
 ]
 
 
@@ -319,6 +320,7 @@ def create_plugins():
         class_ = getattr(module, classname)
         obj = class_()
         [settings.plugins[hook].append(obj) for hook in plugin_hooks if hasattr(obj, hook)]
+
 
 settings = create_settings()
 if hasattr(django_settings, "CITIES_PLUGINS"):
