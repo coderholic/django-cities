@@ -174,3 +174,5 @@ CITIES_FILES = {
         'urls': [url_base + '{filename}', ],
     }
 }
+
+CITIES_LOCALES = ['en', 'und', 'link']

@@ -6,7 +6,8 @@ import re
 from django.test import TestCase, override_settings
 from django.core.management import call_command
 
-from cities.models import Country, Region, Subregion, City, PostalCode
+from cities.models import (Country, Region, Subregion, City, PostalCode,
+                           AlternativeName)
 
 
 @override_settings(CITIES_IGNORE_EMPTY_REGIONS=True)
@@ -52,13 +53,14 @@ class ManageCommandTestCase(IgnoreEmptyRegionManageCommandTestCase):
         # Run the import command only once
         super(IgnoreEmptyRegionManageCommandTestCase, cls).setUpClass()
         call_command('cities', force=True, **{
-            'import': 'country,region,subregion,city,postal_code',
+            'import': 'country,region,subregion,city,alt_name,postal_code',
         })
         cls.counts = {
             'countries': Country.objects.count(),
             'regions': Region.objects.count(),
             'subregions': Subregion.objects.count(),
             'cities': City.objects.count(),
+            'alt_names': AlternativeName.objects.count(),
             'postal_codes': PostalCode.objects.count(),
         }
 
@@ -82,10 +84,41 @@ class ManageCommandTestCase(IgnoreEmptyRegionManageCommandTestCase):
 
     def test_idempotence(self):
         call_command('cities', force=True, **{
-            'import': 'country,region,subregion,city,postal_code',
+            'import': 'country,region,subregion,city,alt_name,postal_code',
         })
         self.assertEqual(Country.objects.count(), self.counts['countries'])
         self.assertEqual(Region.objects.count(), self.counts['regions'])
         self.assertEqual(Subregion.objects.count(), self.counts['subregions'])
         self.assertEqual(City.objects.count(), self.counts['cities'])
+        self.assertEqual(AlternativeName.objects.count(), self.counts['alt_names'])
         self.assertEqual(PostalCode.objects.count(), self.counts['postal_codes'])
+
+    def test_num_alternative_names(self):
+        self.assertEqual(AlternativeName.objects.count(), 579)
+
+    def test_only_en_and_und_alternative_names(self):
+        self.assertEqual(
+            AlternativeName.objects.count(),
+            AlternativeName.objects.filter(language_code__in=['en', 'und']).count())
+
+
+@override_settings(CITIES_LOCALES=['all'])
+class ManageCommandTestCase(IgnoreEmptyRegionManageCommandTestCase):
+    @classmethod
+    def setUpClass(cls):
+        # Run the import command only once
+        super(IgnoreEmptyRegionManageCommandTestCase, cls).setUpClass()
+        call_command('cities', force=True, **{
+            'import': 'country,region,subregion,city,alt_name,postal_code',
+        })
+        cls.counts = {
+            'countries': Country.objects.count(),
+            'regions': Region.objects.count(),
+            'subregions': Subregion.objects.count(),
+            'cities': City.objects.count(),
+            'alt_names': AlternativeName.objects.count(),
+            'postal_codes': PostalCode.objects.count(),
+        }
+
+    def test_num_alternative_names(self):
+        self.assertEqual(AlternativeName.objects.count(), 93649)

@@ -673,7 +673,10 @@ class Command(BaseCommand):
             if not locale:
                 locale = 'und'
             if locale not in settings.locales and 'all' not in settings.locales:
-                self.logger.info("SKIPPING %s", settings.locales)
+                self.logger.debug(
+                    "Not importing alternative name with language [{}]: {} "
+                    "({}) -- skipping".format(
+                        item['language'], item['name'], item['nameid']))
                 continue
 
             # Check if known geo id
@@ -754,7 +757,7 @@ class Command(BaseCommand):
                 if (locale in ('abbr', 'link', 'name') or
                    INCLUDE_AIRPORT_CODES and locale in ('iana', 'icao', 'faac')):
                     alt.kind = locale
-                else:
+                elif locale not in settings.locales and 'all' not in settings.locales:
                     self.logger.debug("Unknown alternative name type: {} -- skipping".format(locale))
                     continue
 
