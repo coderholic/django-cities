@@ -412,7 +412,7 @@ class Command(BaseCommand):
                 regions_not_found.setdefault(country_code, {})
                 regions_not_found[country_code].setdefault(region_code, []).append(defaults['name'])
                 self.logger.debug("Subregion: %s: Cannot find [%s] region: %s",
-                                 defaults['name'], country_code, region_code)
+                                  defaults['name'], country_code, region_code)
                 continue
 
             subregion, created = Subregion.objects.update_or_create(id=subregion_id, defaults=defaults)
@@ -491,7 +491,7 @@ class Command(BaseCommand):
                     defaults['region'] = None
                 else:
                     self.logger.debug("%s: %s: Cannot find region: %s -- skipping",
-                                     country_code, item['name'], region_code)
+                                      country_code, item['name'], region_code)
                     continue
 
             subregion_code = item['admin2Code']
@@ -515,7 +515,7 @@ class Command(BaseCommand):
                     except Subregion.DoesNotExist:
                         if subregion_code:
                             self.logger.debug("%s: %s: Cannot find subregion: %s",
-                                             country_code, item['name'], subregion_code)
+                                              country_code, item['name'], subregion_code)
                         defaults['subregion'] = None
 
             city, created = City.objects.update_or_create(id=city_id, defaults=defaults)

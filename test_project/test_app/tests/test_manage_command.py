@@ -1,15 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-try:
-    from importlib import reload
-except ImportError:
-    try:
-        from imp import reload
-    except ImportError:
-        pass
 import re
-import sys
 
 from django.test import TestCase, override_settings
 from django.core.management import call_command
