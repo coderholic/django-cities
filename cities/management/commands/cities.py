@@ -411,7 +411,7 @@ class Command(BaseCommand):
             except:
                 regions_not_found.setdefault(country_code, {})
                 regions_not_found[country_code].setdefault(region_code, []).append(defaults['name'])
-                self.logger.info("Subregion: %s: Cannot find [%s] region: %s",
+                self.logger.debug("Subregion: %s: Cannot find [%s] region: %s",
                                  defaults['name'], country_code, region_code)
                 continue
 
@@ -490,7 +490,7 @@ class Command(BaseCommand):
                 if IGNORE_EMPTY_REGIONS:
                     defaults['region'] = None
                 else:
-                    self.logger.info("%s: %s: Cannot find region: %s -- skipping",
+                    self.logger.debug("%s: %s: Cannot find region: %s -- skipping",
                                      country_code, item['name'], region_code)
                     continue
 
@@ -514,7 +514,7 @@ class Command(BaseCommand):
                                 region=defaults['region'])
                     except Subregion.DoesNotExist:
                         if subregion_code:
-                            self.logger.info("%s: %s: Cannot find subregion: %s",
+                            self.logger.debug("%s: %s: Cannot find subregion: %s",
                                              country_code, item['name'], subregion_code)
                         defaults['subregion'] = None
 
@@ -586,7 +586,7 @@ class Command(BaseCommand):
             try:
                 city = city_index[self.hierarchy[defaults['geonameid']]]
             except:
-                self.logger.info("District: %s: Cannot find city in hierarchy, using nearest", defaults['name'])
+                self.logger.debug("District: %s: Cannot find city in hierarchy, using nearest", defaults['name'])
                 city_pop_min = 100000
                 # we are going to try to find closet city using native
                 # database .distance(...) query but if that fails then
