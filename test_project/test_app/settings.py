@@ -124,7 +124,7 @@ LOGGING = {
             'propagate': False,
         },
         'cities': {
-            'level': 'INFO',
+            'level': os.environ.get('TRAVIS_LOG_LEVEL', 'INFO'),
             'handlers': ['console'],
             'propagate': False,
         },
