@@ -277,7 +277,23 @@ plugin_hooks = [
 
 
 def create_settings():
-    res = type('', (), {})
+    def get_locales(self):
+        if hasattr(django_settings, "CITIES_LOCALES"):
+            locales = django_settings.CITIES_LOCALES[:]
+        else:
+            locales = ['en', 'und']
+
+        try:
+            locales.remove('LANGUAGES')
+            locales += [e[0] for e in django_settings.LANGUAGES]
+        except:
+            pass
+
+        return set([e.lower() for e in locales])
+
+    res = type('settings', (), {
+        'locales': property(get_locales),
+    })
 
     res.files = files.copy()
     if hasattr(django_settings, "CITIES_FILES"):
@@ -290,27 +306,15 @@ def create_settings():
             if 'filenames' in django_settings.CITIES_FILES[key]:
                 del res.files[key]['filename']
 
-    if hasattr(django_settings, "CITIES_LOCALES"):
-        locales = django_settings.CITIES_LOCALES[:]
-    else:
-        locales = ['en', 'und']
-
     if hasattr(django_settings, "CITIES_DATA_DIR"):
         res.data_dir = django_settings.CITIES_DATA_DIR
-
-    try:
-        locales.remove('LANGUAGES')
-        locales += [e[0] for e in django_settings.LANGUAGES]
-    except:
-        pass
-    res.locales = set([e.lower() for e in locales])
 
     if hasattr(django_settings, "CITIES_POSTAL_CODES"):
         res.postal_codes = set([e.upper() for e in django_settings.CITIES_POSTAL_CODES])
     else:
         res.postal_codes = set(['ALL'])
 
-    return res
+    return res()
 
 
 def create_plugins():
