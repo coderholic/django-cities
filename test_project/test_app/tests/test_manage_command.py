@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 
 import re
+from unittest import skipIf
 
+from django import VERSION as django_version
 from django.test import TestCase, override_settings
 from django.core.management import call_command
 
@@ -164,6 +166,8 @@ class ManageCommandTestCase(
         self.assertEqual(PostalCode.objects.count(), self.counts['postal_codes'])
 
 
+# This was tested manually
+@skipIf(django_version < (1, 8), "Django < 1.8, skipping test with CITIES_LOCALES=['all']")
 @override_settings(CITIES_LOCALES=['all'])
 class AllLocalesManageCommandTestCase(
         NoInvalidSlugsTestCaseMixin, CountriesTestCaseMixin,
