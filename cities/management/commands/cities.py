@@ -674,7 +674,7 @@ class Command(BaseCommand):
                 locale = 'und'
             if locale not in settings.locales and 'all' not in settings.locales:
                 self.logger.debug(
-                    "Not importing alternative name with language [{}]: {} "
+                    "Alternative name with language [{}]: {} "
                     "({}) -- skipping".format(
                         item['language'], item['name'], item['nameid']))
                 continue
