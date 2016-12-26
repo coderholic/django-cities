@@ -228,7 +228,7 @@ class Command(BaseCommand):
         self.download('country')
         data = self.get_data('country')
 
-        total = sum(1 for _ in data)
+        total = sum(1 for _ in data) - len(NO_LONGER_EXISTENT_COUNTRY_CODES)
 
         data = self.get_data('country')
 
