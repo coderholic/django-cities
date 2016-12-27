@@ -2,6 +2,8 @@
 
 ## Place models and worldwide place data for Django
 
+[![PyPI version](https://badge.fury.io/py/django-cities.svg)](https://badge.fury.io/py/django-cities) [![Build status](https://travis-ci.org/coderholic/django-cities.svg?branch=master)](https://travis-ci.org/coderholic/django-cities.svg?branch=master)
+
 ----
 
 django-cities provides you with place related models (eg. Country, Region, City) and data (from [GeoNames](http://www.geonames.org/)) that can be used in your django projects.
