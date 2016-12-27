@@ -9,10 +9,10 @@ from django.utils.translation import ugettext_lazy as _
 __all__ = [
     'city_types', 'district_types',
     'import_opts', 'import_opts_all', 'HookException', 'settings',
-    'IGNORE_EMPTY_REGIONS', 'ALTERNATIVE_NAME_TYPES', 'CONTINENT_DATA',
-    'CURRENCY_SYMBOLS', 'INCLUDE_AIRPORT_CODES',
-    'NO_LONGER_EXISTENT_COUNTRY_CODES', 'SLUGIFY_FUNCTION',
-    'VALIDATE_POSTAL_CODES',
+    'ALTERNATIVE_NAME_TYPES', 'CONTINENT_DATA', 'CURRENCY_SYMBOLS',
+    'IGNORE_EMPTY_REGIONS', 'INCLUDE_AIRPORT_CODES',
+    'INCLUDE_NUMERIC_ALTERNATIVE_NAMES', 'NO_LONGER_EXISTENT_COUNTRY_CODES',
+    'SLUGIFY_FUNCTION', 'VALIDATE_POSTAL_CODES',
 ]
 
 url_bases = {
@@ -98,7 +98,8 @@ files = {
         'urls': [url_bases['geonames']['dump'] + '{filename}', ],
         'fields': [
             'parent',
-            'child'
+            'child',
+            'type',
         ]
     },
     'alt_name': {
@@ -262,20 +263,37 @@ import_opts_all = [
 class HookException(Exception):
     pass
 
+
 # Hook functions that a plugin class may define
 plugin_hooks = [
-    'country_pre',     'country_post',
-    'region_pre',      'region_post',
-    'subregion_pre',   'subregion_post',
-    'city_pre',        'city_post',
-    'district_pre',    'district_post',
-    'alt_name_pre',    'alt_name_post',
-    'postal_code_pre', 'postal_code_post',
+    'country_pre',     'country_post',  # noqa: E241
+    'region_pre',      'region_post',  # noqa: E241
+    'subregion_pre',   'subregion_post',  # noqa: E241
+    'city_pre',        'city_post',  # noqa: E241
+    'district_pre',    'district_post',  # noqa: E241
+    'alt_name_pre',    'alt_name_post',  # noqa: E241
+    'postal_code_pre', 'postal_code_post',  # noqa: E241
 ]
 
 
 def create_settings():
-    res = type('', (), {})
+    def get_locales(self):
+        if hasattr(django_settings, "CITIES_LOCALES"):
+            locales = django_settings.CITIES_LOCALES[:]
+        else:
+            locales = ['en', 'und']
+
+        try:
+            locales.remove('LANGUAGES')
+            locales += [e[0] for e in django_settings.LANGUAGES]
+        except:
+            pass
+
+        return set([e.lower() for e in locales])
+
+    res = type('settings', (), {
+        'locales': property(get_locales),
+    })
 
     res.files = files.copy()
     if hasattr(django_settings, "CITIES_FILES"):
@@ -288,27 +306,15 @@ def create_settings():
             if 'filenames' in django_settings.CITIES_FILES[key]:
                 del res.files[key]['filename']
 
-    if hasattr(django_settings, "CITIES_LOCALES"):
-        locales = django_settings.CITIES_LOCALES[:]
-    else:
-        locales = ['en', 'und']
-
     if hasattr(django_settings, "CITIES_DATA_DIR"):
         res.data_dir = django_settings.CITIES_DATA_DIR
-
-    try:
-        locales.remove('LANGUAGES')
-        locales += [e[0] for e in django_settings.LANGUAGES]
-    except:
-        pass
-    res.locales = set([e.lower() for e in locales])
 
     if hasattr(django_settings, "CITIES_POSTAL_CODES"):
         res.postal_codes = set([e.upper() for e in django_settings.CITIES_POSTAL_CODES])
     else:
         res.postal_codes = set(['ALL'])
 
-    return res
+    return res()
 
 
 def create_plugins():
@@ -319,6 +325,7 @@ def create_plugins():
         class_ = getattr(module, classname)
         obj = class_()
         [settings.plugins[hook].append(obj) for hook in plugin_hooks if hasattr(obj, hook)]
+
 
 settings = create_settings()
 if hasattr(django_settings, "CITIES_PLUGINS"):
@@ -339,6 +346,8 @@ if INCLUDE_AIRPORT_CODES:
 
 # A `Choices` object (from `django-model-utils`)
 ALTERNATIVE_NAME_TYPES = getattr(django_settings, 'CITIES_ALTERNATIVE_NAME_TYPES', _ALTERNATIVE_NAME_TYPES)
+
+INCLUDE_NUMERIC_ALTERNATIVE_NAMES = getattr(django_settings, 'CITIES_INCLUDE_NUMERIC_ALTERNATIVE_NAMES', True)
 
 # Allow users to override specified contents
 CONTINENT_DATA.update(getattr(django_settings, 'CITIES_CONTINENT_DATA', {}))

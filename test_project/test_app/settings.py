@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'cities',
+    'model_utils',
     'test_app',
 )
 
@@ -84,7 +85,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
@@ -124,16 +124,18 @@ LOGGING = {
             'propagate': False,
         },
         'cities': {
-            'level': 'DEBUG',
+            'level': os.environ.get('TRAVIS_LOG_LEVEL', 'INFO'),
             'handlers': ['console'],
             'propagate': False,
         },
     },
 }
 # Cities config:
-travis_commit = os.environ.get('TRAVIS_COMMIT',)
+travis_commit = os.environ.get('TRAVIS_COMMIT')
 travis_repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'coderholic/django-cities')
-travis_repo_branch = os.environ.get('TRAVIS_REPO_BRANCH', 'master')
+travis_repo_branch = os.environ.get('TRAVIS_PULL_REQUEST_BRANCH', '')
+if travis_repo_branch == '':
+    travis_repo_branch = os.environ.get('TRAVIS_BRANCH', os.environ.get('TRAVIS_REPO_BRANCH', 'master'))
 if travis_commit and travis_repo_slug:
     url_base = 'https://raw.githubusercontent.com/{repo_slug}/{commit_id}/test_project/data/'.format(
         repo_slug=travis_repo_slug, commit_id=travis_commit)
@@ -149,13 +151,14 @@ CITIES_FILES = {
     },
     'region': {
         'filename': 'admin1CodesASCII.txt',
+        'urls': [url_base + '{filename}', ],
     },
     'subregion': {
         'filename': 'admin2Codes.txt',
         'urls': [url_base + '{filename}', ],
     },
     'city': {
-        'filename': 'UA.txt',
+        'filename': 'cities1000.txt',
         'urls': [url_base + '{filename}', ],
     },
     'hierarchy': {
@@ -168,5 +171,8 @@ CITIES_FILES = {
     },
     'postal_code': {
         'filename': 'allCountries.txt',
+        'urls': [url_base + '{filename}', ],
     }
 }
+
+CITIES_LOCALES = ['en', 'und', 'link']

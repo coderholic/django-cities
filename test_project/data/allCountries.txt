@@ -1,0 +1,15 @@
+# These postal codes need different slugs
+ES	04001	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04002	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04003	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04004	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04005	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04006	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04007	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04008	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04009	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04070	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04071	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+ES	04080	Almeria	Andalucia	AN	Almería	AL			36.8381	-2.4597	4
+# This postal code creates a slug that is > 255 characters long
+RU	102104	Москва-Ярославский Вокзал Пждп Цех 3 Уч 3.1	Москва						55.4656	51.2614	1

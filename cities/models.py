@@ -1,11 +1,12 @@
-import sys
-import uuid
+from random import choice
+from string import ascii_uppercase, digits
 
 try:
     from django.utils.encoding import force_unicode as force_text
 except (NameError, ImportError):
     from django.utils.encoding import force_text
 
+from django.db import transaction
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
@@ -13,8 +14,9 @@ from django.contrib.gis.geos import Point
 from model_utils import Choices
 import swapper
 
-from .conf import (settings, ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION)
+from .conf import (ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION)
 from .managers import AlternativeNameManager
+from .util import unicode_func
 
 __all__ = [
     'Point', 'Continent', 'Country', 'Region', 'Subregion', 'City', 'District',
@@ -22,14 +24,11 @@ __all__ = [
 ]
 
 
-if sys.version_info >= (3, 0):
-    unicode = str
-
 slugify_func = SLUGIFY_FUNCTION
 
 
 class SlugModel(models.Model):
-    slug = models.CharField(max_length=255, unique=True)
+    slug = models.CharField(max_length=255)
 
     class Meta:
         abstract = True
@@ -39,7 +38,20 @@ class SlugModel(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify_func(self, self.slugify())
-        super(SlugModel, self).save(*args, **kwargs)
+        # If the slug contains the object's ID and we are creating a new object,
+        # save it twice: once to get an ID, another to set the object's slug
+        if self.slug is None and getattr(self, 'slug_contains_id', False):
+            with transaction.atomic():
+                # We first give a randomized slug with a prefix just in case
+                # users need to find invalid slugs
+                self.slug = 'invalid-{}'.format(''.join(choice(ascii_uppercase + digits) for i in range(20)))
+                super(SlugModel, self).save(*args, **kwargs)
+                self.slug = slugify_func(self, self.slugify())
+                super(SlugModel, self).save(*args, **kwargs)
+        else:
+            # This is a performance optimization - we avoid the transaction if
+            # the self.slug is not None
+            super(SlugModel, self).save(*args, **kwargs)
 
 
 @python_2_unicode_compatible
@@ -81,7 +93,7 @@ class BaseContinent(Place, SlugModel):
         abstract = True
 
     def slugify(self):
-        return slugify_func(self, self.name)
+        return self.name
 
 
 class Continent(BaseContinent):
@@ -90,8 +102,8 @@ class Continent(BaseContinent):
 
 
 class BaseCountry(Place, SlugModel):
-    code = models.CharField(max_length=2, db_index=True)
-    code3 = models.CharField(max_length=3, db_index=True)
+    code = models.CharField(max_length=2, db_index=True, unique=True)
+    code3 = models.CharField(max_length=3, db_index=True, unique=True)
     population = models.IntegerField()
     area = models.IntegerField(null=True)
     currency = models.CharField(max_length=3, null=True)
@@ -123,7 +135,7 @@ class BaseCountry(Place, SlugModel):
         self.tld = self.tld.lower()
 
     def slugify(self):
-        return slugify_func(self, self.name)
+        return self.name
 
 
 class Country(BaseCountry):
@@ -137,23 +149,31 @@ class Region(Place, SlugModel):
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
                                 related_name='regions')
 
+    class Meta:
+        unique_together = (('country', 'name'),)
+
     @property
     def parent(self):
         return self.country
 
     def full_code(self):
-        return unicode(".".join([self.parent.code, self.code]))
+        return unicode_func(".".join([self.parent.code, self.code]))
 
     def slugify(self):
-        return slugify_func(self, '{}_({})'.format(
-            unicode(self.name),
-            unicode(self.full_code())))
+        return '{}_({})'.format(
+            unicode_func(self.name),
+            unicode_func(self.full_code()))
 
 
 class Subregion(Place, SlugModel):
+    slug_contains_id = True
+
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
     region = models.ForeignKey(Region, related_name='subregions')
+
+    class Meta:
+        unique_together = (('region', 'id', 'name'),)
 
     @property
     def parent(self):
@@ -163,23 +183,28 @@ class Subregion(Place, SlugModel):
         return ".".join([self.parent.parent.code, self.parent.code, self.code])
 
     def slugify(self):
-        return slugify_func(self, unicode('{}_({})').format(self.name, self.full_code()))
+        return unicode_func('{}-{}').format(
+            unicode_func(self.id),
+            unicode_func(self.name))
 
 
 class BaseCity(Place, SlugModel):
+    slug_contains_id = True
+
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
-    location = models.PointField()
-    population = models.IntegerField()
-    region = models.ForeignKey(Region, null=True, blank=True, related_name='cities')
-    subregion = models.ForeignKey(Subregion, null=True, blank=True, related_name='cities')
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
                                 related_name='cities')
+    region = models.ForeignKey(Region, null=True, blank=True, related_name='cities')
+    subregion = models.ForeignKey(Subregion, null=True, blank=True, related_name='cities')
+    location = models.PointField()
+    population = models.IntegerField()
     elevation = models.IntegerField(null=True)
     kind = models.CharField(max_length=10)  # http://www.geonames.org/export/codes.html
     timezone = models.CharField(max_length=40)
 
     class Meta:
         abstract = True
+        unique_together = (('country', 'region', 'subregion', 'id', 'name'),)
         verbose_name_plural = "cities"
 
     @property
@@ -187,7 +212,9 @@ class BaseCity(Place, SlugModel):
         return self.region
 
     def slugify(self):
-        return slugify_func(self, unicode(self.id))
+        if self.id:
+            return '{}-{}'.format(self.id, unicode_func(self.name))
+        return None
 
 
 class City(BaseCity):
@@ -196,22 +223,31 @@ class City(BaseCity):
 
 
 class District(Place, SlugModel):
+    slug_contains_id = True
+
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(blank=True, db_index=True, max_length=200, null=True)
     location = models.PointField()
     population = models.IntegerField()
     city = models.ForeignKey(swapper.get_model_name('cities', 'City'), related_name='districts')
 
+    class Meta:
+        unique_together = (('city', 'name'),)
+
     @property
     def parent(self):
         return self.city
 
     def slugify(self):
-        return slugify_func(self, unicode(self.id))
+        if self.id:
+            return '{}-{}'.format(self.id, unicode_func(self.name))
+        return None
 
 
 @python_2_unicode_compatible
 class AlternativeName(SlugModel):
+    slug_contains_id = True
+
     KIND = Choices(*ALTERNATIVE_NAME_TYPES)
 
     name = models.CharField(max_length=255)
@@ -228,11 +264,15 @@ class AlternativeName(SlugModel):
         return "%s (%s)" % (force_text(self.name), force_text(self.language_code))
 
     def slugify(self):
-        return slugify_func(self, unicode(self.id))
+        if self.id:
+            return '{}-{}'.format(self.id, unicode_func(self.name))
+        return None
 
 
 @python_2_unicode_compatible
 class PostalCode(Place, SlugModel):
+    slug_contains_id = True
+
     code = models.CharField(max_length=20)
     location = models.PointField()
 
@@ -251,6 +291,12 @@ class PostalCode(Place, SlugModel):
     district = models.ForeignKey(District, blank=True, null=True, related_name='postal_codes')
 
     objects = models.GeoManager()
+
+    class Meta:
+        unique_together = (
+            ('country', 'region', 'subregion', 'city', 'district', 'name', 'id', 'code'),
+            ('country', 'region_name', 'subregion_name', 'district_name', 'name', 'id', 'code'),
+        )
 
     @property
     def parent(self):
@@ -276,4 +322,6 @@ class PostalCode(Place, SlugModel):
         return force_text(self.code)
 
     def slugify(self):
-        return slugify_func(self, unicode(self.id))
+        if self.id:
+            return '{}-{}'.format(self.id, unicode_func(self.code))
+        return None
