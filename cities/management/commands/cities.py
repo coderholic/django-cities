@@ -205,9 +205,8 @@ class Command(BaseCommand):
             name, ext = filename.rsplit('.', 1)
             if (ext == 'zip'):
                 filepath = os.path.join(self.data_dir, filename)
-                zipfile.ZipFile(filepath).extractall(self.data_dir)
-                file_obj = io.open(os.path.join(self.data_dir, name + '.txt'),
-                                   'r', encoding='utf-8')
+                zip_member = zipfile.ZipFile(filepath).open(name + '.txt', 'r')
+                file_obj = io.TextIOWrapper(zip_member, encoding='utf-8')
             else:
                 file_obj = io.open(os.path.join(self.data_dir, filename),
                                    'r', encoding='utf-8')
@@ -371,7 +370,8 @@ class Command(BaseCommand):
             return
 
         self.region_index = {}
-        for obj in tqdm(chain(Region.objects.all(), Subregion.objects.all()),
+        for obj in tqdm(chain(Region.objects.all().prefetch_related('country'),
+                              Subregion.objects.all().prefetch_related('region__country')),
                         total=Region.objects.all().count() + Subregion.objects.all().count(),
                         desc="Building region index"):
             self.region_index[obj.full_code()] = obj
@@ -411,8 +411,8 @@ class Command(BaseCommand):
             except:
                 regions_not_found.setdefault(country_code, {})
                 regions_not_found[country_code].setdefault(region_code, []).append(defaults['name'])
-                self.logger.debug("Subregion: %s: Cannot find [%s] region: %s",
-                                  defaults['name'], country_code, region_code)
+                self.logger.debug("Subregion: %s %s: Cannot find region",
+                                  item['code'], defaults['name'])
                 continue
 
             subregion, created = Subregion.objects.update_or_create(id=subregion_id, defaults=defaults)
@@ -527,7 +527,7 @@ class Command(BaseCommand):
                               "Added" if created else "Updated", city)
 
     def build_hierarchy(self):
-        if hasattr(self, 'hierarchy'):
+        if hasattr(self, 'hierarchy') and self.hierarchy:
             return
 
         self.download('hierarchy')
@@ -536,9 +536,6 @@ class Command(BaseCommand):
         total = sum(1 for _ in data)
 
         data = self.get_data('hierarchy')
-
-        if hasattr(self, 'hierarchy') and self.hierarchy:
-            return
 
         self.hierarchy = {}
         for item in tqdm(data, total=total, desc="Building hierarchy index"):
@@ -584,9 +581,9 @@ class Command(BaseCommand):
             # Find city
             city = None
             try:
-                city = city_index[self.hierarchy[defaults['geonameid']]]
+                city = city_index[self.hierarchy[item['geonameid']]]
             except:
-                self.logger.debug("District: %s: Cannot find city in hierarchy, using nearest", defaults['name'])
+                self.logger.debug("District: %d %s: Cannot find city in hierarchy, using nearest", item['geonameid'], defaults['name'])
                 city_pop_min = 100000
                 # we are going to try to find closet city using native
                 # database .distance(...) query but if that fails then
@@ -638,6 +635,7 @@ class Command(BaseCommand):
                 # *except* for its id
                 for key, value in defaults.items():
                     setattr(district, key, value)
+                district.save()
                 created = False
 
             if not self.call_hook('district_post', district, item):
