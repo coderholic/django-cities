@@ -258,12 +258,17 @@ It is possible to force the import of files which weren't downloaded using the
             country_items_pre_import.send(sender=self, items=items)
         except InvalidItems:
             return
+
         try:
+            force_insert = False
+            force_update = False
             country = Country.objects.get(code2=items[ICountry.code2])
+            force_update = True
         except Country.DoesNotExist:
             if self.noinsert:
                 return
             country = Country(code2=items[ICountry.code2])
+            force_insert = True
 
         country.name = items[ICountry.name]
         # Strip + prefix for consistency. Note that some countries have several
@@ -278,7 +283,11 @@ It is possible to force the import of files which weren't downloaded using the
         country_items_post_import.send(sender=self, instance=country,
             items=items)
 
-        self.save(country)
+        self.save(
+            country,
+            force_insert=force_insert,
+            force_update=force_update
+        )
 
     def region_import(self, items):
         try:
@@ -300,11 +309,15 @@ It is possible to force the import of files which weren't downloaded using the
             kwargs = dict(name=name, country_id=country_id)
 
         try:
+            force_insert = False
+            force_update = False
             region = Region.objects.get(**kwargs)
+            force_update = True
         except Region.DoesNotExist:
             if self.noinsert:
                 return
             region = Region(**kwargs)
+            force_insert = True
 
         if not region.name:
             region.name = name
@@ -323,7 +336,11 @@ It is possible to force the import of files which weren't downloaded using the
         region_items_post_import.send(sender=self, instance=region,
             items=items)
 
-        self.save(region)
+        self.save(
+            region,
+            force_insert=force_insert,
+            force_update=force_update
+        )
 
     def city_import(self, items):
         try:
@@ -356,7 +373,10 @@ It is possible to force the import of files which weren't downloaded using the
 
         try:
             try:
+                force_insert = False
+                force_update = False
                 city = City.objects.get(**kwargs)
+                force_update = True
             except City.MultipleObjectsReturned:
                 if 'region_id' not in kwargs:
                     self.logger.warn(
@@ -371,11 +391,12 @@ It is possible to force the import of files which weren't downloaded using the
                 city.name = items[ICity.name]
                 city.country_id = self._get_country_id(
                     items[ICity.countryCode])
+                force_update = True
             except City.DoesNotExist:
                 if self.noinsert:
                     return
-
                 city = City(**kwargs)
+                force_insert = True
 
         save = False
         if not city.region_id and 'region_id' in kwargs:
@@ -416,7 +437,11 @@ It is possible to force the import of files which weren't downloaded using the
             items=items, save=save)
 
         if save:
-            self.save(city)
+            self.save(
+                city,
+                force_insert=force_insert,
+                force_update=force_update
+            )
 
     def translation_parse(self, items):
         if not hasattr(self, 'translation_data'):
@@ -521,18 +546,21 @@ It is possible to force the import of files which weren't downloaded using the
                     save = True
 
                 if save:
-                    model.save()
+                    model.save(force_update=True)
 
                 i += 1
                 self.progress_update(i)
 
         self.progress_finish()
 
-    def save(self, model):
+    def save(self, model, force_insert=False, force_update=False):
         try:
             with transaction.atomic():
                 self.logger.debug('Saving %s' % model.name)
-                model.save()
+                model.save(
+                    force_insert=force_insert,
+                    force_update=force_update
+                )
         except IntegrityError as e:
             # Regarding %r see the https://code.djangoproject.com/ticket/20572
             # Also related to http://bugs.python.org/issue2517
