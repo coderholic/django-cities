@@ -262,26 +262,28 @@ It is possible to force the import of files which weren't downloaded using the
         try:
             force_insert = False
             force_update = False
-            country = Country.objects.get(code2=items[ICountry.code2])
+            country = Country.objects.get(geoname_id=items[ICountry.geonameid])
             force_update = True
         except Country.DoesNotExist:
             if self.noinsert:
                 return
-            country = Country(code2=items[ICountry.code2])
+            country = Country(geoname_id=items[ICountry.geonameid])
             force_insert = True
 
         country.name = items[ICountry.name]
-        # Strip + prefix for consistency. Note that some countries have several
-        # prefixes ie. Puerto Rico
-        country.phone = items[ICountry.phone].replace('+', '')
+        country.code2 = items[ICountry.code2]
         country.code3 = items[ICountry.code3]
         country.continent = items[ICountry.continent]
         country.tld = items[ICountry.tld][1:]  # strip the leading dot
-        if items[ICountry.geonameid]:
-            country.geoname_id = items[ICountry.geonameid]
+        # Strip + prefix for consistency. Note that some countries have several
+        # prefixes ie. Puerto Rico
+        country.phone = items[ICountry.phone].replace('+', '')
 
-        country_items_post_import.send(sender=self, instance=country,
-            items=items)
+        country_items_post_import.send(
+            sender=self,
+            instance=country,
+            items=items
+        )
 
         self.save(
             country,
@@ -295,58 +297,70 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
+        try:
+            force_insert = False
+            force_update = False
+            region = Region.objects.get(geoname_id=items[IRegion.geonameid])
+            force_update = True
+        except Region.DoesNotExist:
+            if self.noinsert:
+                return
+            region = Region(geoname_id=items[IRegion.geonameid])
+            force_insert = True
+
         name = items[IRegion.name]
         if not items[IRegion.name]:
             name = items[IRegion.asciiName]
 
         code2, geoname_code = items[IRegion.code].split('.')
-
         country_id = self._get_country_id(code2)
 
-        if items[IRegion.geonameid]:
-            kwargs = dict(geoname_id=items[IRegion.geonameid])
-        else:
-            kwargs = dict(name=name, country_id=country_id)
-
-        try:
-            force_insert = False
-            force_update = False
-            region = Region.objects.get(**kwargs)
-            force_update = True
-        except Region.DoesNotExist:
-            if self.noinsert:
-                return
-            region = Region(**kwargs)
-            force_insert = True
-
-        if not region.name:
+        save = False
+        if region.name != name:
             region.name = name
+            save = True
 
-        if not region.country_id:
+        if region.country_id != country_id:
             region.country_id = country_id
+            save = True
 
-        if not region.geoname_code:
+        if region.geoname_code != geoname_code:
             region.geoname_code = geoname_code
+            save = True
 
-        if not region.name_ascii:
+        if region.name_ascii != items[IRegion.asciiName]:
             region.name_ascii = items[IRegion.asciiName]
+            save = True
 
-        region.geoname_id = items[IRegion.geonameid]
-
-        region_items_post_import.send(sender=self, instance=region,
-            items=items)
-
-        self.save(
-            region,
-            force_insert=force_insert,
-            force_update=force_update
+        region_items_post_import.send(
+            sender=self,
+            instance=region,
+            items=items
         )
+
+        if save:
+            self.save(
+                region,
+                force_insert=force_insert,
+                force_update=force_update
+            )
 
     def city_import(self, items):
         try:
             city_items_pre_import.send(sender=self, items=items)
         except InvalidItems:
             return
+
+        try:
+            force_insert = False
+            force_update = False
+            city = City.objects.get(geoname_id=items[ICity.geonameid])
+            force_update = True
+        except City.DoesNotExist:
+            if self.noinsert:
+                return
+            city = City(geoname_id=items[ICity.geonameid])
+            force_insert = True
 
         try:
             country_id = self._get_country_id(items[ICity.countryCode])
@@ -357,84 +371,58 @@ It is possible to force the import of files which weren't downloaded using the
                 raise
 
         try:
-            kwargs = dict(name=items[ICity.name],
-                country_id=self._get_country_id(items[ICity.countryCode]))
-        except Country.DoesNotExist:
-            if self.noinsert:
-                return
-            else:
-                raise
-
-        try:
-            kwargs['region_id'] = self._get_region_id(items[ICity.countryCode],
-                items[ICity.admin1Code])
+            region_id = self._get_region_id(
+                items[ICity.countryCode],
+                items[ICity.admin1Code]
+            )
         except Region.DoesNotExist:
-            pass
-
-        try:
-            try:
-                force_insert = False
-                force_update = False
-                city = City.objects.get(**kwargs)
-                force_update = True
-            except City.MultipleObjectsReturned:
-                if 'region_id' not in kwargs:
-                    self.logger.warn(
-                        'Skipping because of invalid region: %s' % items)
-                    return
-                else:
-                    raise
-
-        except City.DoesNotExist:
-            try:
-                city = City.objects.get(geoname_id=items[ICity.geonameid])
-                city.name = items[ICity.name]
-                city.country_id = self._get_country_id(
-                    items[ICity.countryCode])
-                force_update = True
-            except City.DoesNotExist:
-                if self.noinsert:
-                    return
-                city = City(**kwargs)
-                force_insert = True
+            region_id = None
 
         save = False
-        if not city.region_id and 'region_id' in kwargs:
-            city.region_id = kwargs['region_id']
+        if city.country_id != country_id:
+            city.country_id = country_id
             save = True
 
-        if not city.name_ascii:
+        if city.region_id != region_id:
+            city.region_id = region_id
+            save = True
+
+        if city.name != items[ICity.name]:
+            city.name = items[ICity.name]
+            save = True
+
+        if city.name_ascii != items[ICity.asciiName]:
             # useful for cities with chinese names
             city.name_ascii = items[ICity.asciiName]
             save = True
 
-        if not city.latitude:
+        if city.latitude != items[ICity.latitude]:
             city.latitude = items[ICity.latitude]
             save = True
 
-        if not city.longitude:
+        if city.longitude != items[ICity.longitude]:
             city.longitude = items[ICity.longitude]
             save = True
 
-        if not city.population:
+        if city.population != items[ICity.population]:
             city.population = items[ICity.population]
             save = True
 
-        if not city.feature_code:
+        if city.feature_code != items[ICity.featureCode]:
             city.feature_code = items[ICity.featureCode]
             save = True
 
-        if not TRANSLATION_SOURCES and not city.alternate_names:
-            city.alternate_names = items[ICity.alternateNames]
+        altnames = items[ICity.alternateNames]
+        if not TRANSLATION_SOURCES and city.alternate_names != altnames:
+            city.alternate_names = altnames
             save = True
 
-        if not city.geoname_id:
-            # city may have been added manually
-            city.geoname_id = items[ICity.geonameid]
-            save = True
-
-        city_items_post_import.send(sender=self, instance=city,
-            items=items, save=save)
+        city_items_post_import.send(
+            sender=self,
+            instance=city,
+            items=items,
+            save=save
+        )
 
         if save:
             self.save(
@@ -520,14 +508,9 @@ It is possible to force the import of files which weren't downloaded using the
                     model = model_class.objects.get(geoname_id=geoname_id)
                 except model_class.DoesNotExist:
                     continue
+
                 save = False
-
-                if not model.alternate_names:
-                    alternate_names = set()
-                else:
-                    alternate_names = set(sorted(
-                        model.alternate_names.split(';')))
-
+                alternate_names = set()
                 for lang, names in geoname_data.items():
                     if lang == 'post':
                         # we might want to save the postal codes somewhere
@@ -540,7 +523,7 @@ It is possible to force the import of files which weren't downloaded using the
 
                         alternate_names.add(name)
 
-                alternate_names = u';'.join(sorted(alternate_names))
+                alternate_names = ';'.join(sorted(alternate_names))
                 if model.alternate_names != alternate_names:
                     model.alternate_names = alternate_names
                     save = True
