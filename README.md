@@ -508,6 +508,7 @@ These are apps that build on top of the `django-cities`. Useful for essentially 
 
 ### TODO
 
+* Integrate [libpostal](https://github.com/openvenues/libpostal) to extract Country/City/District/Postal Code from an address string
 * Add tests for importing districts
 * Add contrib module for Django REST framework, similar to django-contrib-light's [`restframework3`](https://github.com/yourlabs/django-cities-light/blob/stable/3.x.x/cities_light/contrib/restframework3.py)
 * Add autocomplete with [`django-autocomplete-light`](https://github.com/yourlabs/django-autocomplete-light)
