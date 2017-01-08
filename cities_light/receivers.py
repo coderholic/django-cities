@@ -11,13 +11,10 @@ def set_name_ascii(sender, instance=None, **kwargs):
 
     Ascii versions of names are often useful for autocompletes and search.
     """
-    name_ascii = to_ascii(instance.name)
-
-    if not name_ascii.strip():
-        return
+    name_ascii = to_ascii(instance.name).strip()
 
     if name_ascii and not instance.name_ascii:
-        instance.name_ascii = to_ascii(instance.name)
+        instance.name_ascii = name_ascii
 
 
 def set_display_name(sender, instance=None, **kwargs):
@@ -51,16 +48,17 @@ def city_search_names(sender, instance, **kwargs):
         if instance.region.alternate_names:
             for n in instance.region.alternate_names.split(';'):
                 region_names.add(n)
+    else:
+        region_names = set()
 
     for city_name in city_names:
         for country_name in country_names:
             name = to_search(city_name + country_name)
             search_names.add(name)
 
-            if instance.region_id:
-                for region_name in region_names:
-                    name = to_search(city_name + region_name + country_name)
-                    search_names.add(name)
+            for region_name in region_names:
+                name = to_search(city_name + region_name + country_name)
+                search_names.add(name)
 
     instance.search_names = ' '.join(sorted(search_names))
 
