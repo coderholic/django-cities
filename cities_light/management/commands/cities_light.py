@@ -278,6 +278,8 @@ It is possible to force the import of files which weren't downloaded using the
         # Strip + prefix for consistency. Note that some countries have several
         # prefixes ie. Puerto Rico
         country.phone = items[ICountry.phone].replace('+', '')
+        # Clear name_ascii to always update it by set_name_ascii() signal
+        country.name_ascii = ''
 
         country_items_post_import.send(
             sender=self,
