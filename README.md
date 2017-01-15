@@ -469,11 +469,11 @@ This repository contains an example project which lets you browse the place hier
 >>> [country.alt_names_ja.get_preferred(default=country.name) for country in Country.objects.all()]
 
 # Alternate names for the US in English, Spanish and German
->>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language='de')]
+>>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language_code='de')]
 [u'USA', u'Vereinigte Staaten']
->>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language='es')]
+>>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language_code='es')]
 [u'Estados Unidos']
->>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language='en')]
+>>> [x.name for x in Country.objects.get(code='US').alt_names.filter(language_code='en')]
 [u'United States of America', u'America', u'United States']
 
 # Alternative names for Vancouver, Canada
