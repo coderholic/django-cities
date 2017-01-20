@@ -9,6 +9,7 @@ dist
 
 # WebDAV file system cache
 .DAV/
+.env
 
 # Data files
 /cities/data/*
