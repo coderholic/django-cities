@@ -15,7 +15,7 @@ def read(fname):
 
 setup(
     name='django-cities',
-    version='0.5.0.1',
+    version='0.5.0.3',
     description='Place models and worldwide place data for Django',
     author='Ben Dowling',
     author_email='ben.m.dowling@gmail.com',
