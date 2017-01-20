@@ -28,7 +28,7 @@ slugify_func = SLUGIFY_FUNCTION
 
 
 class SlugModel(models.Model):
-    slug = models.CharField(max_length=255)
+    slug = models.CharField(blank=True, max_length=255, null=True)
 
     class Meta:
         abstract = True

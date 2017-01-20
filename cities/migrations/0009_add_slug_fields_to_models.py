@@ -15,42 +15,42 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='alternativename',
             name='slug',
-            field=models.CharField(max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='city',
             name='slug',
-            field=models.CharField(max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name='continent',
             name='slug',
-            field=models.CharField(max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name='country',
             name='slug',
-            field=models.CharField(max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name='district',
             name='slug',
-            field=models.CharField(max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name='postalcode',
             name='slug',
-            field=models.CharField(max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name='region',
             name='slug',
-            field=models.CharField(max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
             model_name='subregion',
             name='slug',
-            field=models.CharField(max_length=255),
+            field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]
