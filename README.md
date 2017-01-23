@@ -16,7 +16,8 @@ This package officially supports all currently supported versions of Python/Djan
 | Django 1.8    |  :white_check_mark:  |  :white_check_mark:  |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
 | Django 1.9    |  :white_check_mark:  | :x: |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
 | Django 1.10   |  :white_check_mark:  | :x: |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
-| Django [master](https://github.com/django/django/archive/master.tar.gz) | :large_blue_circle: | :x: | :large_blue_circle: | :large_blue_circle: | :large_blue_circle: |
+| Django 1.11a  | :large_blue_circle: | :x: | :x: | :large_blue_circle: | :large_blue_circle: |
+| Django [master](https://github.com/django/django/archive/master.tar.gz) | :x: | :x: | :x: | :x: | :x: |
 
 | Key |                                                                     |
 | :-: | :------------------------------------------------------------------ |
@@ -61,6 +62,8 @@ pip install django-cities
 
 
 ## Configuration
+
+You'll need to enable GeoDjango. See that [documentation](https://docs.djangoproject.com/en/1.10/ref/contrib/gis/tutorial/#setting-up) for guidance.
 
 You'll need to add `cities` to `INSTALLED_APPS` in your projects `settings.py` file:
 
