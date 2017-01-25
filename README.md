@@ -32,6 +32,36 @@ See some of the data in action at [city.io](http://city.io) and [country.io](htt
 
 ----
 
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Configuration](#configuration)
+  * [Migration Configuration](#migration-configuration)
+    * [Swappable Models](#swappable-models)
+    * [Alternative Name Types](#alternative-name-types)
+    * [Continent Data](#continent-data)
+  * [Run Migrations](#run-migrations)
+  * [Import Configuration](#import-configuration)
+    * [Download Directory](#download-directory)
+    * [Download Files](#download-files)
+    * [Currency Data](#currency-data)
+    * [Countries That No Longer Exist](#countries-that-no-longer-exist)
+    * [Postal Code Validation](#postal-code-validation)
+    * [Custom `slugify()` function](#custom-slugify-function)
+    * [Cities Without Regions](#cities-without-regions)
+    * [Languages/Locales To Import](#languageslocales-to-import)
+    * [Limit Imported Postal Codes](#limit-imported-postal-codes)
+    * [Plugins](#plugins)
+  * [Import Data](#import-data)
+* [Writing Plugins](#writing-plugins)
+* [Examples](#examples)
+* [Third Party Apps/Extensions](#third-party-apps--extensions)
+* [TODO](#todo)
+* [Notes](#notes)
+* [Running Tests](#running-tests)
+* [Release Notes](#release-notes)
+
+----
+
 ## Requirements
 
 Your database must support spatial queries, see the [GeoDjango documentation](https://docs.djangoproject.com/en/dev/ref/contrib/gis/) for details and setup instructions.
@@ -77,17 +107,50 @@ INSTALLED_APPS = (
 
 ### Migration Configuration
 
-These settings should be reviewed and set or modified before any migrations have been committed.
+These settings should be reviewed and set or modified BEFORE any migrations have been run.
 
 #### Swappable Models
 
-This project supports swappable models using the [django-swappable-models project](https://github.com/wq/django-swappable-models).
+Some users may wish to override some of the default models to add data, override default model methods, or add custom managers. This project supports swapping models out using the [django-swappable-models project](https://github.com/wq/django-swappable-models).
+
+To swap models out, first define your own custom model in your custom cities app. You will need to subclass the appropriate base model from `cities.models`:
+
+Here's an example `my_cities_app/models.py`:
+
+```python
+from django.db import models
+
+from cities.models import BaseCountry
+
+
+class CustomCountryModel(BaseCountry, models.Model):
+    more_data = models.TextField()
+
+    class Meta(BaseCountry.Meta):
+        pass
+```
+
+Then you will need to configure your project by setting the appropriate option:
 
 |   Model   |       Setting Name       |    Default Value   |
 | :-------- | :----------------------- | :----------------- |
 | Continent | `CITIES_CONTINENT_MODEL` | `cities.Continent` |
 | Country   | `CITIES_COUNTRY_MODEL`   | `cities.Country`   |
 | City      | `CITIES_CITY_MODEL`      | `cities.City`      |
+
+So to use the `CustomCountryModel` we defined above, we would add the dotted **model** string to our project's `settings.py`:
+
+```python
+# ...
+
+CITIES_COUNTRY_MODEL = 'my_cities_app.CustomCountryModel'
+
+# ...
+```
+
+The dotted model string is simply the dotted import path with the `.models` substring removed, just `<app_label>.<model_class_name>`.
+
+Once you have set the option in your `settings.py`, all appropriate foreign keys in django-cities will point to your custom model. So in the above example, the foreign keys `Region.country`, `City.country`, and `PostalCode.country` will all automatically point to the `CustomCountryModel`. This means that you do NOT need to customize any dependent models if you don't want to.
 
 #### Alternative Name Types
 
@@ -111,13 +174,17 @@ CITIES_ALTERNATIVE_NAME_TYPES = (
 
 If `CITIES_INCLUDE_AIRPORT_CODES` is set to `True`, the choices in `CITIES_AIRPORT_TYPES` will be appended to the `CITIES_ALTERNATIVE_NAME_TYPES` choices. Otherwise, no airport types are imported.
 
-The Geonames data also contains alternative names that are purely numeric
+The Geonames data also contains alternative names that are purely numeric.
 
-The `CITIES_INCLUDE_NUMERIC_ALTERNATIVE_NAMES` setting controls whether or not purely numeric alternative names are imported. 
+The `CITIES_INCLUDE_NUMERIC_ALTERNATIVE_NAMES` setting controls whether or not purely numeric alternative names are imported. Set to `True` to import them, and to `False` to skip them.
 
 #### Continent Data
 
-Since continent data rarely (if ever) changes, the continent data is loaded directly from Python data structures included with the django-cities distribution. However, there are different continent models with different numbers of continents. Therefore, some users may wish to override the default settings by setting the `CITIES_CONTINENT_DATA` to a Python dictionary where the keys are the continent code and the values are (name, id) tuples.
+Since continent data rarely (if ever) changes, the continent data is loaded directly from Python data structures included with the django-cities distribution. However, there are different continent models with different numbers of continents. Therefore, some users may wish to override the default settings by setting the `CITIES_CONTINENT_DATA` to a Python dictionary where the keys are the continent code and the values are (name, geonameid) tuples.
+
+For an overview of different continent models, please see the Wikipedia article on Continents:
+
+https://en.wikipedia.org/wiki/Continent#Number
 
 The following is the default continent data in [`cities/conf.py`](https://github.com/coderholic/django-cities/blob/master/cities/conf.py#L178):
 
@@ -133,6 +200,8 @@ CITIES_CONTINENT_DATA = {
 }
 ```
 
+Note that if you do not use these default settings, you will need to register a plugin with a `country_pre` method to adjust the continent ID for country models before countries are processed and saved to the database by the import script. Please contribute your plugin back upstream to this project so that others may benefit from your work by creating a pull request containing your plugin and any relevant documentation for it.
+
 ### Run Migrations
 
 After you have configured all migration settings, run
@@ -141,7 +210,7 @@ After you have configured all migration settings, run
 python manage.py migrate cities
 ```
 
-to create the required database tables.
+to create the required database tables and add the continent data to its table.
 
 
 
@@ -185,17 +254,19 @@ CITIES_FILES = {
     # ...
     'city': {
        'filenames': ["US.zip", "GB.zip", ],
-       'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+       'urls':      ['http://download.geonames.org/export/dump/'+'{filename}']
     },
     # ...
 }
 ```
 
+Note that you do not need to specify all keys in the `CITIES_FILES` dictionary. Any keys you do not specify will use their default values as defined in [`cities/conf.py`](https://github.com/coderholic/django-cities/blob/master/cities/conf.py#L26).
+
 #### Currency Data
 
 The Geonames data includes currency data, but it is limited to the currency code (example: "USD") and the currency name (example: "Dollar"). The django-cities package offers the ability to import currency symbols (example: "$") with the country model.
 
-However, like the continent data, since this rarely changes, the currency symbols is loaded directly from Python data structures included with the django-cities distribution in the `CITIES_CURRENCY_SYMBOLS` setting. Users can override this setting if they wish to add or modify the imported currency symbols.
+However, like the continent data, since this rarely changes, the currency symbols are loaded directly from Python data structures included with the django-cities distribution in the `CITIES_CURRENCY_SYMBOLS` setting. Users can override this setting if they wish to add or modify the imported currency symbols.
 
 For default values see the included [`cities/conf.py` file](https://github.com/coderholic/django-cities/blob/master/cities/conf.py#L189).
 
@@ -220,7 +291,7 @@ CITIES_NO_LONGER_EXISTENT_COUNTRY_CODES = ['CS', 'AN']
 
 #### Postal Code Validation
 
-The Geonames data contains country postal code formats and regular expressions, as well as postal codes. Some of these postal codes do not match the regular expression of their country. Users who wish to ignore these postal codes when importing data can set the `CITIES_VALIDATE_POSTAL_CODES` setting to `True` to skip importing postal codes that do not validate the country postal code regular expression.
+The Geonames data contains country postal code formats and regular expressions, as well as postal codes. Some of these postal codes do not match the regular expression of their country. Users who wish to ignore invalid postal codes when importing data can set the `CITIES_VALIDATE_POSTAL_CODES` setting to `True` to skip importing postal codes that do not validate the country postal code regular expression.
 
 If you have regional knowledge of postal codes that do not validate, please either update the postal code itself or the country postal codes regular expression on the Geonames website. Doing this will help all Geonames users (including this project but also every other Geonames user).
 
@@ -311,7 +382,9 @@ CITIES_POSTAL_CODES = ['US', 'CA']
 
 #### Plugins
 
-You can write your own plugins (see the [#Writing plugins](#writing-plugins) section) to process data before and after it is written to the database. This is how you would activate them:
+You can write your own plugins to process data before and after it is written to the database. See the section on [Writing Plugins](#writing-plugins) for details.
+
+To activate plugins, you need to add their dotted import strings to the `CITIES_PLUGINS` option. This example activates the `postal_code_ca` and `reset_queries` plugins that come with django-cities:
 
 ```python
 CITIES_PLUGINS = [
@@ -355,11 +428,48 @@ Specifically, importing postal codes can take one or two orders of magnitude mor
 
 
 
-### Writing Plugins
+## Writing Plugins
 
-You can specify the import path of any class in `CITIES_PLUGINS` (see the `CITIES_PLUGINS` section in the [configuration section](#configuration)).
+You can write plugins that modify data before and after it is processed by the import script. For example, you can use this to adjust the continent a country belongs to, or you can use it to add or modify any additional data if you customize and override any django-cities models.
 
-Here is a complete skeleton plugin class example; note that only one of these methods is required:
+A plugin is simply a Python class that has implemented one or more hook functions as members. Hooks can either modify data before it is processed by the import script, or modify the database after the object has been saved to the database by the import script.
+
+Here's a table of all available hooks:
+
+| Model             | Pre Hook Name     | Post Hook Name     |
+| ----------------- | ----------------- | ------------------ |
+| `Country`         | `country_pre`     | `country_post`     |
+| `Region`          | `region_pre`      | `region_post`      |
+| `Subregion`       | `subregion_pre`   | `subregion_post`   |
+| `City`            | `city_pre`        | `city_post`        |
+| `District`        | `district_pre`    | `district_post`    |
+| `PostalCode`      | `postal_code_pre` | `postal_code_post` |
+| `AlternativeName` | `alt_name_pre`    | `alt_name_post`    |
+
+The argument signatures for `_pre` hooks and `_post` hooks differ. All `_pre` hooks have the following argument signature:
+
+```python
+class ...Plugin(object):
+    model_pre(self, parser, item)
+```
+
+whereas all `_post` hooks also have the saved model instance available to them:
+
+```python
+class ...Plugin(object):
+    model_post(self, parser, <model>_instance, item)
+```
+
+Arguments passed to hooks:
+
+* `self` - the plugin object itself
+* `parser` - the instance of the `cities.Command` management command
+* `<model>_instance` - instance of model that was created based on `item`
+* `item` - Python dictionary with data for row being processed
+
+Note that the argument names are simply conventions, you are free to rename them to whatever you wish as long as you keep their order.
+
+Here is a complete skeleton plugin class example:
 
 ```python
 class CompleteSkeletonPlugin(object):
@@ -413,19 +523,16 @@ class CompleteSkeletonPlugin(object):
         pass
 ```
 
-Arguments passed to hooks:
-
-* `self` - the plugin object itself
-* `parser` - the instance of the "cities.Command" management command
-* `<model>_instance` - instance of model that was created based on `item`
-* `imported_data_dict`- dict instance with data for row being processed
-
 Silly example:
 
 ```python
 class DorothyPlugin(object):
+    """
+    This plugin skips importing cities that are not in Kansas, USA.
+    
+    There's no place like home.
+    """
     def city_pre(self, parser, import_dict):
-        # Skip importing cities not in Kansas
         if import_dict['cc2'] == 'US' and import_dict['admin1Code'] != 'KS':
             return False  # Returning a False-y value skips importing the item
         else:
@@ -435,16 +542,17 @@ class DorothyPlugin(object):
     def city_post(self, parser, city, import_data):
         # Checks if the region foreign key for the city database row is NULL
         if city.region is None:
-            # Sets it to Kansas
+            # Set it to Kansas
             city.region = Region.objects.get(country__code='US', code='KS')
             # Re-save any existing items that aren't in Kansas
             city.save()
-            # There's no place like home
 ```
 
+Once you have written a plugin, you will need to activate it by specifying its dotted import string in the `CITIES_PLUGINS` setting. See the [Plugins](#plugins) section for details.
 
 
-### Examples
+
+## Examples
 
 This repository contains an example project which lets you browse the place hierarchy. See the [`example directory`](https://github.com/coderholic/django-cities/tree/master/example). Below are some small snippets to show you the kind of queries that are possible once you have imported data:
 
@@ -501,7 +609,7 @@ This repository contains an example project which lets you browse the place hier
 
 
 
-###  Third-party Apps / Extensions
+##  Third-party Apps / Extensions
 
 These are apps that build on top of the `django-cities`. Useful for essentially extending what `django-cities` can do.
 
@@ -509,18 +617,18 @@ These are apps that build on top of the `django-cities`. Useful for essentially 
 
 
 
-### TODO
+## TODO
 
-In increasing order of difficulty
+In increasing order of difficulty:
 
-* Add tests for importing districts
+* Add tests for importing districts and the plugins we ship with
 * Minimize number of attributes on abstract base models and adjust import script accordingly
 * Steal/modify all of the [contrib apps from django-contrib-light](https://github.com/yourlabs/django-cities-light/blob/stable/3.x.x/cities_light/contrib) (Django REST Framework integration, chained selects, and autocomplete)
 * Integrate [libpostal](https://github.com/openvenues/libpostal) to extract Country/City/District/Postal Code from an address string
 
 
 
-### Notes
+## Notes
 
 Some datasets are very large (> 100 MB) and take time to download/import.
 
@@ -550,7 +658,7 @@ The cities manage command has options, see `--help`.  Verbosity is controlled th
         # changes to github and specify commit and repo variables:
         TRAVIS_COMMIT=`git rev-parse HEAD` TRAVIS_REPO_SLUG='github-username/django-cities' POSTGRES_USER=some_username POSTGRES_PASSWORD='password from createuser ste' tox
 
-#### Useful test options:
+### Useful test options:
 
 * `TRAVIS_LOG_LEVEL` - defaults to `INFO`, but set to `DEBUG` to see a (very) large and (very) complete log of the import script
 * `CITIES_FILES` - set the base urls to a `file://` path to use local files without modifying any other settings
