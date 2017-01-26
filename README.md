@@ -527,8 +527,6 @@ Data will only be downloaded/imported if it is newer than your data, and only ma
 
 The cities manage command has options, see `--help`.  Verbosity is controlled through the `LOGGING` setting.
 
-
-
 ## Running Tests
 
 1. Install postgres, postgis and libgdal-dev
@@ -548,6 +546,23 @@ The cities manage command has options, see `--help`.  Verbosity is controlled th
         # If you have changed example data files then you should push your
         # changes to github and specify commit and repo variables:
         TRAVIS_COMMIT=`git rev-parse HEAD` TRAVIS_REPO_SLUG='github-username/django-cities' POSTGRES_USER=some_username POSTGRES_PASSWORD='password from createuser ste' tox
+
+## Running Django command
+
+If you need to run django comamnds, like ```makemigrations``` or ```makemessages``` (I guess the next step is
+to make the software more compatible with other languages), you can do so easily, by configuring a few environment
+variables **before** the actual command, like so:
+
+```bash
+cd django-cities/
+POSTGRES_USER=<postgres_user> POSTGRES_PASSWORD=<postgres_pass> PYTHONPATH=. python test_project/manage.py makemigrations cities
+```
+
+A few things should be noted:
+
+1. The ```cd``` command should point at the repository root;
+1. The ```<postgres_user>``` and ```<postgres_pass>``` are placeholders. That mean that you should substitute
+them for the actual values of your database.
 
 #### Useful test options:
 

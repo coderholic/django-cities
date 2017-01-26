@@ -59,6 +59,8 @@ class Place(models.Model):
     name = models.CharField(max_length=200, db_index=True, verbose_name="ascii name")
     alt_names = models.ManyToManyField('AlternativeName')
 
+    boundary = models.MultiPolygonField(null=True)
+
     objects = models.GeoManager()
 
     class Meta:
@@ -85,6 +87,8 @@ class Place(models.Model):
 
 class BaseContinent(Place, SlugModel):
     code = models.CharField(max_length=2, unique=True, db_index=True)
+
+    objects = models.GeoManager()
 
     def __str__(self):
         return force_text(self.name)
@@ -119,6 +123,8 @@ class BaseCountry(Place, SlugModel):
     capital = models.CharField(max_length=100)
     neighbours = models.ManyToManyField("self")
 
+    objects = models.GeoManager()
+
     class Meta:
         abstract = True
         ordering = ['name']
@@ -148,6 +154,8 @@ class Region(Place, SlugModel):
     code = models.CharField(max_length=200, db_index=True)
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
                                 related_name='regions')
+
+    objects = models.GeoManager()
 
     class Meta:
         unique_together = (('country', 'name'),)
@@ -201,6 +209,8 @@ class BaseCity(Place, SlugModel):
     elevation = models.IntegerField(null=True)
     kind = models.CharField(max_length=10)  # http://www.geonames.org/export/codes.html
     timezone = models.CharField(max_length=40)
+
+    objects = models.GeoManager()
 
     class Meta:
         abstract = True
