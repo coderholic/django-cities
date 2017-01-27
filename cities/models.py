@@ -123,8 +123,6 @@ class BaseCountry(Place, SlugModel):
     capital = models.CharField(max_length=100)
     neighbours = models.ManyToManyField("self")
 
-    objects = models.GeoManager()
-
     class Meta:
         abstract = True
         ordering = ['name']
@@ -154,8 +152,6 @@ class Region(Place, SlugModel):
     code = models.CharField(max_length=200, db_index=True)
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
                                 related_name='regions')
-
-    objects = models.GeoManager()
 
     class Meta:
         unique_together = (('country', 'name'),)
@@ -209,8 +205,6 @@ class BaseCity(Place, SlugModel):
     elevation = models.IntegerField(null=True)
     kind = models.CharField(max_length=10)  # http://www.geonames.org/export/codes.html
     timezone = models.CharField(max_length=40)
-
-    objects = models.GeoManager()
 
     class Meta:
         abstract = True
@@ -268,8 +262,6 @@ class AlternativeName(SlugModel):
     is_colloquial = models.BooleanField(default=False)
     is_historic = models.BooleanField(default=False)
 
-    objects = AlternativeNameManager()
-
     def __str__(self):
         return "%s (%s)" % (force_text(self.name), force_text(self.language_code))
 
@@ -299,8 +291,6 @@ class PostalCode(Place, SlugModel):
     city = models.ForeignKey(swapper.get_model_name('cities', 'City'),
                              blank=True, null=True, related_name='postal_codes')
     district = models.ForeignKey(District, blank=True, null=True, related_name='postal_codes')
-
-    objects = models.GeoManager()
 
     class Meta:
         unique_together = (
