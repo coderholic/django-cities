@@ -4,32 +4,24 @@ python:
 - '3.5'
 matrix:
   allow_failures:
-  - env: TOXENV=py27-django110-sqlite
-  - env: TOXENV=py27-django110-mysql
-  - env: TOXENV=py27-django110-postgresql
-  - env: TOXENV=py34-django110-sqlite
-  - env: TOXENV=py34-django110-mysql
-  - env: TOXENV=py34-django110-postgresql
+  - env: TOXENV=py35-djangodev-sqlite
+  - env: TOXENV=py35-djangodev-mysql
+  - env: TOXENV=py35-djangodev-postgresql
 env:
   matrix:
   - TOXENV=py27-django18-sqlite
-  - TOXENV=py27-django18-mysql
-  - TOXENV=py27-django18-postgresql
   - TOXENV=py27-django19-sqlite
-  - TOXENV=py27-django19-mysql
-  - TOXENV=py27-django19-postgresql
   - TOXENV=py27-django110-sqlite
-  - TOXENV=py27-django110-mysql
-  - TOXENV=py27-django110-postgresql
-  - TOXENV=py34-django18-sqlite
-  - TOXENV=py34-django18-mysql
-  - TOXENV=py34-django18-postgresql
-  - TOXENV=py34-django19-sqlite
-  - TOXENV=py34-django19-mysql
-  - TOXENV=py34-django19-postgresql
-  - TOXENV=py34-django110-sqlite
-  - TOXENV=py34-django110-mysql
-  - TOXENV=py34-django110-postgresql
+  - TOXENV=py27-django111-sqlite
+  - TOXENV=py35-django18-sqlite
+  - TOXENV=py35-django19-sqlite
+  - TOXENV=py35-django110-sqlite
+  - TOXENV=py35-django110-mysql
+  - TOXENV=py35-django110-postgresql
+  - TOXENV=py35-django111-sqlite
+  - TOXENV=py35-djangodev-sqlite
+  - TOXENV=py35-djangodev-mysql
+  - TOXENV=py35-djangodev-postgresql
   - TOXENV=checkqa
   - TOXENV=docs
 install:
