@@ -67,6 +67,7 @@ class CountrySerializer(HyperlinkedModelSerializer):
 
     class Meta:
         model = Country
+        fields = '__all__'
 
 
 class CitiesLightListModelViewSet(viewsets.ReadOnlyModelViewSet):
