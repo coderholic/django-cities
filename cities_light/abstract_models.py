@@ -105,7 +105,8 @@ class AbstractRegion(Base):
     geoname_code = models.CharField(max_length=50, null=True, blank=True,
         db_index=True)
 
-    country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country')
+    country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country',
+        on_delete=models.CASCADE)
 
     class Meta(Base.Meta):
         unique_together = (('country', 'name'), ('country', 'slug'))
@@ -148,8 +149,9 @@ class AbstractCity(Base):
         null=True, blank=True)
 
     region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region', blank=True,
-                               null=True)
-    country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country')
+                               null=True, on_delete=models.CASCADE)
+    country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country',
+                                on_delete=models.CASCADE)
     population = models.BigIntegerField(null=True, blank=True, db_index=True)
     feature_code = models.CharField(max_length=10, null=True, blank=True,
                                     db_index=True)
