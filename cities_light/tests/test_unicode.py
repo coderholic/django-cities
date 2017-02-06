@@ -1,47 +1,35 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
-import mock
 import warnings
 
 import six
 import unidecode
 
-from django import test
-from django.core.management import call_command
 from django.utils.encoding import force_text
 
 from ..abstract_models import to_ascii
+from .base import TestImportBase, FixtureDir
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-FIXTURE_DIR = os.path.abspath(os.path.join(BASE_DIR, 'tests', 'fixtures'))
-
-
-def mock_source(setting, short_name):  # noqa
-    return mock.patch(
-        'cities_light.management.commands.cities_light.%s_SOURCES' %
-        setting.upper(), ['file://%s/%s.txt' % (FIXTURE_DIR, short_name)])
-
-
-class TestUnicode(test.TransactionTestCase):
+class TestUnicode(TestImportBase):
     """Test case for unicode errors."""
 
-    @mock_source('city', 'kemerovo_city')
-    @mock_source('region', 'kemerovo_region')
-    @mock_source('country', 'kemerovo_country')
     def test_exception_logging_unicode_error(self):
         """
         Test logging of duplicate row and UnicodeDecodeError.
 
         See issue https://github.com/yourlabs/django-cities-light/issues/61
         """
-        call_command('cities_light', force_import_all=True)
+        fixture_dir = FixtureDir('unicode')
+        self.import_data(
+            fixture_dir,
+            'kemerovo_country',
+            'kemerovo_region',
+            'kemerovo_city',
+            'kemerovo_translations'
+        )
 
-    @mock_source('city', 'kemerovo_city')
-    @mock_source('region', 'kemerovo_region')
-    @mock_source('country', 'kemerovo_country')
     def test_unidecode_warning(self):
         """
         Unidecode should get unicode object and not byte string.
@@ -59,7 +47,15 @@ class TestUnicode(test.TransactionTestCase):
 
         with warnings.catch_warnings(record=True) as warns:
             warnings.simplefilter('always')
-            call_command('cities_light', force_import_all=True)
+
+            self.import_data(
+                FixtureDir('unicode'),
+                'kemerovo_country',
+                'kemerovo_region',
+                'kemerovo_city',
+                'kemerovo_translations'
+            )
+
             for w in warns:
                 warn = force_text(w.message)
                 self.assertTrue("not an unicode object" not in warn, warn)
