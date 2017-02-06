@@ -85,6 +85,10 @@ It is possible to force the import of files which weren't downloaded using the
             default=False,
             help='Set this if you intend to import translations a lot'
         ),
+        parser.add_argument('--keep-slugs', action='store_true',
+            default=False,
+            help='Do not update slugs'
+        ),
         parser.add_argument('--progress', action='store_true',
             default=False,
             help='Show progress bar'
@@ -133,6 +137,7 @@ It is possible to force the import of files which weren't downloaded using the
         translation_hack_path = os.path.join(DATA_DIR, 'translation_hack')
 
         self.noinsert = options.get('noinsert', False)
+        self.keep_slugs = options.get('keep_slugs', False)
         self.progress_enabled = options.get('progress')
 
         self.progress_init()
@@ -281,6 +286,9 @@ It is possible to force the import of files which weren't downloaded using the
         # Clear name_ascii to always update it by set_name_ascii() signal
         country.name_ascii = ''
 
+        if force_update and not self.keep_slugs:
+            country.slug = None
+
         country_items_post_import.send(
             sender=self,
             instance=country,
@@ -333,6 +341,9 @@ It is possible to force the import of files which weren't downloaded using the
         if region.name_ascii != items[IRegion.asciiName]:
             region.name_ascii = items[IRegion.asciiName]
             save = True
+
+        if force_update and not self.keep_slugs:
+            region.slug = None
 
         region_items_post_import.send(
             sender=self,
@@ -418,6 +429,9 @@ It is possible to force the import of files which weren't downloaded using the
         if not TRANSLATION_SOURCES and city.alternate_names != altnames:
             city.alternate_names = altnames
             save = True
+
+        if force_update and not self.keep_slugs:
+            city.slug = None
 
         city_items_post_import.send(
             sender=self,
