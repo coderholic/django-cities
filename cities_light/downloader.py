@@ -29,7 +29,7 @@ class Downloader(object):
         if self.source_matches_destination(source, destination):
             logger.warning('Download source matches destination file')
             return False
-        # Checking if download is needed i.e. name are diffrent but 
+        # Checking if download is needed i.e. name are diffrent but
         # they are same file essentiallly
         # If needed continue else return.
         if not self.needs_downloading(source, destination, force):
@@ -40,7 +40,7 @@ class Downloader(object):
         logger.info('Downloading %s into %s', source, destination)
         source_stream = urlopen(source)
         # wb: open as write and binary mode
-        with open(destination, 'wb') as local_file: 
+        with open(destination, 'wb') as local_file:
             local_file.write(source_stream.read())
 
         return True
@@ -63,7 +63,7 @@ class Downloader(object):
         """Return True if source should be downloaded to destination."""
         src_file = urlopen(source)
         src_size = int(src_file.headers['content-length'])
-        #getting last modified timestamp
+        # getting last modified timestamp
         src_last_modified = time.strptime(
             src_file.headers['last-modified'],
             '%a, %d %b %Y %H:%M:%S %Z'  # taking time with second
@@ -72,8 +72,8 @@ class Downloader(object):
         if os.path.exists(destination) and not force:
             local_time = time.gmtime(os.path.getmtime(destination))
             local_size = os.path.getsize(destination)
-            # Checking the timestamp of creation and the file size, 
-            # if destination timestamp is equal or greater and the size 
+            # Checking the timestamp of creation and the file size,
+            # if destination timestamp is equal or greater and the size
             # is also equal then return falase as no need to download
             if local_time >= src_last_modified and local_size == src_size:
                 return False

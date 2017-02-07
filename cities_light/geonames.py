@@ -42,7 +42,7 @@ class Geonames(object):
 
     def download(self, url, path, force=False):
         downloader = Downloader()
-        # Returns true or false(either downloded or not based on 
+        # Returns true or false(either downloded or not based on
         # the condition in downloader.py)
         return downloader.download(
             source=url,
