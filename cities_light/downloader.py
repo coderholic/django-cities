@@ -29,7 +29,7 @@ class Downloader(object):
         if self.source_matches_destination(source, destination):
             logger.warning('Download source matches destination file')
             return False
-        # Checking if download is needed i.e. name are diffrent but
+        # Checking if download is needed i.e. names are different but
         # they are same file essentiallly
         # If needed continue else return.
         if not self.needs_downloading(source, destination, force):
@@ -63,7 +63,7 @@ class Downloader(object):
         """Return True if source should be downloaded to destination."""
         src_file = urlopen(source)
         src_size = int(src_file.headers['content-length'])
-        # getting last modified timestamp
+        # Getting last modified timestamp
         src_last_modified = time.strptime(
             src_file.headers['last-modified'],
             '%a, %d %b %Y %H:%M:%S %Z'  # taking time with second

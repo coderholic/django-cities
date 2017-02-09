@@ -28,19 +28,19 @@ class TestDownloader(test.TransactionTestCase):
         """Tests for source_matches_destination behavior."""
         mock_func.return_value = True
         downloader = Downloader()
-        #Different destination
+        # Different destination
         source = 'file:///a.txt'
         dest = '/b.txt'
         self.assertFalse(
             downloader.source_matches_destination(source, dest)
         )
-        #Same destination with same file name
+        # Same destination with same file name
         source = 'file:///data/a.txt'
         dest = '/data/a.txt'
         self.assertTrue(
             downloader.source_matches_destination(source, dest)
         )
-        #Different destination with same file name
+        # Different destination with same file name
         source = 'http://server/download/data/a.txt'
         dest = '/data/a.txt'
         self.assertFalse(
@@ -48,7 +48,7 @@ class TestDownloader(test.TransactionTestCase):
         )
 
         mock_func.return_value = False
-        # Exception handling, checking whether file exist or not, 
+        # Exception handling, checking whether file exist or not,
         # if exist then checking source and destination
         source = 'file:///data/a.txt'
         dest = '/data/a.txt'
@@ -77,7 +77,7 @@ class TestDownloader(test.TransactionTestCase):
         downloader = Downloader()
         with mock.patch('cities_light.downloader.urlopen',
                         return_value=m_urlopen):
-            # source and local time and size's equal
+            # Source and local time and size's equal
             loc_gmtime.return_value = time.strptime(
                 '02-01-2016 00:04:14 GMT', '%d-%m-%Y %H:%M:%S %Z')
             loc_getsize.return_value = 13469
@@ -88,7 +88,7 @@ class TestDownloader(test.TransactionTestCase):
             result = downloader.needs_downloading(**params)
             self.assertFalse(result)
 
-            # destination time > source time, size is equal
+            # Destination time > source time, size is equal
             loc_gmtime.return_value = time.strptime(
                 '02-01-2016 00:04:15 GMT', '%d-%m-%Y %H:%M:%S %Z')
             loc_getsize.return_value = 13469
@@ -99,7 +99,7 @@ class TestDownloader(test.TransactionTestCase):
             result = downloader.needs_downloading(**params)
             self.assertFalse(result)
 
-            # destination time < source time, size is equal
+            # Destination time < source time, size is equal
             loc_gmtime.return_value = time.strptime(
                 '02-01-2016 00:04:13 GMT', '%d-%m-%Y %H:%M:%S %Z')
             loc_getsize.return_value = 13469
@@ -110,7 +110,7 @@ class TestDownloader(test.TransactionTestCase):
             result = downloader.needs_downloading(**params)
             self.assertTrue(result)
 
-            # source and destination time is equal,
+            # Source and destination time is equal,
             # source and destination size is not equal
             loc_gmtime.return_value = time.strptime(
                 '02-01-2016 00:04:14 GMT', '%d-%m-%Y %H:%M:%S %Z')
@@ -122,7 +122,7 @@ class TestDownloader(test.TransactionTestCase):
             result = downloader.needs_downloading(**params)
             self.assertTrue(result)
 
-            # source and destination have the same time and size
+            # Source and destination have the same time and size
             # force = True
             loc_gmtime.return_value = time.strptime(
                 '02-01-2016 00:04:14 GMT', '%d-%m-%Y %H:%M:%S %Z')
@@ -134,7 +134,7 @@ class TestDownloader(test.TransactionTestCase):
             result = downloader.needs_downloading(**params)
             self.assertTrue(result)
 
-            # destination file does not exist
+            # Destination file does not exist
             loc_exists.return_value = False
             loc_gmtime.return_value = time.strptime(
                 '02-01-2016 00:04:14 GMT', '%d-%m-%Y %H:%M:%S %Z')
@@ -153,9 +153,9 @@ class TestDownloader(test.TransactionTestCase):
         downloader = Downloader()
         source = 'file:///a.txt'
         destination = '/a.txt'
-        # The downloader.download will return false 
+        # The downloader.download will return false
         # as source and destination are same
-        # The downloader.source_matches_destination will return 
+        # The downloader.source_matches_destination will return
         # true and downloader.download will return false
         self.assertFalse(
             downloader.download(
@@ -177,7 +177,7 @@ class TestDownloader(test.TransactionTestCase):
         destination = '/a.txt'
         # Here dowaloder.needs_downloading() will return false
         # as the time of modifiaction of dest>= time of source
-        # and the size od source and destination are same 
+        # and the size od source and destination are same
         # and downloader.download will return false
         self.assertFalse(
             downloader.download(
@@ -235,8 +235,8 @@ class TestDownloader(test.TransactionTestCase):
                 downloader = Downloader()
                 source = 'file:///b.txt'
                 destination = '/a.txt'
-                # Here copy of b has been made in above function,the 
-                # downloder.needs_downloading() will return false 
+                # Here copy of b has been made in above function,the
+                # downloder.needs_downloading() will return false
                 # and no download will happen
                 with mock.patch('cities_light.downloader.urlopen') as uo_mock:
                     downloader.download(source, destination)

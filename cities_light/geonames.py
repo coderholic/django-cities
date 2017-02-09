@@ -27,14 +27,14 @@ class Geonames(object):
             force=force
         )
 
-        # extract the destination file, use the extracted file as new
+        # Extract the destination file, use the extracted file as new
         # destination
         destination_file_name = destination_file_name.replace(
             'zip', 'txt')
 
         destination = os.path.join(DATA_DIR, destination_file_name)
         exists = os.path.exists(destination)
-        # if the file is a zipped file then extract it
+        # If the file is a zipped file then extract it
         if url.split('.')[-1] == 'zip' and not exists:
             self.extract(self.file_path, destination_file_name)
         self.file_path = os.path.join(
@@ -69,14 +69,14 @@ class Geonames(object):
 
         for line in file:
             if not six.PY3:
-                # in python3 this is already an unicode
+                # In python3 this is already an unicode
                 line = line.decode('utf8')
 
             line = line.strip()
-            # if the line is blank/empty or a comment, skip it and continue
+            # If the line is blank/empty or a comment, skip it and continue
             if len(line) < 1 or line[0] == '#':
                 continue
-            # split on tab character and strip the new line character
+            # Split on tab character and strip the new line character
             yield [e.strip() for e in line.split('\t')]
 
     def num_lines(self):
