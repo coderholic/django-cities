@@ -63,8 +63,8 @@ disabled::
 
     ./manage.py migrate
 
-Data update
------------
+Data import/update
+------------------
 
 Finally, populate your database with command::
 
@@ -73,6 +73,11 @@ Finally, populate your database with command::
 This command is well documented, consult the help with::
 
     ./manage.py help cities_light
+
+By default, update procedure attempts to update all fields, including Country/Region/City slugs. But there is an option to keep them intact::
+
+    ./manage.py cities_light --keep-slugs
+
 
 Using fixtures
 --------------
