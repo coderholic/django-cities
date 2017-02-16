@@ -1,0 +1,2 @@
+US.NY	New York	New York	5128638
+RU.09	Belgorod	Belgorod	578071

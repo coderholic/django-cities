@@ -1,0 +1,200 @@
+993186	2017370	en	Russian Soviet Federated Socialist Republic				1
+993187	2017370		Rossiyskaya Sovetskaya Federativnaya Sotsialisticheskaya Respublika				1
+993188	2017370	en	Russian Soviet Federative Socialist Republic				1
+993191	2017370	en	Russian Socialist Federative Soviet Republic				1
+1556474	2017370	aa	Russia
+1556475	2017370	af	Rusland
+1556476	2017370	am	ራሺያ
+1556477	2017370	ar	روسيا
+1556478	2017370	be	Расія
+1556479	2017370	bg	Руска Федерация
+1556480	2017370	bn	রাশিয়া
+1556481	2017370	ca	Rússia
+1556482	2017370	cs	Rusko
+1556483	2017370	cy	Rwsia
+1556484	2017370	da	Rusland
+1556485	2017370	de	Russische Föderation
+1556486	2017370	el	Ρωσία
+1556487	2017370	en	Russia	1	1
+1556488	2017370	eo	Rusujo
+1556489	2017370	es	Rusia	1	1
+1556490	2017370	et	Venemaa
+1556491	2017370	eu	Errusia
+1556492	2017370	fa	روسیه
+1556493	2017370	fi	Venäjä
+1556494	2017370	fo	Russland
+1556495	2017370	fr	Russie
+1556496	2017370	ga	Cónaidhm na Rúise
+1556497	2017370	he	רוסיה, הפדרציה של
+1556498	2017370	hi	रूस
+1556499	2017370	hr	Ruska Federacija
+1556500	2017370	hu	Oroszországi Föderáció	1
+1556501	2017370	hy	Ռուսաստան
+1556502	2017370	id	Rusia
+1556503	2017370	is	Rússland
+1556504	2017370	it	Federazione Russa
+1556505	2017370	ja	ロシア
+1556506	2017370	ka	რუსეთი
+1556507	2017370	km	រូស្ស៊ី
+1556508	2017370	ko	러시아
+1556509	2017370	lo	ລັດເຊຍ
+1556510	2017370	lt	Rusijos Federacija	1
+1556511	2017370	lv	Krievija
+1556512	2017370	mk	Русија
+1556513	2017370	ms	Rusia	1
+1556514	2017370	mt	Russja
+1556515	2017370	nb	Den russiske føderasjon
+1556516	2017370	nl	Russische Federatie
+1556517	2017370	nn	Den russiske føderasjon
+1556518	2017370	om	Russia
+1556519	2017370	pl	Rosja	1
+1556520	2017370	ps	روسیه
+1556521	2017370	pt	Rússia
+1556522	2017370	ro	Rusia
+1556523	2017370	ru	Россия	1	1
+1556524	2017370	sk	Ruská federácia
+1556525	2017370	sl	Ruska federacija
+1556526	2017370	so	Ruush
+1556527	2017370	sq	Rusi
+1556528	2017370	sr	Русија
+1556529	2017370	sv	Ryssland
+1556530	2017370	sw	Urusi
+1556531	2017370	ta	ரஷ்யா
+1556532	2017370	te	రష్య
+1556533	2017370	th	รัสเซีย
+1556534	2017370	tr	Rusya Federasyonu
+1556535	2017370	tt	Россия
+1556536	2017370	uk	Росія
+1556537	2017370	uz	Россия
+1556538	2017370	vi	Nga
+1556539	2017370	zh	俄罗斯	1
+2197904	2017370	ru	Российская Федерация
+2419054	2017370	az	Rusiya	1
+2419055	2017370	be	Расійская Федэрацыя	1
+2419056	2017370	bg	Русия	1
+2419057	2017370	bn	রাশিয়া	1
+2419058	2017370	bo	ཨུ་རུ་སུ་	1
+2419059	2017370	de	Russland	1
+2419060	2017370	gl	Rusia	1
+2419061	2017370	he	חבר המדינות הרוסיות	1
+2419062	2017370	hr	Rusija	1
+2419063	2017370	ii	ꊉꇆꌦ	1
+2419064	2017370	it	Russia	1
+2419065	2017370	ml	റഷ്യ	1
+2419066	2017370	mn	Орос	1
+2419067	2017370	nl	Rusland	1
+2419068	2017370	ro	Federația Rusă	1
+2419069	2017370	se	Ruošša	1
+2419070	2017370	sk	Rusko	1
+2419071	2017370	sl	Rusija	1
+2419072	2017370	to	Lūsia	1
+2419073	2017370	tr	Rusya	1
+2419074	2017370	uk	Російська Федерація	1
+2419075	2017370	ur	روسی	1
+2728832	2017370	en	Russian Federation
+2728833	2017370	no	Russland	1
+2728834	2017370	nb	Russland	1
+2728835	2017370	nn	Russland	1
+3075880	2017370	link	http://en.wikipedia.org/wiki/Russia
+3763735	2017370		Rossiyskaya Federatsiya
+5976391	2017370		Russian Soviet Federative Socialist Republic				1
+5976392	2017370		Russian Soviet Federated Socialist Republic				1
+5976393	2017370		Russian Socialist Federative Soviet Republic				1
+7090367	2017370	ak	Rɔhyea	1
+7090368	2017370	as	ৰুচ	1
+7090369	2017370	bm	Irisi	1
+7090370	2017370	br	Rusia	1
+7090371	2017370	bs	Rusija	1
+7090372	2017370	ee	Russia nutome	1
+7090373	2017370	ff	Riisii	1
+7090374	2017370	gu	રશિયન ફેડરેશન	1
+7090375	2017370	ha	Rasha	1
+7090376	2017370	ki	Urusi	1
+7090377	2017370	kk	Ресей	1
+7090378	2017370	kl	Ruslandi	1
+7090379	2017370	kn	ರಶಿಯಾ	1
+7090380	2017370	ku	ڕووسیا	1
+7090381	2017370	kw	Russi	1
+7090382	2017370	lg	Lasa	1
+7090383	2017370	ln	Risí	1
+7090384	2017370	lu	Risi	1
+7090385	2017370	mg	Rosia	1
+7090386	2017370	mr	रशिया	1
+7090387	2017370	my	ရုရှ	1
+7090388	2017370	nd	Rashiya	1
+7090389	2017370	ne	रूस	1
+7090390	2017370	oc	Russia	1
+7090391	2017370	or	ରୁଷିଆ	1
+7090392	2017370	rm	Russia	1
+7090393	2017370	rn	Uburusiya	1
+7090394	2017370	sg	Rusïi	1
+7090395	2017370	si	රුසියාව	1
+7090396	2017370	sn	Russia	1
+7090397	2017370	ti	ራሺያ	1
+7090398	2017370	yo	Orílẹ́ède Rọṣia	1
+7090399	2017370	zu	i-Russia	1
+8043265	2017370		Rossiya
+10386978	2017370	fy	Ruslân	1
+10795053	2017370	link	http://id.loc.gov/authorities/names/n80001203
+11015585	2017370	olo	Ven'a		1
+11015586	2017370	krl	Venäjä		1
+2185320	578071		Belgorod	1	1
+2187454	578071	nb	Belgorod
+2187455	578071	nn	Belgorod
+2298521	578071	ru	Белгородская область	1
+2417535	578071	sv	Belgorod
+2438777	578071	no	Belgorodskaja oblast	1
+5649382	578071		Belgorodskaya Oblast’
+5702046	578071	link	http://en.wikipedia.org/wiki/Belgorod_Oblast
+6533722	578071	ru	Белгородская Область
+11761682	578071	fr	Oblast de Belgorod
+12108258	578071	fi	Belgorodin alue
+1602655	578072	de	Belgorod
+1602656	578072	en	Belgorod
+1602657	578072	ca	Bélgorod
+1602658	578072	cs	Bělgorod
+1602659	578072	eo	Belgorodo
+1602660	578072	et	Belgorod
+1602661	578072	fr	Belgorod	1
+1602662	578072	fr	Bilhorod-Dnistrovskyi
+1602663	578072	hr	Belgorod
+1602664	578072	ko	벨고로드
+1602665	578072	nl	Belgorod
+1602666	578072	os	Белгород
+1602667	578072	pl	Biełgorod
+1602668	578072	ru	Белгород
+1602669	578072	sv	Belgorod
+1631682	578072	fi	Belgorod
+1992597	578072	zh-CN	别尔哥罗德
+2438451	578072	no	Belgorod	1
+2924317	578072	link	http://en.wikipedia.org/wiki/Belgorod
+3048739	578072	link	http://ru.wikipedia.org/wiki/%D0%91%D0%B5%D0%BB%D0%B3%D0%BE%D1%80%D0%BE%D0%B4
+3917729	578072		Belgorod
+6910452	578072	link	http://fr.wikipedia.org/wiki/Belgorod
+7484590	578072	iata	EGO
+8213196	578072	es	Bélgorod
+8213197	578072	he	בלגורוד
+8213198	578072	uk	Бєлгород
+8213199	578072	sr	Белгород
+8213200	578072	be	Горад Белгарад
+8213201	578072	ja	ベルゴロド
+8213202	578072	lv	Belgoroda
+8213203	578072	lt	Belgorodas
+8213204	578072	bg	Белгород
+8213205	578072	fa	بلگورود
+8213206	578072	pnb	بیلگوروڈ
+8213207	578072	la	Bielogroda
+8213208	578072	tg	Белгород
+8213209	578072	mhr	Белгород
+8213210	578072	el	Μπέλγκοροντ
+8213211	578072	ar	بيلغورود
+8213212	578072	zh	别尔哥罗德
+8702800	578072	ce	Белгород
+8702801	578072	mn	Белгород
+11324460	578072	az	Belqorod
+11324461	578072	hsb	Bjelgorod
+11324462	578072	hy	Բելգորոդ
+11324463	578072	ky	Белгород шаары
+11324464	578072	mr	बेल्गोरोद
+11324465	578072	ur	بلگورود
+11324466	578072	xal	Белгород балһсн
