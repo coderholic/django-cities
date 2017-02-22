@@ -60,6 +60,7 @@ class Base(models.Model):
     Base model with boilerplate for all models.
     """
 
+    name = models.CharField(max_length=200, db_index=True)
     name_ascii = models.CharField(max_length=200, blank=True, db_index=True)
     slug = autoslug.AutoSlugField(populate_from='name_ascii')
     geoname_id = models.IntegerField(null=True, blank=True, unique=True)
@@ -81,8 +82,6 @@ class AbstractCountry(Base):
     Base Country model.
     """
 
-    name = models.CharField(max_length=200, unique=True)
-
     code2 = models.CharField(max_length=2, null=True, blank=True, unique=True)
     code3 = models.CharField(max_length=3, null=True, blank=True, unique=True)
     continent = models.CharField(max_length=2, db_index=True,
@@ -100,7 +99,6 @@ class AbstractRegion(Base):
     Base Region/State model.
     """
 
-    name = models.CharField(max_length=200, db_index=True)
     display_name = models.CharField(max_length=200)
     geoname_code = models.CharField(max_length=50, null=True, blank=True,
         db_index=True)
@@ -137,7 +135,6 @@ class AbstractCity(Base):
     Base City model.
     """
 
-    name = models.CharField(max_length=200, db_index=True)
     display_name = models.CharField(max_length=200)
 
     search_names = ToSearchTextField(max_length=4000,

@@ -25,18 +25,22 @@ class CountryAdmin(admin.ModelAdmin):
         'continent',
         'tld',
         'phone',
+        'geoname_id',
     )
     search_fields = (
         'name',
         'name_ascii',
         'code2',
         'code3',
-        'tld'
+        'tld',
+        'geoname_id',
     )
     list_filter = (
         'continent',
     )
     form = CountryForm
+
+
 admin.site.register(Country, CountryAdmin)
 
 
@@ -51,12 +55,16 @@ class RegionAdmin(admin.ModelAdmin):
     search_fields = (
         'name',
         'name_ascii',
+        'geoname_id',
     )
     list_display = (
         'name',
         'country',
+        'geoname_id',
     )
     form = RegionForm
+
+
 admin.site.register(Region, RegionAdmin)
 
 
@@ -76,9 +84,11 @@ class CityAdmin(admin.ModelAdmin):
         'name',
         'region',
         'country',
+        'geoname_id',
     )
     search_fields = (
         'search_names',
+        'geoname_id',
     )
     list_filter = (
         'country__continent',
@@ -88,5 +98,6 @@ class CityAdmin(admin.ModelAdmin):
 
     def get_changelist(self, request, **kwargs):
         return CityChangeList
+
 
 admin.site.register(City, CityAdmin)

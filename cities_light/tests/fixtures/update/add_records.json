@@ -1,0 +1,138 @@
+[
+{
+    "fields": {
+        "alternate_names": "Russie;\u0420\u043e\u0441\u0441\u0438\u0439\u0441\u043a\u0430\u044f \u0424\u0435\u0434\u0435\u0440\u0430\u0446\u0438\u044f",
+        "code2": "RU",
+        "code3": "RUS",
+        "continent": "EU",
+        "geoname_id": 2017370,
+        "name": "Russia",
+        "name_ascii": "Russia",
+        "phone": "7",
+        "slug": "russia",
+        "tld": "ru"
+    },
+    "model": "cities_light.country",
+    "pk": 1
+},
+{
+    "fields": {
+        "alternate_names": "Russie;\u0421\u0421\u0421\u0420",
+        "code2": "SU",
+        "code3": "",
+        "continent": "EA",
+        "geoname_id": 2017371,
+        "name": "USSR",
+        "name_ascii": "USSR",
+        "phone": "8",
+        "slug": "ussr",
+        "tld": "su"
+    },
+    "model": "cities_light.country",
+    "pk": 2
+},
+{
+    "fields": {
+        "alternate_names": "Oblast de Kemerovo;\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u0441\u043a\u0430\u044f \u041e\u0431\u043b\u0430\u0441\u0442\u044c;\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u0441\u043a\u0430\u044f \u043e\u0431\u043b\u0430\u0441\u0442\u044c",
+        "country": 1,
+        "display_name": "Kemerovo, Russia",
+        "geoname_code": "29",
+        "geoname_id": 1503900,
+        "name": "Kemerovo",
+        "name_ascii": "Kemerovo",
+        "slug": "kemerovo"
+    },
+    "model": "cities_light.region",
+    "pk": 1
+},
+{
+    "fields": {
+        "alternate_names": "Province de Kuzbass;\u041a\u0443\u0437\u0431\u0430\u0441\u0441",
+        "country": 2,
+        "display_name": "Kuzbass, USSR",
+        "geoname_code": "29",
+        "geoname_id": 1503999,
+        "name": "Kuzbass",
+        "name_ascii": "Kuzbass",
+        "slug": "kuzbass"
+    },
+    "model": "cities_light.region",
+    "pk": 2
+},
+{
+    "fields": {
+        "alternate_names": "\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u043e",
+        "country": 1,
+        "display_name": "Kemerovo, Kemerovo, Russia",
+        "feature_code": "PPLA",
+        "geoname_id": 1503901,
+        "latitude": "55.33333",
+        "longitude": "86.08333",
+        "name": "Kemerovo",
+        "name_ascii": "Kemerovo",
+        "population": 477090,
+        "region": 1,
+        "search_names": "kemerovokemerovorossiiskaiafederatsiia kemerovokemerovorussia kemerovokemerovorussie kemerovokemerovskaiaoblastrossiiskaiafederatsiia kemerovokemerovskaiaoblastrussia kemerovokemerovskaiaoblastrussie kemerovooblastdekemerovorossiiskaiafederatsiia kemerovooblastdekemerovorussia kemerovooblastdekemerovorussie kemerovorossiiskaiafederatsiia kemerovorussia kemerovorussie",
+        "slug": "kemerovo"
+    },
+    "model": "cities_light.city",
+    "pk": 1
+},
+{
+    "fields": {
+        "alternate_names": "Novokouznetsk;\u041d\u043e\u0432\u043e\u043a\u0443\u0437\u043d\u0435\u0446\u043a;\u0421\u0442\u0430\u043b\u0438\u043d\u0441\u043a",
+        "country": 1,
+        "display_name": "Novokuznetsk, Kemerovo, Russia",
+        "feature_code": "PPL",
+        "geoname_id": 1496990,
+        "latitude": "53.7557",
+        "longitude": "87.1099",
+        "name": "Novokuznetsk",
+        "name_ascii": "Novokuznetsk",
+        "population": 539616,
+        "region": 1,
+        "search_names": "novokouznetskkemerovorossiiskaiafederatsiia novokouznetskkemerovorussia novokouznetskkemerovorussie novokouznetskkemerovskaiaoblastrossiiskaiafederatsiia novokouznetskkemerovskaiaoblastrussia novokouznetskkemerovskaiaoblastrussie novokouznetskoblastdekemerovorossiiskaiafederatsiia novokouznetskoblastdekemerovorussia novokouznetskoblastdekemerovorussie novokouznetskrossiiskaiafederatsiia novokouznetskrussia novokouznetskrussie novokuznetskkemerovorossiiskaiafederatsiia novokuznetskkemerovorussia novokuznetskkemerovorussie novokuznetskkemerovskaiaoblastrossiiskaiafederatsiia novokuznetskkemerovskaiaoblastrussia novokuznetskkemerovskaiaoblastrussie novokuznetskoblastdekemerovorossiiskaiafederatsiia novokuznetskoblastdekemerovorussia novokuznetskoblastdekemerovorussie novokuznetskrossiiskaiafederatsiia novokuznetskrussia novokuznetskrussie stalinskkemerovorossiiskaiafederatsiia stalinskkemerovorussia stalinskkemerovorussie stalinskkemerovskaiaoblastrossiiskaiafederatsiia stalinskkemerovskaiaoblastrussia stalinskkemerovskaiaoblastrussie stalinskoblastdekemerovorossiiskaiafederatsiia stalinskoblastdekemerovorussia stalinskoblastdekemerovorussie stalinskrossiiskaiafederatsiia stalinskrussia stalinskrussie",
+        "slug": "novokuznetsk"
+    },
+    "model": "cities_light.city",
+    "pk": 2
+},
+{
+    "fields": {
+        "alternate_names": "\u041a\u0438\u0441\u0435\u043b\u0435\u0432\u0441\u043a;\u041a\u0438\u0441\u0435\u043b\u0451\u0432\u0441\u043a",
+        "country": 2,
+        "display_name": "Kisel\u00ebvsk, Kuzbass, USSR",
+        "feature_code": "PPL",
+        "geoname_id": 1503277,
+        "latitude": "53.99",
+        "longitude": "86.6621",
+        "name": "Kisel\u00ebvsk",
+        "name_ascii": "Kiselevsk",
+        "population": 104000,
+        "region": 2,
+        "search_names": "kiselevskkuzbassrussie kiselevskkuzbasssssr kiselevskkuzbassussr kiselevskprovincedekuzbassrussie kiselevskprovincedekuzbasssssr kiselevskprovincedekuzbassussr kiselevskrussie kiselevsksssr kiselevskussr kiseliovskkuzbassrussie kiseliovskkuzbasssssr kiseliovskkuzbassussr kiseliovskprovincedekuzbassrussie kiseliovskprovincedekuzbasssssr kiseliovskprovincedekuzbassussr kiseliovskrussie kiseliovsksssr kiseliovskussr",
+        "slug": "kiselevsk"
+    },
+    "model": "cities_light.city",
+    "pk": 3
+},
+{
+    "fields": {
+        "alternate_names": "\u0411\u0435\u043b\u043e\u0432\u043e",
+        "country": 2,
+        "display_name": "Belovo, Kuzbass, USSR",
+        "feature_code": "PPL",
+        "geoname_id": 1510469,
+        "latitude": "54.4165",
+        "longitude": "86.2976",
+        "name": "Belovo",
+        "name_ascii": "Belovo",
+        "population": 75764,
+        "region": 2,
+        "search_names": "belovokuzbassrussie belovokuzbasssssr belovokuzbassussr belovoprovincedekuzbassrussie belovoprovincedekuzbasssssr belovoprovincedekuzbassussr belovorussie belovosssr belovoussr",
+        "slug": "belovo"
+    },
+    "model": "cities_light.city",
+    "pk": 4
+}
+]

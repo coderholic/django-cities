@@ -14,10 +14,10 @@ from cities_light.settings import DATA_DIR, FIXTURES_BASE_URL
 from cities_light.management.commands.cities_light_fixtures import Command
 from cities_light.downloader import Downloader
 from cities_light.models import City
+from .base import FixtureDir
 
 
 class TestCitiesLigthFixtures(test.TransactionTestCase):
-
     """Tests for cities_light_fixtures management command."""
 
     def test_dump_fixtures(self):
@@ -41,7 +41,8 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
         Test dump_fixture calls dumpdata management command
         and tries to save it to file."""
         # Load test data
-        call_command('loaddata', 'cities_light/tests/fixtures/angouleme.json')
+        destination = FixtureDir('import').get_file_path('angouleme.json')
+        call_command('loaddata', destination)
         # Dump
         try:
             fixture_path = 'cities_light/tests/fixtures/test_dump_fixture.json'
@@ -81,7 +82,7 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
 
     def test_load_fixture(self):
         """Test loaded fixture matches database content."""
-        destination = 'cities_light/tests/fixtures/angouleme.json'
+        destination = FixtureDir('import').get_file_path('angouleme.json')
         with mock.patch.object(Downloader, 'download') as mock_func:
             cmd = Command()
             cmd.load_fixture(source='/abcdefg.json',

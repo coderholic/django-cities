@@ -11,6 +11,9 @@ Populate your database with command::
 By default, this command attempts to do the least work possible, update what is
 necessary only. If you want to disable all these optimisations/skips, use --force-all.
 
+Also please note, that you may want to use --keep-slugs option to prevent
+Country/Region/City slugs from being modified.
+
 This command is well documented, consult the help with::
 
     ./manage.py help cities_light
@@ -100,5 +103,4 @@ logger. For example::
             },
         }
     }
-
 

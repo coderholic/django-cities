@@ -1,0 +1,1 @@
+SU				USSR	Moscow	23100000	238702000	EA	.su	KUN	Kuna	8	######	^(\d{6})$	ru,tt,xal,cau,ady,kv,ce,tyv,cv,udm,tut,mns,bua,myv,mdf,chm,ba,inh,tut,kbd,krc,ava,sah,nog	2017371	GE,CN,PL,FI,MN,NO,KP

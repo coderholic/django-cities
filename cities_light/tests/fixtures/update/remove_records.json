@@ -1,0 +1,51 @@
+[
+{
+    "fields": {
+        "alternate_names": "Russie;\u0420\u043e\u0441\u0441\u0438\u0439\u0441\u043a\u0430\u044f \u0424\u0435\u0434\u0435\u0440\u0430\u0446\u0438\u044f",
+        "code2": "RU",
+        "code3": "RUS",
+        "continent": "EU",
+        "geoname_id": 2017370,
+        "name": "Russia",
+        "name_ascii": "Russia",
+        "phone": "7",
+        "slug": "russia",
+        "tld": "ru"
+    },
+    "model": "cities_light.country",
+    "pk": 1
+},
+{
+    "fields": {
+        "alternate_names": "Oblast de Belgorod;\u0411\u0435\u043b\u0433\u043e\u0440\u043e\u0434\u0441\u043a\u0430\u044f \u041e\u0431\u043b\u0430\u0441\u0442\u044c;\u0411\u0435\u043b\u0433\u043e\u0440\u043e\u0434\u0441\u043a\u0430\u044f \u043e\u0431\u043b\u0430\u0441\u0442\u044c",
+        "country": 1,
+        "display_name": "Belgorod, Russia",
+        "geoname_code": "09",
+        "geoname_id": 578071,
+        "name": "Belgorod",
+        "name_ascii": "Belgorod",
+        "slug": "belgorod"
+    },
+    "model": "cities_light.region",
+    "pk": 1
+},
+{
+    "fields": {
+        "alternate_names": "Bilhorod-Dnistrovskyi;\u0411\u0435\u043b\u0433\u043e\u0440\u043e\u0434",
+        "country": 1,
+        "display_name": "Belgorod, Belgorod, Russia",
+        "feature_code": "PPLA",
+        "geoname_id": 578072,
+        "latitude": "50.61074",
+        "longitude": "36.58015",
+        "name": "Belgorod",
+        "name_ascii": "Belgorod",
+        "population": 345289,
+        "region": 1,
+        "search_names": "belgorodbelgorodrossiiskaiafederatsiia belgorodbelgorodrussia belgorodbelgorodrussie belgorodbelgorodskaiaoblastrossiiskaiafederatsiia belgorodbelgorodskaiaoblastrussia belgorodbelgorodskaiaoblastrussie belgorodoblastdebelgorodrossiiskaiafederatsiia belgorodoblastdebelgorodrussia belgorodoblastdebelgorodrussie belgorodrossiiskaiafederatsiia belgorodrussia belgorodrussie bilhoroddnistrovskyibelgorodrossiiskaiafederatsiia bilhoroddnistrovskyibelgorodrussia bilhoroddnistrovskyibelgorodrussie bilhoroddnistrovskyibelgorodskaiaoblastrossiiskaiafederatsiia bilhoroddnistrovskyibelgorodskaiaoblastrussia bilhoroddnistrovskyibelgorodskaiaoblastrussie bilhoroddnistrovskyioblastdebelgorodrossiiskaiafederatsiia bilhoroddnistrovskyioblastdebelgorodrussia bilhoroddnistrovskyioblastdebelgorodrussie bilhoroddnistrovskyirossiiskaiafederatsiia bilhoroddnistrovskyirussia bilhoroddnistrovskyirussie",
+        "slug": "belgorod"
+    },
+    "model": "cities_light.city",
+    "pk": 1
+}
+]

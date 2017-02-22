@@ -175,11 +175,6 @@ if os.environ.get('CI', False):
 
     FIXTURE_DIRS = [FIXTURE_DIR]
 
-    CITIES_LIGHT_CITY_SOURCES = ['file://%s/angouleme_city.txt' % FIXTURE_DIR]
-    CITIES_LIGHT_REGION_SOURCES = ['file://%s/angouleme_region.txt' % FIXTURE_DIR]
-    CITIES_LIGHT_COUNTRY_SOURCES = ['file://%s/angouleme_country.txt' % FIXTURE_DIR]
-    CITIES_LIGHT_TRANSLATION_SOURCES = ['file://%s/angouleme_translations.txt' % FIXTURE_DIR]
-
     LOGGING['loggers']['cities_light']['level'] = 'DEBUG'
 
     INSTALLED_APPS += ('dbdiff',)

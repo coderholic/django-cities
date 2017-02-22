@@ -1,0 +1,200 @@
+993186	2017370	en	Russian Soviet Federated Socialist Republic				1
+993187	2017370		Rossiyskaya Sovetskaya Federativnaya Sotsialisticheskaya Respublika				1
+993188	2017370	en	Russian Soviet Federative Socialist Republic				1
+993191	2017370	en	Russian Socialist Federative Soviet Republic				1
+1556474	2017370	aa	Russia
+1556475	2017370	af	Rusland
+1556476	2017370	am	ራሺያ
+1556477	2017370	ar	روسيا
+1556478	2017370	be	Расія
+1556479	2017370	bg	Руска Федерация
+1556480	2017370	bn	রাশিয়া
+1556481	2017370	ca	Rússia
+1556482	2017370	cs	Rusko
+1556483	2017370	cy	Rwsia
+1556484	2017370	da	Rusland
+1556485	2017370	de	Russische Föderation
+1556486	2017370	el	Ρωσία
+1556487	2017370	en	Russia	1	1
+1556488	2017370	eo	Rusujo
+1556489	2017370	es	Rusia	1	1
+1556490	2017370	et	Venemaa
+1556491	2017370	eu	Errusia
+1556492	2017370	fa	روسیه
+1556493	2017370	fi	Venäjä
+1556494	2017370	fo	Russland
+1556495	2017370	fr	Russie
+1556496	2017370	ga	Cónaidhm na Rúise
+1556497	2017370	he	רוסיה, הפדרציה של
+1556498	2017370	hi	रूस
+1556499	2017370	hr	Ruska Federacija
+1556500	2017370	hu	Oroszországi Föderáció	1
+1556501	2017370	hy	Ռուսաստան
+1556502	2017370	id	Rusia
+1556503	2017370	is	Rússland
+1556504	2017370	it	Federazione Russa
+1556505	2017370	ja	ロシア
+1556506	2017370	ka	რუსეთი
+1556507	2017370	km	រូស្ស៊ី
+1556508	2017370	ko	러시아
+1556509	2017370	lo	ລັດເຊຍ
+1556510	2017370	lt	Rusijos Federacija	1
+1556511	2017370	lv	Krievija
+1556512	2017370	mk	Русија
+1556513	2017370	ms	Rusia	1
+1556514	2017370	mt	Russja
+1556515	2017370	nb	Den russiske føderasjon
+1556516	2017370	nl	Russische Federatie
+1556517	2017370	nn	Den russiske føderasjon
+1556518	2017370	om	Russia
+1556519	2017370	pl	Rosja	1
+1556520	2017370	ps	روسیه
+1556521	2017370	pt	Rússia
+1556522	2017370	ro	Rusia
+1556523	2017370	ru	Россия	1	1
+1556524	2017370	sk	Ruská federácia
+1556525	2017370	sl	Ruska federacija
+1556526	2017370	so	Ruush
+1556527	2017370	sq	Rusi
+1556528	2017370	sr	Русија
+1556529	2017370	sv	Ryssland
+1556530	2017370	sw	Urusi
+1556531	2017370	ta	ரஷ்யா
+1556532	2017370	te	రష్య
+1556533	2017370	th	รัสเซีย
+1556534	2017370	tr	Rusya Federasyonu
+1556535	2017370	tt	Россия
+1556536	2017370	uk	Росія
+1556537	2017370	uz	Россия
+1556538	2017370	vi	Nga
+1556539	2017370	zh	俄罗斯	1
+2197904	2017370	ru	Российская Федерация
+2419054	2017370	az	Rusiya	1
+2419055	2017370	be	Расійская Федэрацыя	1
+2419056	2017370	bg	Русия	1
+2419057	2017370	bn	রাশিয়া	1
+2419058	2017370	bo	ཨུ་རུ་སུ་	1
+2419059	2017370	de	Russland	1
+2419060	2017370	gl	Rusia	1
+2419061	2017370	he	חבר המדינות הרוסיות	1
+2419062	2017370	hr	Rusija	1
+2419063	2017370	ii	ꊉꇆꌦ	1
+2419064	2017370	it	Russia	1
+2419065	2017370	ml	റഷ്യ	1
+2419066	2017370	mn	Орос	1
+2419067	2017370	nl	Rusland	1
+2419068	2017370	ro	Federația Rusă	1
+2419069	2017370	se	Ruošša	1
+2419070	2017370	sk	Rusko	1
+2419071	2017370	sl	Rusija	1
+2419072	2017370	to	Lūsia	1
+2419073	2017370	tr	Rusya	1
+2419074	2017370	uk	Російська Федерація	1
+2419075	2017370	ur	روسی	1
+2728832	2017370	en	Russian Federation
+2728833	2017370	no	Russland	1
+2728834	2017370	nb	Russland	1
+2728835	2017370	nn	Russland	1
+3075880	2017370	link	http://en.wikipedia.org/wiki/Russia
+3763735	2017370		Rossiyskaya Federatsiya
+5976391	2017370		Russian Soviet Federative Socialist Republic				1
+5976392	2017370		Russian Soviet Federated Socialist Republic				1
+5976393	2017370		Russian Socialist Federative Soviet Republic				1
+7090367	2017370	ak	Rɔhyea	1
+7090368	2017370	as	ৰুচ	1
+7090369	2017370	bm	Irisi	1
+7090370	2017370	br	Rusia	1
+7090371	2017370	bs	Rusija	1
+7090372	2017370	ee	Russia nutome	1
+7090373	2017370	ff	Riisii	1
+7090374	2017370	gu	રશિયન ફેડરેશન	1
+7090375	2017370	ha	Rasha	1
+7090376	2017370	ki	Urusi	1
+7090377	2017370	kk	Ресей	1
+7090378	2017370	kl	Ruslandi	1
+7090379	2017370	kn	ರಶಿಯಾ	1
+7090380	2017370	ku	ڕووسیا	1
+7090381	2017370	kw	Russi	1
+7090382	2017370	lg	Lasa	1
+7090383	2017370	ln	Risí	1
+7090384	2017370	lu	Risi	1
+7090385	2017370	mg	Rosia	1
+7090386	2017370	mr	रशिया	1
+7090387	2017370	my	ရုရှ	1
+7090388	2017370	nd	Rashiya	1
+7090389	2017370	ne	रूस	1
+7090390	2017370	oc	Russia	1
+7090391	2017370	or	ରୁଷିଆ	1
+7090392	2017370	rm	Russia	1
+7090393	2017370	rn	Uburusiya	1
+7090394	2017370	sg	Rusïi	1
+7090395	2017370	si	රුසියාව	1
+7090396	2017370	sn	Russia	1
+7090397	2017370	ti	ራሺያ	1
+7090398	2017370	yo	Orílẹ́ède Rọṣia	1
+7090399	2017370	zu	i-Russia	1
+8043265	2017370		Rossiya
+10386978	2017370	fy	Ruslân	1
+10795053	2017370	link	http://id.loc.gov/authorities/names/n80001203
+11015585	2017370	olo	Ven'a		1
+11015586	2017370	krl	Venäjä		1
+733000	1503900		Kemerovo Oblast’
+2185350	1503900		Kemerovo	1	1
+2187481	1503900	nb	Kemerovo
+2187482	1503900	nn	Kemerovo
+2298539	1503900	ru	Кемеровская область	1
+2417549	1503900	sv	Kemerovo
+2447086	1503900	no	Kemerovskaja oblast	1
+5649366	1503900		Kemerovskaya Oblast’
+5702112	1503900	link	http://en.wikipedia.org/wiki/Kemerovo_Oblast
+8656390	1503900	ru	Кемеровская Область
+11761688	1503900	fr	Oblast de Kemerovo
+12132880	1503900	fi	Kemerovon alue	1
+733001	1503901		Shcheglovsk
+1601365	1503901	de	Kemerowo
+1601366	1503901	en	Kemerovo
+1601367	1503901	es	Kémerovo
+1601368	1503901	cs	Kemerovo
+1601369	1503901	eo	Kemerovo
+1601370	1503901	et	Kemerovo
+1601371	1503901	fi	Kemerovo
+1601372	1503901	fr	Kemerovo
+1601373	1503901	ja	ケメロヴォ
+1601374	1503901	ko	케메로보
+1601375	1503901	lb	Kemerowo
+1601376	1503901	nl	Kemerovo
+1601377	1503901	pl	Kemerowo
+1601378	1503901	ru	Кемерово
+1601379	1503901	sv	Kemerovo
+1993322	1503901	he	קמרובו
+2447113	1503901	no	Kemerovo	1
+2934932	1503901	link	http://en.wikipedia.org/wiki/Kemerovo
+3050396	1503901	link	http://ru.wikipedia.org/wiki/%D0%9A%D0%B5%D0%BC%D0%B5%D1%80%D0%BE%D0%B2%D0%BE
+3864724	1503901		Kemerovo
+7481760	1503901	iata	KEJ
+8215583	1503901	ar	كيميروفو
+8215584	1503901	pnb	کیمیروو
+8215585	1503901	af	Kemerowo
+8215586	1503901	mhr	Кемерово
+8215587	1503901	sr	Кемерово
+8215588	1503901	cv	Кемĕр
+8215589	1503901	os	Кемерово
+8215590	1503901	lt	Kemerovas
+8215591	1503901	lv	Kemerova
+8215592	1503901	fa	کمروف
+8215593	1503901	uk	Кемерово
+8215594	1503901	udm	Кемерово
+8215595	1503901	ca	Kémerovo
+8215596	1503901	bg	Кемерово
+8215597	1503901	be	Горад Кемерава
+8215598	1503901	zh	克麥羅沃
+8702843	1503901	ba	Кемерово
+8702844	1503901	ce	Кемерово
+8702845	1503901	hy	Կեմերովո
+8702846	1503901	mn	Кемерово хот
+11327400	1503901	bxr	Кемерово
+11327401	1503901	ky	Кемерово
+11327402	1503901	mr	केमेरोवो
+11327403	1503901	oc	Kèmerovo
+11327404	1503901	tt	Кемерово
+11327405	1503901	ur	کیمیروو
