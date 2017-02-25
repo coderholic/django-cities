@@ -38,6 +38,7 @@ from tqdm import tqdm
 from django import VERSION as django_version
 from django.contrib.gis.gdal.envelope import Envelope
 from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
 try:
     from django.contrib.gis.db.models.functions import Distance
 except ImportError:
@@ -595,9 +596,11 @@ class Command(BaseCommand):
                                    .distance(defaults['location'])\
                                    .order_by('distance')[0]
                     else:
-                        city = City.objects.filter(population__gt=city_pop_min)\
-                            .annotate(distance=Distance('location', defaults['location']))\
-                            .order_by('distance')[0]
+                        city = City.objects.filter(
+                            location__distance_lte=(defaults['location'], D(km=1000))
+                        ).annotate(
+                            distance=Distance('location', defaults['location'])
+                        ).order_by('distance').first()
                 except:  # TODO: Restrict what this catches
                     self.logger.warning(
                         "District: %s: DB backend does not support native '.distance(...)' query "
