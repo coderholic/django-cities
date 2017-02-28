@@ -10,13 +10,13 @@ except (NameError, ImportError):
     from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe, SafeText
 
+from .conf import CONTINENT_DATA
+
 
 if sys.version_info < (3, 0):
     unicode_func = unicode  # noqa: F821
 else:
     unicode_func = str
-
-from .conf import CONTINENT_DATA
 
 
 # GEO DISTANCE

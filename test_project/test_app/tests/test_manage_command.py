@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import re
+
 from unittest import skipIf
 
 from django import VERSION as django_version
