@@ -103,9 +103,9 @@ class IgnoreEmptyRegionManageCommandTestCase(
     num_ua_cities = 50
 
     @classmethod
-    def setUpClass(cls):
+    def setUpTestData(cls):
         # Run the import command only once
-        super(IgnoreEmptyRegionManageCommandTestCase, cls).setUpClass()
+        super(IgnoreEmptyRegionManageCommandTestCase, cls).setUpTestData()
         call_command('cities', force=True, **{
             'import': 'country,region,subregion,city',
         })
@@ -134,9 +134,9 @@ class ManageCommandTestCase(
     num_postal_codes = 13
 
     @classmethod
-    def setUpClass(cls):
+    def setUpTestData(cls):
         # Run the import command only once
-        super(ManageCommandTestCase, cls).setUpClass()
+        super(ManageCommandTestCase, cls).setUpTestData()
         call_command('cities', force=True, **{
             'import': 'country,region,subregion,city,alt_name,postal_code',
         })
@@ -184,9 +184,9 @@ class AllLocalesManageCommandTestCase(
     num_not_und_alt_names = 5394
 
     @classmethod
-    def setUpClass(cls):
+    def setUpTestData(cls):
         # Run the import command only once
-        super(AllLocalesManageCommandTestCase, cls).setUpClass()
+        super(AllLocalesManageCommandTestCase, cls).setUpTestData()
         call_command('cities', force=True, **{
             'import': 'country,region,subregion,city,alt_name',
         })
