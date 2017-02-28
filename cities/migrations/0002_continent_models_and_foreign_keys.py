@@ -8,7 +8,7 @@ import django.db.models.deletion
 
 import swapper
 
-from ..conf import CONTINENT_DATA
+from ..util import add_continents as util_add_continents
 
 
 def get_model(apps, name):
@@ -17,18 +17,7 @@ def get_model(apps, name):
 
 
 def add_continents(apps, schema_editor):
-    Continent = get_model(apps, 'Continent')
-
-    for ccode, cdata in CONTINENT_DATA.items():
-        try:
-            c = Continent.objects.get(code=ccode)
-        except Continent.DoesNotExist:
-            c = Continent()
-        c.id = cdata[1]
-        c.name = cdata[0]
-        c.code = ccode
-        c.slug = c.name
-        c.save()
+    util_add_continents(get_model(apps, 'Continent'))
 
 
 def rm_continents(apps, schema_editor):
