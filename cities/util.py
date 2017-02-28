@@ -16,6 +16,8 @@ if sys.version_info < (3, 0):
 else:
     unicode_func = str
 
+from .conf import CONTINENT_DATA
+
 
 # GEO DISTANCE
 
@@ -30,6 +32,21 @@ def geo_distance(a, b):
     cos_x = (sin(a_y) * sin(b_y) +
              cos(a_y) * cos(b_y) * cos(delta_x))
     return acos(cos_x) * earth_radius_km
+
+
+# ADD CONTINENTS FUNCTION
+
+def add_continents(continent_model):
+    for ccode, cdata in CONTINENT_DATA.items():
+        try:
+            c = continent_model.objects.get(code=ccode)
+        except continent_model.DoesNotExist:
+            c = continent_model()
+        c.id = cdata[1]
+        c.name = cdata[0]
+        c.code = ccode
+        c.slug = c.name
+        c.save()
 
 
 # SLUGIFY REGEXES
