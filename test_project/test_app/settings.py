@@ -136,7 +136,9 @@ travis_repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'coderholic/django-cities'
 travis_repo_branch = os.environ.get('TRAVIS_PULL_REQUEST_BRANCH', '')
 if travis_repo_branch == '':
     travis_repo_branch = os.environ.get('TRAVIS_BRANCH', os.environ.get('TRAVIS_REPO_BRANCH', 'master'))
-if travis_commit and travis_repo_slug:
+if os.environ.get('CITIES_DATA_URL_BASE', False):
+    url_base = os.environ.get('CITIES_DATA_URL_BASE')
+elif travis_commit and travis_repo_slug:
     url_base = 'https://raw.githubusercontent.com/{repo_slug}/{commit_id}/test_project/data/'.format(
         repo_slug=travis_repo_slug, commit_id=travis_commit)
 else:
