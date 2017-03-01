@@ -177,10 +177,11 @@ class Command(BaseCommand):
             try:
                 web_file = urlopen(url)
                 if 'html' in web_file.headers['Content-Type']:
-                    raise Exception()
+                    # TODO: Make this a subclass
+                    raise Exception("Content type of downloaded file was {}".format(web_file.headers['Content-Type']))
                 self.logger.debug("Downloaded: {}".format(url))
                 break
-            except:
+            except Exception:
                 web_file = None
                 continue
         else:
@@ -250,8 +251,11 @@ class Command(BaseCommand):
 
             try:
                 country_id = int(item['geonameid'])
-            except:
+            except KeyError:
                 self.logger.warning("Country has no geonameid: {} -- skipping".format(item))
+                continue
+            except ValueError:
+                self.logger.warning("Country has non-numeric geonameid: {} -- skipping".format(item['geonameid']))
                 continue
 
             defaults = {
@@ -328,8 +332,11 @@ class Command(BaseCommand):
 
             try:
                 region_id = int(item['geonameid'])
-            except:
+            except KeyError:
                 self.logger.warning("Region has no geonameid: {} -- skipping".format(item))
+                continue
+            except ValueError:
+                self.logger.warning("Region has non-numeric geonameid: {} -- skipping".format(item['geonameid']))
                 continue
 
             country_code, region_code = item['code'].split(".")
@@ -395,8 +402,11 @@ class Command(BaseCommand):
 
             try:
                 subregion_id = int(item['geonameid'])
-            except:
+            except KeyError:
                 self.logger.warning("Subregion has no geonameid: {} -- skipping".format(item))
+                continue
+            except ValueError:
+                self.logger.warning("Subregion has non-numeric geonameid: {} -- skipping".format(item['geonameid']))
                 continue
 
             country_code, region_code, subregion_code = item['code'].split(".")
@@ -409,7 +419,7 @@ class Command(BaseCommand):
 
             try:
                 defaults['region'] = self.region_index[country_code + "." + region_code]
-            except:
+            except KeyError:
                 regions_not_found.setdefault(country_code, {})
                 regions_not_found[country_code].setdefault(region_code, []).append(defaults['name'])
                 self.logger.debug("Subregion: %s %s: Cannot find region",
@@ -456,8 +466,11 @@ class Command(BaseCommand):
 
             try:
                 city_id = int(item['geonameid'])
-            except:
+            except KeyError:
                 self.logger.warning("City has no geonameid: {} -- skipping".format(item))
+                continue
+            except ValueError:
+                self.logger.warning("City has non-numeric geonameid: {} -- skipping".format(item['geonameid']))
                 continue
 
             defaults = {
@@ -471,23 +484,24 @@ class Command(BaseCommand):
 
             try:
                 defaults['elevation'] = int(item['elevation'])
-            except:
+            except (KeyError, ValueError):
                 pass
 
             country_code = item['countryCode']
             try:
                 country = self.country_index[country_code]
                 defaults['country'] = country
-            except:
-                self.logger.warning("City: %s: Cannot find country: %s -- skipping",
+            except KeyError:
+                self.logger.warning("City: %s: Cannot find country: '%s' -- skipping",
                                     item['name'], country_code)
                 continue
 
             region_code = item['admin1Code']
             try:
-                region = self.region_index[country_code + "." + region_code]
+                region_key = country_code + "." + region_code
+                region = self.region_index[region_key]
                 defaults['region'] = region
-            except:
+            except KeyError:
                 self.logger.debug('SKIP_CITIES_WITH_EMPTY_REGIONS: %s', str(SKIP_CITIES_WITH_EMPTY_REGIONS))
                 if SKIP_CITIES_WITH_EMPTY_REGIONS:
                     self.logger.debug("%s: %s: Cannot find region: '%s' -- skipping",
@@ -516,7 +530,7 @@ class Command(BaseCommand):
                                 region=defaults['region'])
                     except Subregion.DoesNotExist:
                         if subregion_code:
-                            self.logger.debug("%s: %s: Cannot find subregion: %s",
+                            self.logger.debug("%s: %s: Cannot find subregion: '%s'",
                                               country_code, item['name'], subregion_code)
                         defaults['subregion'] = None
 
@@ -580,12 +594,14 @@ class Command(BaseCommand):
             if hasattr(District, 'code'):
                 defaults['code'] = item['admin3Code'],
 
+            geonameid = int(item['geonameid'])
+
             # Find city
             city = None
             try:
-                city = city_index[self.hierarchy[item['geonameid']]]
-            except:
-                self.logger.debug("District: %d %s: Cannot find city in hierarchy, using nearest", item['geonameid'], defaults['name'])
+                city = city_index[self.hierarchy[geonameid]]
+            except KeyError:
+                self.logger.debug("District: %d %s: Cannot find city in hierarchy, using nearest", geonameid, defaults['name'])
                 city_pop_min = 100000
                 # we are going to try to find closet city using native
                 # database .distance(...) query but if that fails then
@@ -602,7 +618,7 @@ class Command(BaseCommand):
                         ).annotate(
                             distance=Distance('location', defaults['location'])
                         ).order_by('distance').first()
-                except:  # TODO: Restrict what this catches
+                except City.DoesNotExist as e:
                     self.logger.warning(
                         "District: %s: DB backend does not support native '.distance(...)' query "
                         "falling back to two degree search",
@@ -619,6 +635,8 @@ class Command(BaseCommand):
                         if dist < min_dist:
                             min_dist = dist
                             city = e
+            else:
+                self.logger.debug("Found city in hierarchy: %s [%d]", city.name, geonameid)
 
             if not city:
                 self.logger.warning("District: %s: Cannot find city -- skipping", defaults['name'])
@@ -685,7 +703,7 @@ class Command(BaseCommand):
             geo_id = int(item['geonameid'])
             try:
                 geo_info = geo_index[geo_id]
-            except:
+            except KeyError:
                 continue
 
             try:
@@ -704,12 +722,12 @@ class Command(BaseCommand):
             alt.is_short = bool(item['isShort'])
             try:
                 alt.language_code = locale
-            except:
+            except AttributeError:
                 alt.language = locale
 
             try:
                 int(item['name'])
-            except:
+            except ValueError:
                 pass
             else:
                 if not INCLUDE_NUMERIC_ALTERNATIVE_NAMES:
@@ -824,7 +842,7 @@ class Command(BaseCommand):
             # Find country
             try:
                 country = self.country_index[country_code]
-            except:
+            except KeyError:
                 self.logger.warning("Postal code '%s': Cannot find country: %s -- skipping", code, country_code)
                 continue
 
@@ -850,7 +868,7 @@ class Command(BaseCommand):
             try:
                 location = Point(float(item['longitude']),
                                  float(item['latitude']))
-            except:
+            except ValueError:
                 location = None
 
             if len(item['placeName']) >= 200:
