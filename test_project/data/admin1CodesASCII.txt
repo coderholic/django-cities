@@ -7,6 +7,7 @@ AD.07	Andorra la Vella	Andorra la Vella	3041566
 AD.08	Escaldes-Engordany	Escaldes-Engordany	3338529
 AO.12	Malanje	Malanje	2239858
 ES.51	Andalusia	Andalusia	2593109
+IE.L	Leinster	Leinster	7521314
 RU.88	Jaroslavl	Jaroslavl	468898
 RU.86	Voronezj	Voronezj	472039
 RU.85	Vologda	Vologda	472454
