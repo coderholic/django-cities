@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import six
 import re
 
 from django.utils.encoding import python_2_unicode_compatible
@@ -18,7 +17,7 @@ from .settings import INDEX_SEARCH_NAMES, CITIES_LIGHT_APP_NAME
 
 
 __all__ = ['AbstractCountry', 'AbstractRegion', 'AbstractCity',
-    'CONTINENT_CHOICES']
+           'CONTINENT_CHOICES']
 
 
 CONTINENT_CHOICES = (
@@ -85,7 +84,7 @@ class AbstractCountry(Base):
     code2 = models.CharField(max_length=2, null=True, blank=True, unique=True)
     code3 = models.CharField(max_length=3, null=True, blank=True, unique=True)
     continent = models.CharField(max_length=2, db_index=True,
-        choices=CONTINENT_CHOICES)
+                                 choices=CONTINENT_CHOICES)
     tld = models.CharField(max_length=5, blank=True, db_index=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
 
@@ -101,10 +100,10 @@ class AbstractRegion(Base):
 
     display_name = models.CharField(max_length=200)
     geoname_code = models.CharField(max_length=50, null=True, blank=True,
-        db_index=True)
+                                    db_index=True)
 
     country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country',
-        on_delete=models.CASCADE)
+                                on_delete=models.CASCADE)
 
     class Meta(Base.Meta):
         unique_together = (('country', 'name'), ('country', 'slug'))
@@ -125,7 +124,8 @@ class ToSearchTextField(models.TextField):
         """
         Return the value passed through to_search().
         """
-        value = super(ToSearchTextField, self).get_prep_lookup(lookup_type,
+        value = super(ToSearchTextField, self).get_prep_lookup(
+            lookup_type,
             value)
         return to_search(value)
 
@@ -137,13 +137,23 @@ class AbstractCity(Base):
 
     display_name = models.CharField(max_length=200)
 
-    search_names = ToSearchTextField(max_length=4000,
-        db_index=INDEX_SEARCH_NAMES, blank=True, default='')
+    search_names = ToSearchTextField(
+        max_length=4000,
+        db_index=INDEX_SEARCH_NAMES,
+        blank=True,
+        default='')
 
-    latitude = models.DecimalField(max_digits=8, decimal_places=5,
-        null=True, blank=True)
-    longitude = models.DecimalField(max_digits=8, decimal_places=5,
-        null=True, blank=True)
+    latitude = models.DecimalField(
+        max_digits=8,
+        decimal_places=5,
+        null=True,
+        blank=True)
+
+    longitude = models.DecimalField(
+        max_digits=8,
+        decimal_places=5,
+        null=True,
+        blank=True)
 
     region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region', blank=True,
                                null=True, on_delete=models.CASCADE)
@@ -163,6 +173,6 @@ class AbstractCity(Base):
     def get_display_name(self):
         if self.region_id:
             return '%s, %s, %s' % (self.name, self.region.name,
-                self.country.name)
+                                   self.country.name)
         else:
             return '%s, %s' % (self.name, self.country.name)
