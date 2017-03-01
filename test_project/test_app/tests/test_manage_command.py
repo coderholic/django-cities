@@ -25,13 +25,13 @@ class SkipCitiesWithEmptyRegionsManageCommandTestCase(
         NoInvalidSlugsMixin, CountriesMixin, RegionsMixin, SubregionsMixin,
         CitiesMixin, DistrictsMixin, TestCase):
     num_countries = 250
-    num_regions = 170
+    num_regions = 171
     num_ad_regions = 7
     num_ua_regions = 27
-    num_subregions = 4926
-    num_cities = 114
+    num_subregions = 4928
+    num_cities = 117
     num_ua_cities = 50
-    num_districts = 0
+    num_districts = 3
 
     @classmethod
     def setUpTestData(cls):
@@ -55,13 +55,13 @@ class ManageCommandTestCase(
         CitiesMixin, DistrictsMixin, AlternativeNamesMixin, PostalCodesMixin,
         TestCase):
     num_countries = 250
-    num_regions = 170
+    num_regions = 171
     num_ad_regions = 7
     num_ua_regions = 27
-    num_subregions = 4926
-    num_cities = 114
+    num_subregions = 4928
+    num_cities = 121
     num_ua_cities = 50
-    num_districts = 0
+    num_districts = 3
     num_alt_names = 2945
     num_not_und_alt_names = 579
     num_postal_codes = 13
@@ -108,13 +108,13 @@ class AllLocalesManageCommandTestCase(
         NoInvalidSlugsMixin, CountriesMixin, RegionsMixin, SubregionsMixin,
         CitiesMixin, DistrictsMixin, AlternativeNamesMixin, TestCase):
     num_countries = 250
-    num_regions = 170
+    num_regions = 171
     num_ad_regions = 7
     num_ua_regions = 27
-    num_subregions = 4926
-    num_cities = 114
+    num_subregions = 4928
+    num_cities = 121
     num_ua_cities = 50
-    num_districts = 0
+    num_districts = 3
     num_alt_names = 7760
     num_not_und_alt_names = 5394
 
