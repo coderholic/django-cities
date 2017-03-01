@@ -152,6 +152,8 @@ class AbstractCity(Base):
     population = models.BigIntegerField(null=True, blank=True, db_index=True)
     feature_code = models.CharField(max_length=10, null=True, blank=True,
                                     db_index=True)
+    timezone = models.CharField(max_length=40, blank=True, null=True,
+                                db_index=True)
 
     class Meta(Base.Meta):
         unique_together = (('region', 'name'), ('region', 'slug'))

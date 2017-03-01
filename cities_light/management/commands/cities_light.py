@@ -425,6 +425,10 @@ It is possible to force the import of files which weren't downloaded using the
             city.feature_code = items[ICity.featureCode]
             save = True
 
+        if city.timezone != items[ICity.timezone]:
+            city.timezone = items[ICity.timezone]
+            save = True
+
         altnames = items[ICity.alternateNames]
         if not TRANSLATION_SOURCES and city.alternate_names != altnames:
             city.alternate_names = altnames
