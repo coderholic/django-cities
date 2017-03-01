@@ -10,8 +10,8 @@ __all__ = [
     'city_types', 'district_types',
     'import_opts', 'import_opts_all', 'HookException', 'settings',
     'ALTERNATIVE_NAME_TYPES', 'CONTINENT_DATA', 'CURRENCY_SYMBOLS',
-    'IGNORE_EMPTY_REGIONS', 'INCLUDE_AIRPORT_CODES',
-    'INCLUDE_NUMERIC_ALTERNATIVE_NAMES', 'NO_LONGER_EXISTENT_COUNTRY_CODES',
+    'INCLUDE_AIRPORT_CODES', 'INCLUDE_NUMERIC_ALTERNATIVE_NAMES',
+    'NO_LONGER_EXISTENT_COUNTRY_CODES', 'SKIP_CITIES_WITH_EMPTY_REGIONS',
     'SLUGIFY_FUNCTION', 'VALIDATE_POSTAL_CODES',
 ]
 
@@ -331,7 +331,10 @@ settings = create_settings()
 if hasattr(django_settings, "CITIES_PLUGINS"):
     create_plugins()
 
-IGNORE_EMPTY_REGIONS = getattr(django_settings, 'CITIES_IGNORE_EMPTY_REGIONS', False)
+if hasattr(django_settings, 'CITIES_IGNORE_EMPTY_REGIONS'):
+    raise Exception("CITIES_IGNORE_EMPTY_REGIONS was ambiguous and has been moved to CITIES_SKIP_CITIES_WITH_EMPTY_REGIONS")
+
+SKIP_CITIES_WITH_EMPTY_REGIONS = getattr(django_settings, 'CITIES_SKIP_CITIES_WITH_EMPTY_REGIONS', False)
 
 # Users may way to import historical countries
 NO_LONGER_EXISTENT_COUNTRY_CODES = getattr(

@@ -4,8 +4,9 @@ from __future__ import unicode_literals
 from unittest import skipIf
 
 from django import VERSION as django_version
-from django.test import TestCase, override_settings
 from django.core.management import call_command
+from django.test import TestCase, override_settings
+from django.test.signals import setting_changed
 
 from cities.models import (Country, Region, Subregion, City, District,
                            PostalCode, AlternativeName)
@@ -13,10 +14,14 @@ from cities.models import (Country, Region, Subregion, City, District,
 from ..mixins import (
     NoInvalidSlugsMixin, CountriesMixin, RegionsMixin, SubregionsMixin,
     CitiesMixin, DistrictsMixin, AlternativeNamesMixin, PostalCodesMixin)
+from ..utils import reload_cities_settings
 
 
-@override_settings(CITIES_IGNORE_EMPTY_REGIONS=True)
-class IgnoreEmptyRegionManageCommandTestCase(
+setting_changed.connect(reload_cities_settings, dispatch_uid='reload_cities_settings')
+
+
+@override_settings(CITIES_SKIP_CITIES_WITH_EMPTY_REGIONS=True)
+class SkipCitiesWithEmptyRegionsManageCommandTestCase(
         NoInvalidSlugsMixin, CountriesMixin, RegionsMixin, SubregionsMixin,
         CitiesMixin, DistrictsMixin, TestCase):
     num_countries = 250
@@ -31,7 +36,7 @@ class IgnoreEmptyRegionManageCommandTestCase(
     @classmethod
     def setUpTestData(cls):
         # Run the import command only once
-        super(IgnoreEmptyRegionManageCommandTestCase, cls).setUpTestData()
+        super(SkipCitiesWithEmptyRegionsManageCommandTestCase, cls).setUpTestData()
         call_command('cities', force=True, **{
             'import': 'country,region,subregion,city,district',
         })
