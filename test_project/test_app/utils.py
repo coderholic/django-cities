@@ -14,6 +14,9 @@ from cities.conf import CONTINENT_DATA as DEFAULT_CONTINENT_DATA
 
 
 def reload_continent_data(signal, sender, setting, value, enter):
+    if setting != 'CITIES_CONTINENT_DATA':
+        return
+
     if value is None:
         value = DEFAULT_CONTINENT_DATA
 
