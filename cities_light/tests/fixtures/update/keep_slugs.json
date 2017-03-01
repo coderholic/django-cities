@@ -43,7 +43,8 @@
         "population": 477090,
         "region": 1,
         "search_names": "forestgladekuzbassrussie forestgladekuzbasssssr forestgladekuzbassussr forestgladeprovincedekuzbassrussie forestgladeprovincedekuzbasssssr forestgladeprovincedekuzbassussr forestgladerussie forestgladesssr forestgladeussr lesnaiapolianakuzbassrussie lesnaiapolianakuzbasssssr lesnaiapolianakuzbassussr lesnaiapolianaprovincedekuzbassrussie lesnaiapolianaprovincedekuzbasssssr lesnaiapolianaprovincedekuzbassussr lesnaiapolianarussie lesnaiapolianasssr lesnaiapolianaussr",
-        "slug": "kemerovo"
+        "slug": "kemerovo",
+        "timezone": "Asia/Novosibirsk"
     },
     "model": "cities_light.city",
     "pk": 1
@@ -62,7 +63,8 @@
         "population": 539616,
         "region": 1,
         "search_names": "gardenkuzbassrussie gardenkuzbasssssr gardenkuzbassussr gardenprovincedekuzbassrussie gardenprovincedekuzbasssssr gardenprovincedekuzbassussr gardenrussie gardensssr gardenussr gorodsadkuzbassrussie gorodsadkuzbasssssr gorodsadkuzbassussr gorodsadprovincedekuzbassrussie gorodsadprovincedekuzbasssssr gorodsadprovincedekuzbassussr gorodsadrussie gorodsadsssr gorodsadussr sadstalinakuzbassrussie sadstalinakuzbasssssr sadstalinakuzbassussr sadstalinaprovincedekuzbassrussie sadstalinaprovincedekuzbasssssr sadstalinaprovincedekuzbassussr sadstalinarussie sadstalinasssr sadstalinaussr",
-        "slug": "novokuznetsk"
+        "slug": "novokuznetsk",
+        "timezone": "Asia/Novosibirsk"
     },
     "model": "cities_light.city",
     "pk": 2
