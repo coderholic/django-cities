@@ -65,8 +65,6 @@ class CitiesMixin(object):
 
 
 class DistrictsMixin(object):
-    num_districts = 1000
-
     def test_num_districts(self):
         self.assertEqual(District.objects.count(), self.num_districts)
 

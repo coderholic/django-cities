@@ -50,9 +50,9 @@ from django.db.models import CharField, ForeignKey
 
 from ...conf import (city_types, district_types, import_opts, import_opts_all,
                      HookException, settings, CURRENCY_SYMBOLS,
-                     IGNORE_EMPTY_REGIONS, INCLUDE_AIRPORT_CODES,
-                     INCLUDE_NUMERIC_ALTERNATIVE_NAMES,
-                     NO_LONGER_EXISTENT_COUNTRY_CODES, VALIDATE_POSTAL_CODES)
+                     INCLUDE_AIRPORT_CODES, INCLUDE_NUMERIC_ALTERNATIVE_NAMES,
+                     NO_LONGER_EXISTENT_COUNTRY_CODES,
+                     SKIP_CITIES_WITH_EMPTY_REGIONS, VALIDATE_POSTAL_CODES)
 from ...models import (Region, Subregion, District, PostalCode, AlternativeName)
 from ...util import geo_distance
 
@@ -488,12 +488,13 @@ class Command(BaseCommand):
                 region = self.region_index[country_code + "." + region_code]
                 defaults['region'] = region
             except:
-                if IGNORE_EMPTY_REGIONS:
-                    defaults['region'] = None
-                else:
-                    self.logger.debug("%s: %s: Cannot find region: %s -- skipping",
+                self.logger.debug('SKIP_CITIES_WITH_EMPTY_REGIONS: %s', str(SKIP_CITIES_WITH_EMPTY_REGIONS))
+                if SKIP_CITIES_WITH_EMPTY_REGIONS:
+                    self.logger.debug("%s: %s: Cannot find region: '%s' -- skipping",
                                       country_code, item['name'], region_code)
                     continue
+                else:
+                    defaults['region'] = None
 
             subregion_code = item['admin2Code']
             try:

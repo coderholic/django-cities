@@ -343,11 +343,13 @@ def default_slugify(obj, value):
 
 #### Cities Without Regions
 
-Some cities in the Geonames data files do not have region information. By default, these cities are imported as normal (they still have foreign keys to their country), but if you wish to *avoid* importing these cities, set `CITIES_IGNORE_EMPTY_REGIONS` to `True`:
+Note: This used to be `CITIES_IGNORE_EMPTY_REGIONS`.
+
+Some cities in the Geonames data files do not have region information. By default, these cities are imported as normal (they still have foreign keys to their country), but if you wish to *avoid* importing these cities, set `CITIES_SKIP_CITIES_WITH_EMPTY_REGIONS` to `True`:
 
 ```python
 # Import cities without region (default False)
-CITIES_IGNORE_EMPTY_REGIONS = True
+CITIES_SKIP_CITIES_WITH_EMPTY_REGIONS = True
 ```
 
 #### Languages/Locales To Import
