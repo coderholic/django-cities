@@ -2,16 +2,18 @@
 from __future__ import unicode_literals
 
 import re
+import autoslug
+import pytz
 
 from django.utils.encoding import python_2_unicode_compatible
 
 from django.db import models
 from django.utils.encoding import force_text
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from unidecode import unidecode
 
-import autoslug
 
 from .settings import INDEX_SEARCH_NAMES, CITIES_LIGHT_APP_NAME
 
@@ -176,3 +178,14 @@ class AbstractCity(Base):
                                    self.country.name)
         else:
             return '%s, %s' % (self.name, self.country.name)
+
+    def get_timezone_info(self):
+        """Return timezone info for self.timezone.
+
+        If self.timezone has wrong value, it returns timezone info
+        for value specified in settings.TIME_ZONE.
+        """
+        try:
+            return pytz.timezone(self.timezone)
+        except pytz.UnknownTimeZoneError:
+            return pytz.timezone(settings.TIME_ZONE)
