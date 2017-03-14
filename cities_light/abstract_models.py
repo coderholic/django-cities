@@ -14,7 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from unidecode import unidecode
 
-
+from .validators import timezone_validator
 from .settings import INDEX_SEARCH_NAMES, CITIES_LIGHT_APP_NAME
 
 
@@ -165,7 +165,7 @@ class AbstractCity(Base):
     feature_code = models.CharField(max_length=10, null=True, blank=True,
                                     db_index=True)
     timezone = models.CharField(max_length=40, blank=True, null=True,
-                                db_index=True)
+                                db_index=True, validators=[timezone_validator])
 
     class Meta(Base.Meta):
         unique_together = (('region', 'name'), ('region', 'slug'))
@@ -187,5 +187,5 @@ class AbstractCity(Base):
         """
         try:
             return pytz.timezone(self.timezone)
-        except pytz.UnknownTimeZoneError:
+        except (pytz.UnknownTimeZoneError, AttributeError):
             return pytz.timezone(settings.TIME_ZONE)

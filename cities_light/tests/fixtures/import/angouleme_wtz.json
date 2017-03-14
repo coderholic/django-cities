@@ -1,0 +1,52 @@
+[
+{
+    "fields": {
+        "alternate_names": "R\u00e9publique Fran\u00e7aise;\u0424\u0440\u0430\u043d\u0446\u0438\u044f",
+        "code2": "FR",
+        "code3": "FRA",
+        "continent": "EU",
+        "geoname_id": 3017382,
+        "name": "France",
+        "name_ascii": "France",
+        "phone": "33",
+        "slug": "france",
+        "tld": "fr"
+    },
+    "model": "cities_light.country",
+    "pk": 1
+},
+{
+    "fields": {
+        "alternate_names": "R\u00e9gion Poitou-Charentes;\u041f\u0443\u0430\u0442\u0443 \u2014 \u0428\u0430\u0440\u0430\u043d\u0442\u0430",
+        "country": 1,
+        "display_name": "Poitou-Charentes, France",
+        "geoname_code": "B7",
+        "geoname_id": 2986492,
+        "name": "Poitou-Charentes",
+        "name_ascii": "Poitou-Charentes",
+        "slug": "poitou-charentes"
+    },
+    "model": "cities_light.region",
+    "pk": 1
+},
+{
+    "fields": {
+        "alternate_names": "\u0410\u043d\u0433\u0443\u043b\u0435\u043c",
+        "country": 1,
+        "display_name": "Angoul\u00eame, Poitou-Charentes, France",
+        "feature_code": "PPLA2",
+        "geoname_id": 3037598,
+        "latitude": "45.65",
+        "longitude": "0.15",
+        "name": "Angoul\u00eame",
+        "name_ascii": "Angouleme",
+        "population": 49468,
+        "region": 1,
+        "search_names": "angoulemefrance angoulemefrantsiia angoulemepoitoucharentesfrance angoulemepoitoucharentesfrantsiia angoulemepoitoucharentesrepubliquefrancaise angoulemepuatusharantafrance angoulemepuatusharantafrantsiia angoulemepuatusharantarepubliquefrancaise angoulemeregionpoitoucharentesfrance angoulemeregionpoitoucharentesfrantsiia angoulemeregionpoitoucharentesrepubliquefrancaise angoulemerepubliquefrancaise angulemfrance angulemfrantsiia angulempoitoucharentesfrance angulempoitoucharentesfrantsiia angulempoitoucharentesrepubliquefrancaise angulempuatusharantafrance angulempuatusharantafrantsiia angulempuatusharantarepubliquefrancaise angulemregionpoitoucharentesfrance angulemregionpoitoucharentesfrantsiia angulemregionpoitoucharentesrepubliquefrancaise angulemrepubliquefrancaise",
+        "slug": "angouleme",
+        "timezone": null
+    },
+    "model": "cities_light.city",
+    "pk": 1
+}
+]
