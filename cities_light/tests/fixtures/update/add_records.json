@@ -73,7 +73,8 @@
         "population": 477090,
         "region": 1,
         "search_names": "kemerovokemerovorossiiskaiafederatsiia kemerovokemerovorussia kemerovokemerovorussie kemerovokemerovskaiaoblastrossiiskaiafederatsiia kemerovokemerovskaiaoblastrussia kemerovokemerovskaiaoblastrussie kemerovooblastdekemerovorossiiskaiafederatsiia kemerovooblastdekemerovorussia kemerovooblastdekemerovorussie kemerovorossiiskaiafederatsiia kemerovorussia kemerovorussie",
-        "slug": "kemerovo"
+        "slug": "kemerovo",
+        "timezone": "Asia/Novokuznetsk"
     },
     "model": "cities_light.city",
     "pk": 1
@@ -92,7 +93,8 @@
         "population": 539616,
         "region": 1,
         "search_names": "novokouznetskkemerovorossiiskaiafederatsiia novokouznetskkemerovorussia novokouznetskkemerovorussie novokouznetskkemerovskaiaoblastrossiiskaiafederatsiia novokouznetskkemerovskaiaoblastrussia novokouznetskkemerovskaiaoblastrussie novokouznetskoblastdekemerovorossiiskaiafederatsiia novokouznetskoblastdekemerovorussia novokouznetskoblastdekemerovorussie novokouznetskrossiiskaiafederatsiia novokouznetskrussia novokouznetskrussie novokuznetskkemerovorossiiskaiafederatsiia novokuznetskkemerovorussia novokuznetskkemerovorussie novokuznetskkemerovskaiaoblastrossiiskaiafederatsiia novokuznetskkemerovskaiaoblastrussia novokuznetskkemerovskaiaoblastrussie novokuznetskoblastdekemerovorossiiskaiafederatsiia novokuznetskoblastdekemerovorussia novokuznetskoblastdekemerovorussie novokuznetskrossiiskaiafederatsiia novokuznetskrussia novokuznetskrussie stalinskkemerovorossiiskaiafederatsiia stalinskkemerovorussia stalinskkemerovorussie stalinskkemerovskaiaoblastrossiiskaiafederatsiia stalinskkemerovskaiaoblastrussia stalinskkemerovskaiaoblastrussie stalinskoblastdekemerovorossiiskaiafederatsiia stalinskoblastdekemerovorussia stalinskoblastdekemerovorussie stalinskrossiiskaiafederatsiia stalinskrussia stalinskrussie",
-        "slug": "novokuznetsk"
+        "slug": "novokuznetsk",
+        "timezone": "Asia/Novokuznetsk"
     },
     "model": "cities_light.city",
     "pk": 2
@@ -111,7 +113,8 @@
         "population": 104000,
         "region": 2,
         "search_names": "kiselevskkuzbassrussie kiselevskkuzbasssssr kiselevskkuzbassussr kiselevskprovincedekuzbassrussie kiselevskprovincedekuzbasssssr kiselevskprovincedekuzbassussr kiselevskrussie kiselevsksssr kiselevskussr kiseliovskkuzbassrussie kiseliovskkuzbasssssr kiseliovskkuzbassussr kiseliovskprovincedekuzbassrussie kiseliovskprovincedekuzbasssssr kiseliovskprovincedekuzbassussr kiseliovskrussie kiseliovsksssr kiseliovskussr",
-        "slug": "kiselevsk"
+        "slug": "kiselevsk",
+        "timezone": "Asia/Novokuznetsk"
     },
     "model": "cities_light.city",
     "pk": 3
@@ -130,7 +133,8 @@
         "population": 75764,
         "region": 2,
         "search_names": "belovokuzbassrussie belovokuzbasssssr belovokuzbassussr belovoprovincedekuzbassrussie belovoprovincedekuzbasssssr belovoprovincedekuzbassussr belovorussie belovosssr belovoussr",
-        "slug": "belovo"
+        "slug": "belovo",
+        "timezone": "Asia/Novokuznetsk"
     },
     "model": "cities_light.city",
     "pk": 4

@@ -28,6 +28,7 @@ setup(
     keywords='django cities countries postal codes',
     install_requires=[
         'six',
+        'pytz',
         'unidecode>=0.04.13',
         'django_autoslug',
         'progressbar2>=3.6.0'

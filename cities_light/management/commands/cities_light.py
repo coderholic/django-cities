@@ -19,6 +19,7 @@ from django.conf import settings
 from django.db import transaction, connection
 from django.db import reset_queries, IntegrityError
 from django.core.management.base import BaseCommand
+from django.core.exceptions import ValidationError
 
 import progressbar
 
@@ -27,6 +28,7 @@ from ...signals import *
 from ...settings import *
 from ...geonames import Geonames
 from ...loading import get_cities_models
+from ...validators import timezone_validator
 
 Country, Region, City = get_cities_models()
 
@@ -423,6 +425,15 @@ It is possible to force the import of files which weren't downloaded using the
 
         if city.feature_code != items[ICity.featureCode]:
             city.feature_code = items[ICity.featureCode]
+            save = True
+
+        if city.timezone != items[ICity.timezone]:
+            try:
+                timezone_validator(items[ICity.timezone])
+                city.timezone = items[ICity.timezone]
+            except ValidationError as e:
+                city.timezone = None
+                self.logger.warning(e.messages)
             save = True
 
         altnames = items[ICity.alternateNames]

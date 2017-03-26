@@ -2,26 +2,10 @@
 {
     "fields": {
         "alternate_names": "Russie;\u0421\u0421\u0421\u0420",
-        "code2": "RU",
-        "code3": "RUS",
-        "continent": "EU",
-        "geoname_id": 2017370,
-        "name": "Russia",
-        "name_ascii": "Russia",
-        "phone": "7",
-        "slug": "russia",
-        "tld": "ru"
-    },
-    "model": "cities_light.country",
-    "pk": 1
-},
-{
-    "fields": {
-        "alternate_names": "",
         "code2": "SU",
         "code3": "",
         "continent": "EA",
-        "geoname_id": 2017371,
+        "geoname_id": 2017370,
         "name": "USSR",
         "name_ascii": "USSR",
         "phone": "8",
@@ -29,40 +13,26 @@
         "tld": "su"
     },
     "model": "cities_light.country",
-    "pk": 2
+    "pk": 1
 },
 {
     "fields": {
         "alternate_names": "Province de Kuzbass;\u041a\u0443\u0437\u0431\u0430\u0441\u0441",
         "country": 1,
-        "display_name": "Kemerovo, Russia",
+        "display_name": "Kuzbass, USSR",
         "geoname_code": "29",
         "geoname_id": 1503900,
-        "name": "Kemerovo",
-        "name_ascii": "Kemerovo",
-        "slug": "kemerovo"
+        "name": "Kuzbass",
+        "name_ascii": "Kuzbass",
+        "slug": "kuzbass"
     },
     "model": "cities_light.region",
     "pk": 1
 },
 {
     "fields": {
-        "alternate_names": "",
-        "country": 2,
-        "display_name": "Kuzbass, USSR",
-        "geoname_code": "29",
-        "geoname_id": 1503999,
-        "name": "Kuzbass",
-        "name_ascii": "Kuzbass",
-        "slug": "kuzbass"
-    },
-    "model": "cities_light.region",
-    "pk": 2
-},
-{
-    "fields": {
         "alternate_names": "\u041b\u0435\u0441\u043d\u0430\u044f \u043f\u043e\u043b\u044f\u043d\u0430",
-        "country": 2,
+        "country": 1,
         "display_name": "Forest Glade, Kuzbass, USSR",
         "feature_code": "PPLA",
         "geoname_id": 1503901,
@@ -71,10 +41,10 @@
         "name": "Forest Glade",
         "name_ascii": "Forest Glade",
         "population": 477090,
-        "region": 2,
-        "search_names": "forestgladekuzbassussr forestgladeussr lesnaiapolianakuzbassussr lesnaiapolianaussr",
+        "region": 1,
+        "search_names": "forestgladekuzbassrussie forestgladekuzbasssssr forestgladekuzbassussr forestgladeprovincedekuzbassrussie forestgladeprovincedekuzbasssssr forestgladeprovincedekuzbassussr forestgladerussie forestgladesssr forestgladeussr lesnaiapolianakuzbassrussie lesnaiapolianakuzbasssssr lesnaiapolianakuzbassussr lesnaiapolianaprovincedekuzbassrussie lesnaiapolianaprovincedekuzbasssssr lesnaiapolianaprovincedekuzbassussr lesnaiapolianarussie lesnaiapolianasssr lesnaiapolianaussr",
         "slug": "forest-glade",
-        "timezone": "Asia/Novosibirsk"
+        "timezone": null
     },
     "model": "cities_light.city",
     "pk": 1
@@ -82,7 +52,7 @@
 {
     "fields": {
         "alternate_names": "Garden;\u0413\u043e\u0440\u043e\u0434 \u0421\u0430\u0434;\u0421\u0430\u0434 \u0421\u0442\u0430\u043b\u0438\u043d\u0430",
-        "country": 2,
+        "country": 1,
         "display_name": "Gorod Sad, Kuzbass, USSR",
         "feature_code": "PPL",
         "geoname_id": 1496990,
@@ -91,10 +61,10 @@
         "name": "Gorod Sad",
         "name_ascii": "Gorod Sad",
         "population": 539616,
-        "region": 2,
-        "search_names": "gardenkuzbassussr gardenussr gorodsadkuzbassussr gorodsadussr sadstalinakuzbassussr sadstalinaussr",
+        "region": 1,
+        "search_names": "gardenkuzbassrussie gardenkuzbasssssr gardenkuzbassussr gardenprovincedekuzbassrussie gardenprovincedekuzbasssssr gardenprovincedekuzbassussr gardenrussie gardensssr gardenussr gorodsadkuzbassrussie gorodsadkuzbasssssr gorodsadkuzbassussr gorodsadprovincedekuzbassrussie gorodsadprovincedekuzbasssssr gorodsadprovincedekuzbassussr gorodsadrussie gorodsadsssr gorodsadussr sadstalinakuzbassrussie sadstalinakuzbasssssr sadstalinakuzbassussr sadstalinaprovincedekuzbassrussie sadstalinaprovincedekuzbasssssr sadstalinaprovincedekuzbassussr sadstalinarussie sadstalinasssr sadstalinaussr",
         "slug": "gorod-sad",
-        "timezone": "Asia/Novosibirsk"
+        "timezone": null
     },
     "model": "cities_light.city",
     "pk": 2

@@ -34,6 +34,30 @@ class TestUpdate(TestImportBase):
             fixture_dir.get_file_path('update_fields.json')
         ).assertNoDiff()
 
+    def test_update_fields_wrong_timezone(self):
+        """Test all fields are updated, but timezone field is wrong."""
+        fixture_dir = FixtureDir('update')
+
+        self.import_data(
+            fixture_dir,
+            'initial_country',
+            'initial_region',
+            'initial_city',
+            'initial_translations'
+        )
+
+        self.import_data(
+            fixture_dir,
+            'update_country',
+            'update_region',
+            'update_city_wtz',
+            'update_translations',
+        )
+
+        Fixture(
+            fixture_dir.get_file_path('update_fields_wtz.json')
+        ).assertNoDiff()
+
     def test_change_country(self):
         """Test change country for region/city."""
         fixture_dir = FixtureDir('update')

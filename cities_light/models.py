@@ -28,7 +28,7 @@ Steps to customise cities_light models
 
 
         class City(AbstractCity):
-            timezone = models.CharField(max_length=40)
+            modification_date = models.CharField(max_length=40)
         connect_default_signals(City)
 
 - Add post import processing to you model *[optional]*:
@@ -38,7 +38,7 @@ Steps to customise cities_light models
         from cities_light.settings import ICity
 
         def set_city_fields(sender, instance, items, **kwargs):
-            instance.timezone = items[ICity.timezone]
+            instance.modification_date = items[ICity.modificationDate]
         cities_light.signals.city_items_post_import.connect(set_city_fields)
 
 - Define settings.py:

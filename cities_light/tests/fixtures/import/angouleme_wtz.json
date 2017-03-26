@@ -44,7 +44,7 @@
         "region": 1,
         "search_names": "angoulemefrance angoulemefrantsiia angoulemepoitoucharentesfrance angoulemepoitoucharentesfrantsiia angoulemepoitoucharentesrepubliquefrancaise angoulemepuatusharantafrance angoulemepuatusharantafrantsiia angoulemepuatusharantarepubliquefrancaise angoulemeregionpoitoucharentesfrance angoulemeregionpoitoucharentesfrantsiia angoulemeregionpoitoucharentesrepubliquefrancaise angoulemerepubliquefrancaise angulemfrance angulemfrantsiia angulempoitoucharentesfrance angulempoitoucharentesfrantsiia angulempoitoucharentesrepubliquefrancaise angulempuatusharantafrance angulempuatusharantafrantsiia angulempuatusharantarepubliquefrancaise angulemregionpoitoucharentesfrance angulemregionpoitoucharentesfrantsiia angulemregionpoitoucharentesrepubliquefrancaise angulemrepubliquefrancaise",
         "slug": "angouleme",
-        "timezone": "Europe/Paris"
+        "timezone": null
     },
     "model": "cities_light.city",
     "pk": 1

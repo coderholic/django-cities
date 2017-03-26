@@ -85,14 +85,17 @@ class CityAdmin(admin.ModelAdmin):
         'region',
         'country',
         'geoname_id',
+        'timezone'
     )
     search_fields = (
         'search_names',
         'geoname_id',
+        'timezone'
     )
     list_filter = (
         'country__continent',
         'country',
+        'timezone'
     )
     form = CityForm
 

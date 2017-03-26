@@ -59,7 +59,8 @@
         "population": 477090,
         "region": 1,
         "search_names": "forestgladekuzbassussr forestgladeprovincedekuzbassussr forestgladeussr lesnaiapolianakuzbassussr lesnaiapolianaprovincedekuzbassussr lesnaiapolianaussr",
-        "slug": "forest-glade"
+        "slug": "forest-glade",
+        "timezone": "Asia/Novosibirsk"
     },
     "model": "cities_light.city",
     "pk": 1
@@ -78,7 +79,8 @@
         "population": 539616,
         "region": 1,
         "search_names": "gardenkuzbassussr gardenprovincedekuzbassussr gardenussr gorodsadkuzbassussr gorodsadprovincedekuzbassussr gorodsadussr sadstalinakuzbassussr sadstalinaprovincedekuzbassussr sadstalinaussr",
-        "slug": "gorod-sad"
+        "slug": "gorod-sad",
+        "timezone": "Asia/Novosibirsk"
     },
     "model": "cities_light.city",
     "pk": 2
