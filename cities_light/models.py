@@ -52,10 +52,16 @@ Steps to customise cities_light models
 
         CITIES_LIGHT_APP_NAME = 'yourapp'
 
-- Create tables:
+        # Disable built-in cities_light migrations
+        MIGRATION_MODULES = {
+            'cities_light': None
+        }
+
+- Create your own migrations:
     .. code::
 
-        python manage.py syncdb
+        python manage.py makemigrations yourapp
+        python manage.py migrate
 
 That's all!
 
