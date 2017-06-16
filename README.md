@@ -241,7 +241,7 @@ CITIES_FILES = {
     # ...
     'city': {
        'filename': 'cities1000.zip',
-       'urls':     ['http://download.geonames.org/export/dump/'+'{filename}']
+       'urls':     ['http://download.geonames.org/export/dump/{filename}']
     },
     # ...
 }
@@ -254,7 +254,7 @@ CITIES_FILES = {
     # ...
     'city': {
        'filenames': ["US.zip", "GB.zip", ],
-       'urls':      ['http://download.geonames.org/export/dump/'+'{filename}']
+       'urls':      ['http://download.geonames.org/export/dump/{filename}']
     },
     # ...
 }
@@ -432,7 +432,7 @@ Specifically, importing postal codes can take one or two orders of magnitude mor
 
 ## Writing Plugins
 
-You can write plugins that modify data before and after it is processed by the import script. For example, you can use this to adjust the continent a country belongs to, or you can use it to add or modify any additional data if you customize and override any django-cities models.
+You can write plugins that modify data before and after it is processed by the import script. For example, you can use this to adjust the continent a country belongs to, to skip importing part of the data, or to add or modify any additional data if you customize and override any django-cities models.
 
 A plugin is simply a Python class that has implemented one or more hook functions as members. Hooks can either modify data before it is processed by the import script, or modify the database after the object has been saved to the database by the import script.
 
@@ -528,6 +528,9 @@ class CompleteSkeletonPlugin(object):
 Silly example:
 
 ```python
+from cities.conf import HookException
+
+
 class DorothyPlugin(object):
     """
     This plugin skips importing cities that are not in Kansas, USA.
@@ -536,7 +539,8 @@ class DorothyPlugin(object):
     """
     def city_pre(self, parser, import_dict):
         if import_dict['cc2'] == 'US' and import_dict['admin1Code'] != 'KS':
-            return False  # Returning a False-y value skips importing the item
+            # Raise special exception to skip importing the item
+            raise HookError
         else:
             # Modify the value of the data before it is written to the database
             import_dict['admin1Code'] = 'KS'
