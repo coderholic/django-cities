@@ -8,6 +8,7 @@ import pytz
 from django.utils.encoding import python_2_unicode_compatible
 
 from django.db import models
+from django.db.models import lookups
 from django.utils.encoding import force_text
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -117,19 +118,21 @@ class AbstractRegion(Base):
         return '%s, %s' % (self.name, self.country.name)
 
 
+class ToSearchIContainsLookup(lookups.IContains):
+    """IContains lookup for ToSearchTextField."""
+
+    def get_prep_lookup(self):
+        """Return the value passed through to_search()."""
+        value = super(ToSearchIContainsLookup, self).get_prep_lookup()
+        return to_search(value)
+
+
 class ToSearchTextField(models.TextField):
     """
     Trivial TextField subclass that passes values through to_search
     automatically.
     """
-    def get_prep_lookup(self, lookup_type, value):
-        """
-        Return the value passed through to_search().
-        """
-        value = super(ToSearchTextField, self).get_prep_lookup(
-            lookup_type,
-            value)
-        return to_search(value)
+ToSearchTextField.register_lookup(ToSearchIContainsLookup)
 
 
 class AbstractCity(Base):
