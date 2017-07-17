@@ -164,7 +164,10 @@ class Command(BaseCommand):
             for plugin in settings.plugins[hook]:
                 try:
                     func = getattr(plugin, hook)
-                    func(self, *args, **kwargs)
+                    result = func(self, *args, **kwargs)
+                    if result is False:
+                        return False
+
                 except HookException as e:
                     error = str(e)
                     if error:
