@@ -10,7 +10,7 @@ For django-ajax-selects
 For djangorestframework
 -----------------------
 
-The contrib contains support for v1, v2 and v3 of django restframework.
+The contrib contains support for v3 of django restframework.
 
 Django REST framework 3
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +28,7 @@ This will configure six endpoints::
     ^countries/$ [name='cities-light-api-country-list']
     ^countries/(?P<pk>[^/]+)/$ [name='cities-light-api-country-detail']
     ^regions/$ [name='cities-light-api-region-list']
-    ^regions/(?P<pk>[^/]+)/$ [name='cities-light-api-region-detail'] 
+    ^regions/(?P<pk>[^/]+)/$ [name='cities-light-api-region-detail']
 
 All list endpoints support search with a query parameter q::
     /cities/?q=london

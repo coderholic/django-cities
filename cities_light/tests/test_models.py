@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 """Test for models methods."""
 from __future__ import unicode_literals
 
@@ -11,6 +12,8 @@ from ..validators import timezone_validator
 
 class TestModels(test.TransactionTestCase):
     """Tests for cities light models methods."""
+
+    longMessage = True
 
     def test_city_get_timezone(self):
         """Test City.get_timezone_info method."""
@@ -71,3 +74,80 @@ class TestModels(test.TransactionTestCase):
             self.assertTrue(
                 False,
                 'Error call timezone_validator with true value: %s' % value)
+
+    def test_city_search_names_icontains(self):
+        """Test for City.search_names space-insensitive lookup."""
+        region_model = get_cities_model('Region')
+        country_model = get_cities_model('Country')
+        city_model = get_cities_model('City')
+
+        country = country_model(
+            name='Country',
+            name_ascii='Country',
+            geoname_id='123456',
+            continent='EU')
+        country.save()
+
+        region = region_model(
+            name='Region',
+            name_ascii='Region',
+            geoname_id='123457',
+            display_name='Region',
+            country=country
+        )
+        region.save()
+
+        city1 = city_model(
+            name='First City',
+            name_ascii='First City',
+            geoname_id='123458',
+            display_name='First City',
+            search_names='firstcityregioncountry',
+            region=region,
+            country=country
+        )
+        city1.save()
+
+        city2 = city_model(
+            name='Second City',
+            name_ascii='Second City',
+            geoname_id='123459',
+            display_name='Second City',
+            search_names='secondcityregioncountry',
+            region=region,
+            country=country
+        )
+        city2.save()
+
+        city_qs = city_model.objects.filter(
+            search_names__icontains='First City'
+        )
+
+        self.assertEqual(len(city_qs), 1, msg='Should find 1 city')
+        self.assertEqual(city_qs[0].name, city1.name)
+
+        city_qs = city_model.objects.filter(
+            search_names__icontains='Second City'
+        )
+
+        self.assertEqual(len(city_qs), 1, msg='Should find 1 city')
+        self.assertEqual(city_qs[0].name, city2.name)
+
+        city_qs = city_model.objects.filter(
+            search_names__icontains='Third City'
+        )
+        self.assertEqual(len(city_qs), 0, msg='Should find 0 cities')
+
+        city_qs = city_model.objects.filter(
+            search_names__icontains='Region Country'
+        )
+        self.assertEqual(len(city_qs), 2, msg='Should find 2 cities')
+        self.assertEqual(city_qs[0].name, city1.name)
+        self.assertEqual(city_qs[1].name, city2.name)
+
+        city_qs = city_model.objects.filter(
+            search_names__icontains='gion coun'
+        )
+        self.assertEqual(len(city_qs), 2, msg='Should find 2 cities')
+        self.assertEqual(city_qs[0].name, city1.name)
+        self.assertEqual(city_qs[1].name, city2.name)
