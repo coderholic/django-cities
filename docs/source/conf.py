@@ -33,17 +33,6 @@ django.setup()
 
 autoclass_content = "both"
 
-import os
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if on_rtd:
-    intersphinx_mapping = {
-        'autocompletelight': ('http://django-autocomplete-light.readthedocs.org/en/latest/', None),
-    }
-else:
-    intersphinx_mapping = {
-        'autocompletelight': ('file:///home/jpic/env/src/autocomplete-light/docs/build/html/', None),
-    }
-
 import cities_light
 
 # -- General configuration -----------------------------------------------------
