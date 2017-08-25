@@ -662,6 +662,13 @@ The cities manage command has options, see `--help`.  Verbosity is controlled th
         # changes to github and specify commit and repo variables:
         TRAVIS_COMMIT=`git rev-parse HEAD` TRAVIS_REPO_SLUG='github-username/django-cities' POSTGRES_USER=some_username POSTGRES_PASSWORD='password from createuser ste' tox
 
+As an alternative to installing and running PostgreSQL system-wide,
+you can run the tests against a transient Docker instance:
+
+```bash
+docker run --rm -p 127.0.0.1:5432:5432 mdillon/postgis
+```
+
 ### Useful test options:
 
 * `TRAVIS_LOG_LEVEL` - defaults to `INFO`, but set to `DEBUG` to see a (very) large and (very) complete log of the import script
