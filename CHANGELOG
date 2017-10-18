@@ -226,7 +226,7 @@ Awesome contributions were merged:
 
 2012-07-12 2.0.2
 
-    - Wrap management command in a transaction. (contributed by Piet Delport)
+    - Wrap management command in a transaction. (contributed by Pi Delport)
 
 2012-07-10 2.0.1
 
