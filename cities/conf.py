@@ -2,6 +2,8 @@
 
 from importlib import import_module
 from collections import defaultdict
+
+import django
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
@@ -363,3 +365,4 @@ SLUGIFY_FUNCTION = getattr(import_module(module_name), function_name)
 # Users who want better postal codes can flip this on (developers of
 # django-cities itself probably will), but most probably won't want to
 VALIDATE_POSTAL_CODES = getattr(django_settings, 'CITIES_VALIDATE_POSTAL_CODES', False)
+DJANGO_VERSION = float('.'.join(map(str, django.VERSION[:2])))
