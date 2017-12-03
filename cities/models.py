@@ -8,13 +8,14 @@ except (NameError, ImportError):
 
 from django.db import transaction
 from django.utils.encoding import python_2_unicode_compatible
-from django.contrib.gis.db import models
+from django.contrib.gis.db.models import PointField
+from django.db import models
 from django.contrib.gis.geos import Point
 
 from model_utils import Choices
 import swapper
 
-from .conf import (ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION)
+from .conf import (ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION, DJANGO_VERSION)
 from .managers import AlternativeNameManager
 from .util import unicode_func
 
@@ -24,7 +25,19 @@ __all__ = [
 ]
 
 
+if DJANGO_VERSION < 2:
+    from django.contrib.gis.db.models import GeoManager
+else:
+    from django.db.models import Manager as GeoManager
+
 slugify_func = SLUGIFY_FUNCTION
+
+
+def SET_NULL_OR_CASCADE(collector, field, sub_objs, using):
+    if field.null is True:
+        models.SET_NULL(collector, field, sub_objs, using)
+    else:
+        models.CASCADE(collector, field, sub_objs, using)
 
 
 class SlugModel(models.Model):
@@ -59,7 +72,7 @@ class Place(models.Model):
     name = models.CharField(max_length=200, db_index=True, verbose_name="ascii name")
     alt_names = models.ManyToManyField('AlternativeName')
 
-    objects = models.GeoManager()
+    objects = GeoManager()
 
     class Meta:
         abstract = True
@@ -112,7 +125,9 @@ class BaseCountry(Place, SlugModel):
     language_codes = models.CharField(max_length=250, null=True)
     phone = models.CharField(max_length=20)
     continent = models.ForeignKey(swapper.get_model_name('cities', 'Continent'),
-                                  null=True, related_name='countries')
+                                  null=True,
+                                  related_name='countries',
+                                  on_delete=SET_NULL_OR_CASCADE)
     tld = models.CharField(max_length=5, verbose_name='TLD')
     postal_code_format = models.CharField(max_length=127)
     postal_code_regex = models.CharField(max_length=255)
@@ -147,7 +162,8 @@ class Region(Place, SlugModel):
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
-                                related_name='regions')
+                                related_name='regions',
+                                on_delete=SET_NULL_OR_CASCADE)
 
     class Meta:
         unique_together = (('country', 'name'),)
@@ -170,7 +186,9 @@ class Subregion(Place, SlugModel):
 
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(max_length=200, db_index=True)
-    region = models.ForeignKey(Region, related_name='subregions')
+    region = models.ForeignKey(Region,
+                               related_name='subregions',
+                               on_delete=SET_NULL_OR_CASCADE)
 
     class Meta:
         unique_together = (('region', 'id', 'name'),)
@@ -193,10 +211,19 @@ class BaseCity(Place, SlugModel):
 
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
-                                related_name='cities')
-    region = models.ForeignKey(Region, null=True, blank=True, related_name='cities')
-    subregion = models.ForeignKey(Subregion, null=True, blank=True, related_name='cities')
-    location = models.PointField()
+                                related_name='cities',
+                                on_delete=SET_NULL_OR_CASCADE)
+    region = models.ForeignKey(Region,
+                               null=True,
+                               blank=True,
+                               related_name='cities',
+                               on_delete=SET_NULL_OR_CASCADE)
+    subregion = models.ForeignKey(Subregion,
+                                  null=True,
+                                  blank=True,
+                                  related_name='cities',
+                                  on_delete=SET_NULL_OR_CASCADE)
+    location = PointField()
     population = models.IntegerField()
     elevation = models.IntegerField(null=True)
     kind = models.CharField(max_length=10)  # http://www.geonames.org/export/codes.html
@@ -227,9 +254,11 @@ class District(Place, SlugModel):
 
     name_std = models.CharField(max_length=200, db_index=True, verbose_name="standard name")
     code = models.CharField(blank=True, db_index=True, max_length=200, null=True)
-    location = models.PointField()
+    location = PointField()
     population = models.IntegerField()
-    city = models.ForeignKey(swapper.get_model_name('cities', 'City'), related_name='districts')
+    city = models.ForeignKey(swapper.get_model_name('cities', 'City'),
+                             related_name='districts',
+                             on_delete=SET_NULL_OR_CASCADE)
 
     class Meta:
         unique_together = (('city', 'name'),)
@@ -274,23 +303,39 @@ class PostalCode(Place, SlugModel):
     slug_contains_id = True
 
     code = models.CharField(max_length=20)
-    location = models.PointField()
+    location = PointField()
 
     country = models.ForeignKey(swapper.get_model_name('cities', 'Country'),
-                                related_name='postal_codes')
+                                related_name='postal_codes',
+                                on_delete=SET_NULL_OR_CASCADE)
 
     # Region names for each admin level, region may not exist in DB
     region_name = models.CharField(max_length=100, db_index=True)
     subregion_name = models.CharField(max_length=100, db_index=True)
     district_name = models.CharField(max_length=100, db_index=True)
 
-    region = models.ForeignKey(Region, blank=True, null=True, related_name='postal_codes')
-    subregion = models.ForeignKey(Subregion, blank=True, null=True, related_name='postal_codes')
+    region = models.ForeignKey(Region,
+                               blank=True,
+                               null=True,
+                               related_name='postal_codes',
+                               on_delete=SET_NULL_OR_CASCADE)
+    subregion = models.ForeignKey(Subregion,
+                                  blank=True,
+                                  null=True,
+                                  related_name='postal_codes',
+                                  on_delete=SET_NULL_OR_CASCADE)
     city = models.ForeignKey(swapper.get_model_name('cities', 'City'),
-                             blank=True, null=True, related_name='postal_codes')
-    district = models.ForeignKey(District, blank=True, null=True, related_name='postal_codes')
+                             blank=True,
+                             null=True,
+                             related_name='postal_codes',
+                             on_delete=SET_NULL_OR_CASCADE)
+    district = models.ForeignKey(District,
+                                 blank=True,
+                                 null=True,
+                                 related_name='postal_codes',
+                                 on_delete=SET_NULL_OR_CASCADE)
 
-    objects = models.GeoManager()
+    objects = GeoManager()
 
     class Meta:
         unique_together = (
