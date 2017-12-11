@@ -1,12 +1,21 @@
 language: python
+
 services:
   - postgresql
+
+addons:
+  postgresql: "9.6"
+  apt:
+    packages:
+      - postgresql-9.6-postgis-2.3
+
 python:
   - "2.7"
   - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
+
 env:
   - DJANGO_VERSION='Django>=1.7,<1.8'
   - DJANGO_VERSION='Django>=1.8,<1.9'
@@ -14,6 +23,7 @@ env:
   - DJANGO_VERSION='Django>=1.10,<1.11'
   - DJANGO_VERSION='Django>=1.11,<2.0'
   - DJANGO_VERSION='https://github.com/django/django/archive/master.tar.gz'
+
 matrix:
   exclude:
     - python: "3.5"
@@ -37,13 +47,16 @@ matrix:
     - python: "3.6"
       env: DJANGO_VERSION='Django>=1.8,<1.9'
     - env: DJANGO_VERSION='https://github.com/django/django/archive/master.tar.gz'
+
 install:
   - pip install -q $DJANGO_VERSION
   - pip install -q django-model-utils flake8 psycopg2 six swapper tox tqdm
+
 before_script:
-  - psql -U postgres -c "create extension postgis"
+  - psql -U postgres -c "CREATE EXTENSION postgis;"
   - psql -c 'create database django_cities;' -U postgres
-  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d django_cities
+  - psql -U postgres -c 'CREATE EXTENSION postgis;' -d django_cities
+
 script:
   - flake8 --ignore=E501
   - PYTHONPATH=. python test_project/manage.py test test_app --noinput
