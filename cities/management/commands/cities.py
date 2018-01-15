@@ -172,37 +172,38 @@ class Command(BaseCommand):
                     return False
         return True
 
-    def download(self, filekey, key_index=None):
-        if key_index is None:
-            filename = settings.files[filekey]['filename']
+    def download(self, filekey):
+        if 'filename' in settings.files[filekey]:
+            filenames = [settings.files[filekey]['filename']]
         else:
-            filename = settings.files[filekey]['filenames'][key_index]
+            filenames = settings.files[filekey]['filenames']
 
-        web_file = None
-        urls = [e.format(filename=filename) for e in settings.files[filekey]['urls']]
-        for url in urls:
-            try:
-                web_file = urlopen(url)
-                if 'html' in web_file.headers['Content-Type']:
-                    # TODO: Make this a subclass
-                    raise Exception("Content type of downloaded file was {}".format(web_file.headers['Content-Type']))
-                self.logger.debug("Downloaded: {}".format(url))
-                break
-            except Exception:
-                web_file = None
-                continue
-        else:
-            self.logger.error("Web file not found: %s. Tried URLs:\n%s", filename, '\n'.join(urls))
+        for filename in filenames:
+            web_file = None
+            urls = [e.format(filename=filename) for e in settings.files[filekey]['urls']]
+            for url in urls:
+                try:
+                    web_file = urlopen(url)
+                    if 'html' in web_file.headers['Content-Type']:
+                        # TODO: Make this a subclass
+                        raise Exception("Content type of downloaded file was {}".format(web_file.headers['Content-Type']))
+                    self.logger.debug("Downloaded: {}".format(url))
+                    break
+                except Exception:
+                    web_file = None
+                    continue
+            else:
+                self.logger.error("Web file not found: %s. Tried URLs:\n%s", filename, '\n'.join(urls))
 
-        if web_file is not None:
-            self.logger.debug("Saving: {}/{}".format(self.data_dir, filename))
-            if not os.path.exists(self.data_dir):
-                os.makedirs(self.data_dir)
-            file = io.open(os.path.join(self.data_dir, filename), 'wb')
-            file.write(web_file.read())
-            file.close()
-        elif not os.path.exists(os.path.join(self.data_dir, filename)):
-            raise Exception("File not found and download failed: {} [{}]".format(filename, url))
+            if web_file is not None:
+                self.logger.debug("Saving: {}/{}".format(self.data_dir, filename))
+                if not os.path.exists(self.data_dir):
+                    os.makedirs(self.data_dir)
+                file = io.open(os.path.join(self.data_dir, filename), 'wb')
+                file.write(web_file.read())
+                file.close()
+            elif not os.path.exists(os.path.join(self.data_dir, filename)):
+                raise Exception("File not found and download failed: {} [{}]".format(filename, url))
 
     def get_data(self, filekey):
         if 'filename' in settings.files[filekey]:
