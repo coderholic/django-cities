@@ -50,6 +50,7 @@ It is possible to force fixture download by using the --force-fetch option:
 
     COUNTRY_FIXTURE = 'cities_light_country.json.bz2'
     REGION_FIXTURE = 'cities_light_region.json.bz2'
+    SUBREGION_FIXTURE = 'cities_light_subregion.json.bz2'
     CITY_FIXTURE = 'cities_light_city.json.bz2'
 
     def create_parser(self, *args, **kwargs):
@@ -92,6 +93,8 @@ It is possible to force fixture download by using the --force-fetch option:
                                          self.COUNTRY_FIXTURE)
         self.region_path = os.path.join(fixtures_dir,
                                         self.REGION_FIXTURE)
+        self.subregion_path = os.path.join(fixtures_dir,
+                                           self.SUBREGION_FIXTURE)
         self.city_path = os.path.join(fixtures_dir,
                                       self.CITY_FIXTURE)
 
@@ -109,6 +112,7 @@ It is possible to force fixture download by using the --force-fetch option:
 
             self.country_url = base_url + self.COUNTRY_FIXTURE
             self.region_url = base_url + self.REGION_FIXTURE
+            self.subregion_url = base_url + self.SUBREGION_FIXTURE
             self.city_url = base_url + self.CITY_FIXTURE
 
             self.load_fixtures(**options)
@@ -136,6 +140,8 @@ It is possible to force fixture download by using the --force-fetch option:
                           self.country_path)
         self.dump_fixture('{}.Region'.format(CITIES_LIGHT_APP_NAME),
                           self.region_path)
+        self.dump_fixture('{}.SubRegion'.format(CITIES_LIGHT_APP_NAME),
+                          self.region_path)
         self.dump_fixture('{}.City'.format(CITIES_LIGHT_APP_NAME),
                           self.city_path)
 
@@ -154,4 +160,5 @@ It is possible to force fixture download by using the --force-fetch option:
         force = options.get('force_fetch')
         self.load_fixture(self.country_url, self.country_path, force=force)
         self.load_fixture(self.region_url, self.region_path, force=force)
+        self.load_fixture(self.subregion_url, self.subregion_path, force=force)
         self.load_fixture(self.city_url, self.city_path, force=force)
