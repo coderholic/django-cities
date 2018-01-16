@@ -77,8 +77,9 @@ class TestModels(test.TransactionTestCase):
 
     def test_city_search_names_icontains(self):
         """Test for City.search_names space-insensitive lookup."""
-        region_model = get_cities_model('Region')
         country_model = get_cities_model('Country')
+        region_model = get_cities_model('Region')
+        subregion_model = get_cities_model('SubRegion')
         city_model = get_cities_model('City')
 
         country = country_model(
@@ -97,6 +98,16 @@ class TestModels(test.TransactionTestCase):
         )
         region.save()
 
+        subregion = subregion_model(
+            name='SubRegion',
+            name_ascii='SubRegion',
+            geoname_id='987654',
+            display_name='SubRegion',
+            region=region,
+            country=country
+        )
+        subregion.save()
+
         city1 = city_model(
             name='First City',
             name_ascii='First City',
@@ -104,7 +115,8 @@ class TestModels(test.TransactionTestCase):
             display_name='First City',
             search_names='firstcityregioncountry',
             region=region,
-            country=country
+            country=country,
+            subregion=subregion
         )
         city1.save()
 
@@ -115,7 +127,8 @@ class TestModels(test.TransactionTestCase):
             display_name='Second City',
             search_names='secondcityregioncountry',
             region=region,
-            country=country
+            country=country,
+            subregion=subregion
         )
         city2.save()
 

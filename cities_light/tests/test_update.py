@@ -18,6 +18,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'initial_country',
             'initial_region',
+            'initial_subregion',
             'initial_city',
             'initial_translations'
         )
@@ -26,6 +27,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'update_country',
             'update_region',
+            'update_subregion',
             'update_city',
             'update_translations',
         )
@@ -42,6 +44,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'initial_country',
             'initial_region',
+            'initial_subregion',
             'initial_city',
             'initial_translations'
         )
@@ -50,6 +53,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'update_country',
             'update_region',
+            'update_subregion',
             'update_city_wtz',
             'update_translations',
         )
@@ -66,6 +70,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'initial_country',
             'initial_region',
+            'initial_subregion',
             'initial_city',
             'initial_translations'
         )
@@ -74,6 +79,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'change_country',
             'update_region',
+            'update_subregion',
             'update_city',
             'update_translations',
         )
@@ -90,6 +96,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'initial_country',
             'initial_region',
+            'initial_subregion',
             'initial_city',
             'initial_translations'
         )
@@ -98,6 +105,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'change_country',
             'change_region',
+            'update_subregion',
             'update_city',
             'update_translations',
         )
@@ -114,6 +122,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'initial_country',
             'initial_region',
+            'initial_subregion',
             'initial_city',
             'initial_translations'
         )
@@ -122,6 +131,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'update_country',
             'update_region',
+            'update_subregion',
             'update_city',
             'update_translations',
             keep_slugs=True
@@ -139,6 +149,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'initial_country',
             'initial_region',
+            'initial_subregion',
             'initial_city',
             'initial_translations'
         )
@@ -147,6 +158,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'add_country',
             'add_region',
+            'add_subregion',
             'add_city',
             'add_translations'
         )
@@ -163,6 +175,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'initial_country',
             'initial_region',
+            'initial_subregion',
             'initial_city',
             'initial_translations'
         )
@@ -171,6 +184,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'add_country',
             'add_region',
+            'add_subregion',
             'add_city',
             'add_translations',
             noinsert=True
@@ -190,6 +204,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'remove_initial_country',
             'remove_initial_region',
+            'remove_initial_subregion',
             'remove_initial_city',
             'remove_initial_translations'
         )
@@ -198,6 +213,7 @@ class TestUpdate(TestImportBase):
             fixture_dir,
             'remove_country',
             'remove_region',
+            'remove_subregion',
             'remove_city',
             'remove_translations'
         )

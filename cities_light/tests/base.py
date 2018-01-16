@@ -43,7 +43,7 @@ class TestImportBase(test.TransactionTestCase):
     maxDiff = 100000
     reset_sequences = True
 
-    def import_data(self, srcdir, countries, regions, cities, trans, **options):
+    def import_data(self, srcdir, countries, regions, subregions, cities, trans, **options):
         """Helper method to import Geonames data.
 
         Patch *_SOURCES settings and call 'cities_light' command with
@@ -53,6 +53,7 @@ class TestImportBase(test.TransactionTestCase):
         srcdir - source directory represented by FixtureDir object.
         countries - values for COUNTRY_SOURCES
         regions - values for REGION_SOURCES
+        subregions - values for SUBREGION_SOURCES
         cities - values for CITY_SOURCES
         trans - values for TRANSLATION_SOURCES
         **options - passed to call_command() as is
@@ -73,9 +74,10 @@ class TestImportBase(test.TransactionTestCase):
 
         m_country = _patch('country', *_s2l(countries))
         m_region = _patch('region', *_s2l(regions))
+        m_subregion = _patch('subregion', *_s2l(subregions))
         m_city = _patch('city', *_s2l(cities))
         m_tr = _patch('translation', *_s2l(trans))
-        with m_country, m_region, m_city, m_tr:
+        with m_country, m_region, m_subregion, m_city, m_tr:
             management.call_command('cities_light',
                                     force_import_all=True,
                                     **options)

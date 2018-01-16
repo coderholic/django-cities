@@ -30,10 +30,12 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
             cmd = Command()
             cmd.country_path = os.path.join(fixtures_dir, cmd.COUNTRY_FIXTURE)
             cmd.region_path = os.path.join(fixtures_dir, cmd.REGION_FIXTURE)
+            cmd.subregion_path = os.path.join(fixtures_dir, cmd.SUBREGION_FIXTURE)
             cmd.city_path = os.path.join(fixtures_dir, cmd.CITY_FIXTURE)
             cmd.dump_fixtures()
             mock_func.assert_any_call('cities_light.Country', cmd.country_path)
             mock_func.assert_any_call('cities_light.Region', cmd.region_path)
+            mock_func.assert_any_call('cities_light.SubRegion', cmd.subregion_path)
             mock_func.assert_any_call('cities_light.City', cmd.city_path)
 
     def test_dump_fixture(self):
@@ -70,6 +72,7 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
             cmd.city_path = os.path.join(fixtures_dir, cmd.CITY_FIXTURE)
             cmd.country_url = FIXTURES_BASE_URL + cmd.COUNTRY_FIXTURE
             cmd.region_url = FIXTURES_BASE_URL + cmd.REGION_FIXTURE
+            cmd.subregion_url = FIXTURES_BASE_URL + cmd.SUBREGION_FIXTURE
             cmd.city_url = FIXTURES_BASE_URL + cmd.CITY_FIXTURE
 
             cmd.load_fixtures(force_fetch=True)
@@ -77,6 +80,8 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
                 cmd.country_url, cmd.country_path, force=True)
             mock_func.assert_any_call(
                 cmd.region_url, cmd.region_path, force=True)
+            mock_func.assert_any_call(
+                cmd.subregion_url, cmd.subregion_path, force=True)
             mock_func.assert_any_call(
                 cmd.city_url, cmd.city_path, force=True)
 
