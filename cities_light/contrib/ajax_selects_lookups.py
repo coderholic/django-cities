@@ -12,7 +12,7 @@ from django.db.models import Q
 
 from ..loading import get_cities_models
 
-Country, Region, City = get_cities_models()
+Country, Region, SubRegion, City = get_cities_models()
 
 
 class StandardLookupChannel(LookupChannel):
