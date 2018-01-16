@@ -4,9 +4,9 @@ from django import forms
 
 from .loading import get_cities_models
 
-Country, Region, City = get_cities_models()
+Country, Region, SubRegion, City = get_cities_models()
 
-__all__ = ['CountryForm', 'RegionForm', 'CityForm']
+__all__ = ['CountryForm', 'RegionForm', 'SubRegionForm', 'CityForm']
 
 
 class CountryForm(forms.ModelForm):
@@ -26,6 +26,15 @@ class RegionForm(forms.ModelForm):
         model = Region
         exclude = ('name_ascii', 'slug', 'geoname_id', 'display_name',
                    'geoname_code')
+
+
+class SubRegionForm(forms.ModelForm):
+    """
+    Region model form.
+    """
+    class Meta:
+        model = SubRegion
+        exclude = ('name_ascii', 'slug', 'geoname_id', 'display_name')
 
 
 class CityForm(forms.ModelForm):

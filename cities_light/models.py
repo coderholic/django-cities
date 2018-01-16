@@ -26,6 +26,9 @@ Steps to customise cities_light models
             pass
         connect_default_signals(Region)
 
+        class SubRegion(AbstractSubRegion):
+            pass
+        connect_default_signals(SubRegion)
 
         class City(AbstractCity):
             modification_date = models.CharField(max_length=40)
@@ -77,16 +80,20 @@ That's all!
 """
 
 # some imports are present for backwards compatibility and migration process
-from .abstract_models import (AbstractCountry, AbstractRegion, AbstractCity,
-    ToSearchTextField, CONTINENT_CHOICES, to_search, to_ascii)
+from .abstract_models import (AbstractCountry, AbstractRegion,
+                              AbstractSubRegion, AbstractCity,
+                              CONTINENT_CHOICES,
+                              ToSearchTextField, to_search, to_ascii)
+
 from .signals import *
 from .receivers import *
 from .settings import *
 
 __all__ = ['CONTINENT_CHOICES', 'to_search', 'to_ascii', 'filter_non_cities',
-    'filter_non_included_countries_country',
-    'filter_non_included_countries_region',
-    'filter_non_included_countries_city']
+           'filter_non_included_countries_country',
+           'filter_non_included_countries_region',
+           'filter_non_included_countries_subregion',
+           'filter_non_included_countries_city']
 
 if CITIES_LIGHT_APP_NAME == DEFAULT_APP_NAME:
     class Country(AbstractCountry):
@@ -100,6 +107,12 @@ if CITIES_LIGHT_APP_NAME == DEFAULT_APP_NAME:
     connect_default_signals(Region)
 
     __all__.append('Region')
+
+    class SubRegion(AbstractSubRegion):
+        pass
+    connect_default_signals(SubRegion)
+
+    __all__.append('SubRegion')
 
     class City(AbstractCity):
         pass

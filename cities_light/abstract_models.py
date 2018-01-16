@@ -19,7 +19,8 @@ from .validators import timezone_validator
 from .settings import INDEX_SEARCH_NAMES, CITIES_LIGHT_APP_NAME
 
 
-__all__ = ['AbstractCountry', 'AbstractRegion', 'AbstractCity',
+__all__ = ['AbstractCountry', 'AbstractRegion',
+           'AbstractSubRegion', 'AbstractCity',
            'CONTINENT_CHOICES']
 
 
@@ -54,6 +55,23 @@ def to_search(value):
     """
 
     return ALPHA_REGEXP.sub('', to_ascii(value)).lower()
+
+
+class ToSearchIContainsLookup(lookups.IContains):
+    """IContains lookup for ToSearchTextField."""
+
+    def get_prep_lookup(self):
+        """Return the value passed through to_search()."""
+        value = super(ToSearchIContainsLookup, self).get_prep_lookup()
+        return to_search(value)
+
+
+class ToSearchTextField(models.TextField):
+    """
+    Trivial TextField subclass that passes values through to_search
+    automatically.
+    """
+ToSearchTextField.register_lookup(ToSearchIContainsLookup)
 
 
 @python_2_unicode_compatible
@@ -118,21 +136,27 @@ class AbstractRegion(Base):
         return '%s, %s' % (self.name, self.country.name)
 
 
-class ToSearchIContainsLookup(lookups.IContains):
-    """IContains lookup for ToSearchTextField."""
-
-    def get_prep_lookup(self):
-        """Return the value passed through to_search()."""
-        value = super(ToSearchIContainsLookup, self).get_prep_lookup()
-        return to_search(value)
-
-
-class ToSearchTextField(models.TextField):
+class AbstractSubRegion(Base):
     """
-    Trivial TextField subclass that passes values through to_search
-    automatically.
+    Base SubRegion model.
     """
-ToSearchTextField.register_lookup(ToSearchIContainsLookup)
+
+    display_name = models.CharField(max_length=200)
+    geoname_code = models.CharField(max_length=50, null=True, blank=True,
+                                    db_index=True)
+
+    country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country',
+                                on_delete=models.CASCADE)
+    region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region',
+                               on_delete=models.CASCADE)
+
+    class Meta(Base.Meta):
+        verbose_name = _('SubRegion')
+        verbose_name_plural = _('SubRegions')
+        abstract = True
+
+    def get_display_name(self):
+        return '%s, %s' % (self.name, self.country.name)
 
 
 class AbstractCity(Base):
@@ -160,6 +184,8 @@ class AbstractCity(Base):
         null=True,
         blank=True)
 
+    subregion = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.SubRegion', blank=True,
+                                  null=True, on_delete=models.CASCADE)
     region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region', blank=True,
                                null=True, on_delete=models.CASCADE)
     country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country',

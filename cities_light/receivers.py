@@ -74,6 +74,9 @@ def connect_default_signals(model_class):
     if 'Region' in model_class.__name__:
         signals.pre_save.connect(set_name_ascii, sender=model_class)
         signals.pre_save.connect(set_display_name, sender=model_class)
+    if 'SubRegion' in model_class.__name__:
+        signals.pre_save.connect(set_name_ascii, sender=model_class)
+        signals.pre_save.connect(set_display_name, sender=model_class)
     if 'City' in model_class.__name__:
         signals.pre_save.connect(set_name_ascii, sender=model_class)
         signals.pre_save.connect(set_display_name, sender=model_class)
@@ -124,6 +127,22 @@ def filter_non_included_countries_region(sender, items, **kwargs):
     if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
         raise InvalidItems()
 region_items_pre_import.connect(filter_non_included_countries_region)
+
+
+def filter_non_included_countries_subregion(sender, items, **kwargs):
+    """
+    Exclude any **subregion** which country must not be included.
+    This is slot is connected to the
+    :py:func:`~cities_light.signals.subregion_items_pre_import` signal and does
+    nothing by default.  To enable it, set the
+    :py:data:`~cities_light.settings.INCLUDE_COUNTRIES` setting.
+    """
+    if INCLUDE_COUNTRIES is None:
+        return
+
+    if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
+        raise InvalidItems()
+subregion_items_pre_import.connect(filter_non_included_countries_subregion)
 
 
 def filter_non_included_countries_city(sender, items, **kwargs):
