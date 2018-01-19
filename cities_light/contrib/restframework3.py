@@ -25,7 +25,7 @@ from django.conf.urls import url, include
 
 from ..loading import get_cities_models
 
-Country, Region, City = get_cities_models()
+Country, Region, Subregion, City = get_cities_models()
 
 
 class CitySerializer(HyperlinkedModelSerializer):
@@ -38,9 +38,27 @@ class CitySerializer(HyperlinkedModelSerializer):
         view_name='cities-light-api-country-detail', read_only=True)
     region = relations.HyperlinkedRelatedField(
         view_name='cities-light-api-region-detail', read_only=True)
+    subregion = relations.HyperlinkedRelatedField(
+        view_name='cities-light-api-subregion-detail', read_only=True)
 
     class Meta:
         model = City
+        exclude = ('slug',)
+
+
+class SubRegionSerializer(HyperlinkedModelSerializer):
+    """
+    HyperlinkedModelSerializer for SubRegion.
+    """
+    url = relations.HyperlinkedIdentityField(
+        view_name='cities-light-api-city-detail')
+    country = relations.HyperlinkedRelatedField(
+        view_name='cities-light-api-country-detail', read_only=True)
+    region = relations.HyperlinkedRelatedField(
+        view_name='cities-light-api-region-detail', read_only=True)
+
+    class Meta:
+        model = SubRegion
         exclude = ('slug',)
 
 
@@ -93,6 +111,11 @@ class RegionModelViewSet(CitiesLightListModelViewSet):
     queryset = Region.objects.all()
 
 
+class SubRegionModelViewSet(CitiesLightListModelViewSet):
+    serializer_class = SubRegionSerializer
+    queryset = SubRegion.objects.all()
+
+
 class CityModelViewSet(CitiesLightListModelViewSet):
     """
     ListRetrieveView for City.
@@ -119,7 +142,8 @@ router.register(r'countries', CountryModelViewSet,
                 basename='cities-light-api-country')
 router.register(r'regions', RegionModelViewSet,
                 basename='cities-light-api-region')
-
+router.register(r'subregions', SubRegionModelViewSet,
+                basename='cities-light-api-subregion')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
