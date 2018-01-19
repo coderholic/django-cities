@@ -59,6 +59,20 @@ class RegionLookup(StandardLookupChannel):
         ).distinct()
 
 
+class SubRegionLookup(StandardLookupChannel):
+    """
+    Lookup channel for SubRegion, hits name and name_ascii.
+    """
+
+    model = SubRegion
+
+    def get_query(self, q, request):
+        return SubRegion.objects.filter(
+            Q(name__icontains=q) |
+            Q(name_ascii__icontains=q)
+        ).distinct()
+
+
 class CityLookup(StandardLookupChannel):
     """
     Lookup channel for City, hits name and search_names.
