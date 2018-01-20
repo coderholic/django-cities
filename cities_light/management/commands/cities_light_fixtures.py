@@ -29,6 +29,7 @@ DATA_DIR/fixtures/, resulting in the following fixtures:
 
     cities_light_country.json.bz2
     cities_light_region.json.bz2
+    cities_light_subregion.json.bz2
     cities_light_city.json.bz2
 
 Loader by default uses the same DATA_DIR/fixtures/ folder (see

@@ -37,6 +37,7 @@ They will be stored in `DATA_DIR/fixtures/` folder in the following files::
 
     cities_light_country.json.bz2
     cities_light_region.json.bz2
+    cities_light_subregion.json.bz2
     cities_light_city.json.bz2
 
 To load them back use the following command::

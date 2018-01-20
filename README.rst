@@ -13,11 +13,11 @@
 django-cities-light -- *Simple django-cities alternative*
 =========================================================
 
-This add-on provides models and commands to import country, region/state, and
+This add-on provides models and commands to import country, subregion, region/state, and
 city data in your database.
 
 The data is pulled from `GeoNames
-<http://www.geonames.org/>`_ and contains cities, regions/states and countries.
+<http://www.geonames.org/>`_ and contains cities, subregions, regions/states and countries.
 
 Spatial query support is not required by this application.
 
@@ -77,7 +77,7 @@ This command is well documented, consult the help with::
 
     ./manage.py help cities_light
 
-By default, update procedure attempts to update all fields, including Country/Region/City slugs. But there is an option to keep them intact::
+By default, update procedure attempts to update all fields, including Country/Region/Subregion/City slugs. But there is an option to keep them intact::
 
     ./manage.py cities_light --keep-slugs
 
