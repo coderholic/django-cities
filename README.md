@@ -12,12 +12,13 @@ This package officially supports all currently supported versions of Python/Djan
 
 |      Python   | 2.7 | 3.3 | 3.4 | 3.5 | 3.6 |
 | :------------ | --- | --- | --- | --- | --- |
-| Django 1.7    |  :white_square_button:  |  :white_square_button:  |  :white_square_button:  | :x: | :x: |
+| Django 1.7    |  :x:  |  :x:  |  :x:  | :x: | :x: |
 | Django 1.8    |  :white_check_mark:  |  :white_check_mark:  |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
 | Django 1.9    |  :white_check_mark:  | :x: |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
 | Django 1.10   |  :white_check_mark:  | :x: |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
-| Django 1.11a  |  :white_check_mark: | :x: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Django [master](https://github.com/django/django/archive/master.tar.gz) | :x: | :x: | :x: | :x: | :x: |
+| Django 1.11   |  :white_check_mark:  | :x: | :white_check_mark:   | :white_check_mark:   | :white_check_mark:  |
+| Django 2.0    |  :x:                 | :x: | :white_check_mark:   | :white_check_mark:   | :white_check_mark:  |
+| Django [master](https://github.com/django/django/archive/master.tar.gz) | :x: | :x: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 | Key |                                                                     |
 | :-: | :------------------------------------------------------------------ |
