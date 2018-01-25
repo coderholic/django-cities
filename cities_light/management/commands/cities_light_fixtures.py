@@ -142,7 +142,7 @@ It is possible to force fixture download by using the --force-fetch option:
         self.dump_fixture('{}.Region'.format(CITIES_LIGHT_APP_NAME),
                           self.region_path)
         self.dump_fixture('{}.SubRegion'.format(CITIES_LIGHT_APP_NAME),
-                          self.region_path)
+                          self.subregion_path)
         self.dump_fixture('{}.City'.format(CITIES_LIGHT_APP_NAME),
                           self.city_path)
 
