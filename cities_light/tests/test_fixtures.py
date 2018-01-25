@@ -23,7 +23,7 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
     def test_dump_fixtures(self):
         """
         Test dump_fixtures calls dump_fixture with Country,
-        Region and City table names.
+        Region, Subregion and City table names.
         """
         fixtures_dir = os.path.join(DATA_DIR, 'fixtures')
         with mock.patch.object(Command, 'dump_fixture') as mock_func:
@@ -62,14 +62,17 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
     def test_load_fixtures(self):
         """
         Test load_fixtures calls load_fixture with country,
-        region and city path.
+        region, subregion and city path.
         """
         fixtures_dir = os.path.join(DATA_DIR, 'fixtures')
         with mock.patch.object(Command, 'load_fixture') as mock_func:
             cmd = Command()
+            # paths
             cmd.country_path = os.path.join(fixtures_dir, cmd.COUNTRY_FIXTURE)
             cmd.region_path = os.path.join(fixtures_dir, cmd.REGION_FIXTURE)
+            cmd.subregion_path = os.path.join(fixtures_dir, cmd.SUBREGION_FIXTURE)
             cmd.city_path = os.path.join(fixtures_dir, cmd.CITY_FIXTURE)
+            # URLs
             cmd.country_url = FIXTURES_BASE_URL + cmd.COUNTRY_FIXTURE
             cmd.region_url = FIXTURES_BASE_URL + cmd.REGION_FIXTURE
             cmd.subregion_url = FIXTURES_BASE_URL + cmd.SUBREGION_FIXTURE

@@ -11,6 +11,7 @@ from .base import TestImportBase, FixtureDir
 from ..contrib.ajax_selects_lookups import (
     CountryLookup,
     RegionLookup,
+    SubRegionLookup,
     CityLookup
 )
 
@@ -32,6 +33,7 @@ class TestRestFramework(TestImportBase):
             fixture_dir,
             'add_country',
             'add_region',
+            'add_subregion',
             'add_city',
             'add_translations',
         )
@@ -118,6 +120,7 @@ class TestAjaxSelectsLookups(TestImportBase):
             fixture_dir,
             'add_country',
             'add_region',
+            'add_subregion',
             'add_city',
             'add_translations',
         )
