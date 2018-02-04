@@ -47,11 +47,6 @@ class SlugModel(models.Model):
                 self.slug = 'invalid-{}'.format(''.join(choice(ascii_uppercase + digits) for i in range(20)))
                 super(SlugModel, self).save(*args, **kwargs)
                 self.slug = slugify_func(self, self.slugify())
-
-                # If the 'force_insert' flag was passed, don't pass it again:
-                # doing so will attempt to re-insert with the same primary key,
-                # which will cause an IntegrityError.
-                kwargs.pop('force_insert', None)
                 super(SlugModel, self).save(*args, **kwargs)
         else:
             # This is a performance optimization - we avoid the transaction if

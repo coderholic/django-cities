@@ -286,7 +286,7 @@ def create_settings():
         try:
             locales.remove('LANGUAGES')
             locales += [e[0] for e in django_settings.LANGUAGES]
-        except Exception:
+        except:
             pass
 
         return set([e.lower() for e in locales])
