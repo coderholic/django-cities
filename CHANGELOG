@@ -1,3 +1,27 @@
+2018-02-15 3.4.0
+
+    - Drop support for django<1.8 and django-rest-framework<3.4
+    - Fix memory widget units on OS X
+    - Remove support for django-autocomplete-light v1 (#157)
+    - Update django-rest-framework and django-ajax-selects
+    - Use custom Django>=1.7 lookup to remove spaces from search query string
+    - Update model customization docs for Django 1.9
+    - Add timezone support
+    - Compatibility with Django 2.0
+    - Compatibility with Django 1.11
+    - Move name field to Base model, make not unique
+    - #136: Creating a ModelSerializer
+    - #127: Adds the possibility to customize the alternate_names separator
+    - Fix unidecode warning and add unit test for to_ascii
+    - Switch Country/Region/City lists to sets (speedup)
+	- Call connection.close() only for MySQL (speedup)
+	- Disable progressbar by default (speedup)
+    - Call reset_queries only in DEBUG mode (speedup)
+    - Make dump_fixture APP_NAME aware
+    - Adds migration step in README.rst
+	- improve help text formatting for management commands
+    - fix positional argument handling on django 1.10 for cities_light_fixtures command
+
 2016-05-29 3.3.0
 
     - #118: Add Django 1.10 support, drop Django 1.7 support by @jpic
