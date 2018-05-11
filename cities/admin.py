@@ -17,6 +17,7 @@ class ContinentAdmin(CitiesAdmin):
 class CountryAdmin(CitiesAdmin):
     list_display = ['name', 'code', 'code3', 'tld', 'phone', 'continent', 'area', 'population']
     search_fields = ['name', 'code', 'code3', 'tld', 'phone']
+    filter_horizontal = ['neighbours']
 
 
 class RegionAdmin(CitiesAdmin):
