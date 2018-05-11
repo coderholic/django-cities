@@ -90,11 +90,9 @@ Install with pip:
 pip install django-cities
 ```
 
-
-
 ## Configuration
 
-You'll need to enable GeoDjango. See that [documentation](https://docs.djangoproject.com/en/1.10/ref/contrib/gis/tutorial/#setting-up) for guidance.
+You'll need to enable GeoDjango. See that [documentation](https://docs.djangoproject.com/en/stable/ref/contrib/gis/tutorial/#setting-up) for guidance.
 
 You'll need to add `cities` to `INSTALLED_APPS` in your projects `settings.py` file:
 
