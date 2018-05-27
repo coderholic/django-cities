@@ -7,18 +7,12 @@ matrix:
   - env: TOXENV=py35-djangodev-sqlite
   - env: TOXENV=py35-djangodev-mysql
   - env: TOXENV=py35-djangodev-postgresql
+  - env: TOXENV=py35-django110-mysql
 env:
   matrix:
-  - TOXENV=py27-django18-sqlite
-  - TOXENV=py27-django19-sqlite
-  - TOXENV=py27-django110-sqlite
   - TOXENV=py27-django111-sqlite
-  - TOXENV=py35-django18-sqlite
-  - TOXENV=py35-django19-sqlite
-  - TOXENV=py35-django110-sqlite
-  - TOXENV=py35-django110-mysql
-  - TOXENV=py35-django110-postgresql
   - TOXENV=py35-django111-sqlite
+  - TOXENV=py35-django20-sqlite
   - TOXENV=py35-djangodev-sqlite
   - TOXENV=py35-djangodev-mysql
   - TOXENV=py35-djangodev-postgresql

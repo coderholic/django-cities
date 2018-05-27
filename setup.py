@@ -30,7 +30,7 @@ setup(
         'six',
         'pytz',
         'unidecode>=0.04.13',
-        'django_autoslug',
+        'django-autoslug-iplweb==1.9.4.dev0',
         'progressbar2>=3.6.0'
     ],
     classifiers=[
