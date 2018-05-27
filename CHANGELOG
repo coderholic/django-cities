@@ -1,3 +1,9 @@
+2018-05-27 3.5.0
+
+    Fix lack of support of Django 2.0 by django_autoslug #174 by @wswld
+    Changes dependency from django-autoslug to django-autoslug-iplweb, that
+    works with Django 2.0, and which is maintained by @mpasternak
+
 2018-02-15 3.4.0
 
     - Drop support for django<1.8 and django-rest-framework<3.4
