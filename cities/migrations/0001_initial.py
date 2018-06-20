@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 ('currency_name', models.CharField(max_length=50, null=True)),
                 ('languages', models.CharField(max_length=250, null=True)),
                 ('phone', models.CharField(max_length=20)),
-                ('continent', models.CharField(max_length=2)),
+                ('continent', models.CharField(max_length=2, default='')),
                 ('tld', models.CharField(max_length=5)),
                 ('capital', models.CharField(max_length=100)),
                 ('alt_names', models.ManyToManyField(to='cities.AlternativeName')),
