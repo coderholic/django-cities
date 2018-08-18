@@ -12,11 +12,12 @@ This package officially supports all currently supported versions of Python/Djan
 
 |      Python   | 2.7 | 3.3 | 3.4 | 3.5 | 3.6 |
 | :------------ | --- | --- | --- | --- | --- |
-| Django 1.7    |  :white_square_button:  |  :white_square_button:  |  :white_square_button:  | :x: | :x: |
+| Django 1.7    |  :x:  |  :x:  |  :x:  | :x: | :x: |
 | Django 1.8    |  :white_check_mark:  |  :white_check_mark:  |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
 | Django 1.9    |  :white_check_mark:  | :x: |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
 | Django 1.10   |  :white_check_mark:  | :x: |  :white_check_mark:  |  :white_check_mark:  | :large_blue_circle: |
-| Django 1.11a  |  :white_check_mark: | :x: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Django 1.11   |  :white_check_mark:  | :x: | :white_check_mark:   | :white_check_mark:   | :white_check_mark:  |
+| Django 2.0    |  :x:                 | :x: | :white_check_mark:   | :white_check_mark:   | :white_check_mark:  |
 | Django [master](https://github.com/django/django/archive/master.tar.gz) | :x: | :x: | :x: | :x: | :x: |
 
 | Key |                                                                     |
@@ -89,11 +90,9 @@ Install with pip:
 pip install django-cities
 ```
 
-
-
 ## Configuration
 
-You'll need to enable GeoDjango. See that [documentation](https://docs.djangoproject.com/en/1.10/ref/contrib/gis/tutorial/#setting-up) for guidance.
+You'll need to enable GeoDjango. See that [documentation](https://docs.djangoproject.com/en/stable/ref/contrib/gis/tutorial/#setting-up) for guidance.
 
 You'll need to add `cities` to `INSTALLED_APPS` in your projects `settings.py` file:
 
@@ -661,6 +660,13 @@ The cities manage command has options, see `--help`.  Verbosity is controlled th
         # If you have changed example data files then you should push your
         # changes to github and specify commit and repo variables:
         TRAVIS_COMMIT=`git rev-parse HEAD` TRAVIS_REPO_SLUG='github-username/django-cities' POSTGRES_USER=some_username POSTGRES_PASSWORD='password from createuser ste' tox
+
+As an alternative to installing and running PostgreSQL system-wide,
+you can run the tests against a transient Docker instance:
+
+```bash
+docker run --rm -p 127.0.0.1:5432:5432 mdillon/postgis
+```
 
 ### Useful test options:
 
