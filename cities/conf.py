@@ -71,7 +71,7 @@ files = {
         ]
     },
     'city': {
-        'filename': 'cities5000.zip',
+        'filename': 'cities1000.zip',
         'urls': [url_bases['geonames']['dump'] + '{filename}', ],
         'fields': [
             'geonameid',
