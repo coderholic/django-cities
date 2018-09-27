@@ -22,12 +22,13 @@ env:
   - DJANGO_VERSION='Django>=1.10,<1.11'
   - DJANGO_VERSION='Django>=1.11,<2.0'
   - DJANGO_VERSION='Django>=2.0,<2.1'
+  - DJANGO_VERSION='Django>=2.1,<2.2'
   - DJANGO_VERSION='https://github.com/django/django/archive/master.tar.gz'
 
 matrix:
   exclude:
     - python: "2.7"
-      env: DJANGO_VERSION='Django>=2.0,<2.1'
+      env: DJANGO_VERSION='Django>=2.0'
     - python: "2.7"
       env: DJANGO_VERSION='https://github.com/django/django/archive/master.tar.gz'
     - python: "3.5"
@@ -35,13 +36,13 @@ matrix:
     - python: "3.6"
       env: DJANGO_VERSION='Django>=1.7,<1.8'
     - python: "3.7"
-      env: DJANGO_VERSION='Django>=1.7,<1.8'
+      env: DJANGO_VERSION='Django>=1.7,<2.0'
   allow_failures:
     - env: DJANGO_VERSION='Django>=1.7,<1.8'
     - python: "3.6"
       env: DJANGO_VERSION='Django>=1.8,<1.9'
     - python: "3.7"
-      env: DJANGO_VERSION='Django>=1.8,<1.9'
+      env: DJANGO_VERSION='Django>=2.0,<2.2'
     - env: DJANGO_VERSION='https://github.com/django/django/archive/master.tar.gz'
 
 install:

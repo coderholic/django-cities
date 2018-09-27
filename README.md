@@ -13,11 +13,11 @@ This package officially supports all currently supported versions of Python/Djan
 |      Python   | 2.7 | 3.3 | 3.4 | 3.5 | 3.6 | 3.7 |
 | :------------ | --- | --- | --- | --- | --- | --- |
 | Django 1.7    |  :x:  |  :x:  |  :x:  | :x: | :x: | :x: |
-| Django 1.8    |  :white_check_mark:  |  :x:  |  :x:  |  :white_check_mark:  | :large_blue_circle: | ? |
-| Django 1.9    |  :white_check_mark:  | :x: |  :x:  |  :white_check_mark:  | :large_blue_circle: | ? |
-| Django 1.10   |  :white_check_mark:  | :x: |  :x:  |  :white_check_mark:  | :large_blue_circle: | ? |
-| Django 1.11   |  :white_check_mark:  | :x: | :x:   | :white_check_mark:   | :white_check_mark:  | ? |
-| Django 2.0    |  :x:                 | :x: | :x:   | :white_check_mark:   | :white_check_mark:  | ? |
+| Django 1.8    |  :white_check_mark:  |  :x:  |  :x:  |  :white_check_mark:  | :large_blue_circle: | :x: |
+| Django 1.9    |  :white_check_mark:  | :x: |  :x:  |  :white_check_mark:  | :large_blue_circle: | :x: |
+| Django 1.10   |  :white_check_mark:  | :x: |  :x:  |  :white_check_mark:  | :large_blue_circle: | :x: |
+| Django 1.11   |  :white_check_mark:  | :x: | :x:   | :white_check_mark:   | :white_check_mark:  | :x: |
+| Django 2.0    |  :x:                 | :x: | :x:   | :white_check_mark:   | :white_check_mark:  | :x: |
 | Django 2.1    |  :x:                 | :x: | :x:   | ?   | ?  | ? |
 | Django [master](https://github.com/django/django/archive/master.tar.gz) | :x: | :x: | :x: | :x: | :x: | :x: |
 
