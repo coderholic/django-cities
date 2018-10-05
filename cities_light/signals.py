@@ -67,12 +67,11 @@ from __future__ import unicode_literals
 import django.dispatch
 
 __all__ = [
-           'country_items_pre_import', 'country_items_post_import',
-           'region_items_pre_import', 'region_items_post_import',
-           'subregion_items_pre_import', 'subregion_items_post_import',
-           'city_items_pre_import', 'city_items_post_import',
-           'translation_items_pre_import',
-           ]
+    'country_items_pre_import', 'country_items_post_import',
+    'region_items_pre_import', 'region_items_post_import',
+    'subregion_items_pre_import', 'subregion_items_post_import',
+    'city_items_pre_import', 'city_items_post_import',
+    'translation_items_pre_import']
 
 city_items_pre_import = django.dispatch.Signal(providing_args=['items'])
 subregion_items_pre_import = django.dispatch.Signal(providing_args=['items'])

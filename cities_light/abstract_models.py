@@ -184,8 +184,9 @@ class AbstractCity(Base):
         null=True,
         blank=True)
 
-    subregion = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.SubRegion', blank=True,
-                                  null=True, on_delete=models.CASCADE)
+    subregion = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.SubRegion',
+                                  blank=True, null=True,
+                                  on_delete=models.CASCADE)
     region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region', blank=True,
                                null=True, on_delete=models.CASCADE)
     country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country',
