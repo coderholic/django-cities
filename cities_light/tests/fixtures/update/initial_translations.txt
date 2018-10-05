@@ -243,3 +243,6 @@
 11323624	1496990	da	Novokusnetsk
 11323625	1496990	hu	Novokuznyeck
 11323626	1496990	ur	نووکوزنتسک
+11904025	1485714	ru	Юргинский район	1			
+11909961	1485714		Yurginskiy Rayon				
+11952619	1485714	link	http://en.wikipedia.org/wiki/Yurginsky_District,_Kemerovo_Oblast				

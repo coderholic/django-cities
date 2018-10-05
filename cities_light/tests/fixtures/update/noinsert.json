@@ -44,6 +44,7 @@
         "region": 1,
         "search_names": "kemerovokemerovorossiiskaiafederatsiia kemerovokemerovorussia kemerovokemerovorussie kemerovokemerovskaiaoblastrossiiskaiafederatsiia kemerovokemerovskaiaoblastrussia kemerovokemerovskaiaoblastrussie kemerovooblastdekemerovorossiiskaiafederatsiia kemerovooblastdekemerovorussia kemerovooblastdekemerovorussie kemerovorossiiskaiafederatsiia kemerovorussia kemerovorussie",
         "slug": "kemerovo",
+        "subregion": null,
         "timezone": "Asia/Novokuznetsk"
     },
     "model": "cities_light.city",
@@ -64,6 +65,7 @@
         "region": 1,
         "search_names": "novokouznetskkemerovorossiiskaiafederatsiia novokouznetskkemerovorussia novokouznetskkemerovorussie novokouznetskkemerovskaiaoblastrossiiskaiafederatsiia novokouznetskkemerovskaiaoblastrussia novokouznetskkemerovskaiaoblastrussie novokouznetskoblastdekemerovorossiiskaiafederatsiia novokouznetskoblastdekemerovorussia novokouznetskoblastdekemerovorussie novokouznetskrossiiskaiafederatsiia novokouznetskrussia novokouznetskrussie novokuznetskkemerovorossiiskaiafederatsiia novokuznetskkemerovorussia novokuznetskkemerovorussie novokuznetskkemerovskaiaoblastrossiiskaiafederatsiia novokuznetskkemerovskaiaoblastrussia novokuznetskkemerovskaiaoblastrussie novokuznetskoblastdekemerovorossiiskaiafederatsiia novokuznetskoblastdekemerovorussia novokuznetskoblastdekemerovorussie novokuznetskrossiiskaiafederatsiia novokuznetskrussia novokuznetskrussie stalinskkemerovorossiiskaiafederatsiia stalinskkemerovorussia stalinskkemerovorussie stalinskkemerovskaiaoblastrossiiskaiafederatsiia stalinskkemerovskaiaoblastrussia stalinskkemerovskaiaoblastrussie stalinskoblastdekemerovorossiiskaiafederatsiia stalinskoblastdekemerovorussia stalinskoblastdekemerovorussie stalinskrossiiskaiafederatsiia stalinskrussia stalinskrussie",
         "slug": "novokuznetsk",
+        "subregion": null,
         "timezone": "Asia/Novokuznetsk"
     },
     "model": "cities_light.city",

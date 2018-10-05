@@ -421,3 +421,245 @@
 8713950	1510469	uk	Бєлово
 8713951	1510469	pl	Biełowo
 8713952	1510469	zh	別洛沃
+1220512	2635167	en	Great Britain		1		
+1220513	2635167	en	Britain				
+1555676	2635167	aa	United Kingdom				
+1555677	2635167	af	Groot-Brittanje				
+1555678	2635167	am	እንግሊዝ				
+1555679	2635167	ar	المملكة المتحدة				
+1555680	2635167	be	Велікабрытанія				
+1555681	2635167	bg	Обединено кралство				
+1555682	2635167	bn	গ্রেটবৃটেন				
+1555683	2635167	ca	Regne Unit		1		
+1555684	2635167	cs	Velká Británie				
+1555685	2635167	cy	Prydain Fawr				
+1555686	2635167	da	Storbritannien				
+1555687	2635167	de	Vereinigtes Königreich	1			
+1555688	2635167	dz	ཡུ་ནའི་ཊེཊ་ཀིང་ཌམ				
+1555689	2635167	el	Ηνωμένο Βασίλειο				
+1555690	2635167	en	United Kingdom	1	1		
+1555691	2635167	eo	Unuiĝinta Reĝlando				
+1555692	2635167	es	Reino Unido		1		
+1555693	2635167	et	Ühendkuningriik				
+1555694	2635167	fa	بریتانیا				
+1555695	2635167	fi	Britannia	1			
+1555696	2635167	fr	Royaume-Uni	1			
+1555697	2635167	ga	An Ríocht Aontaithe				
+1555698	2635167	gv	Rywvaneth Unys				
+1555699	2635167	he	בריטניה				
+1555700	2635167	hr	Ujedinjena Kraljevina				
+1555701	2635167	hu	Egyesült Királyság				
+1555702	2635167	hy	Մեծ Բրիտանիա				
+1555703	2635167	id	Inggris Raya				
+1555704	2635167	is	Bretland				
+1555705	2635167	it	Regno Unito				
+1555706	2635167	ja	イギリス				
+1555707	2635167	ko	영국				
+1555708	2635167	kw	Rywvaneth Unys				
+1555709	2635167	lo	ສະຫະລາດຊະອານາຈັກ				
+1555710	2635167	lt	Didžioji Britanija				
+1555711	2635167	lv	Lielbritānija				
+1555712	2635167	mk	Велика Британија				
+1555713	2635167	ms	United Kingdom				
+1555714	2635167	mt	Ingilterra				
+1555715	2635167	nb	Storbritannia				
+1555716	2635167	nl	Verenigd Koninkrijk				
+1555717	2635167	nn	Storbritannia				
+1555718	2635167	om	United Kingdom				
+1555719	2635167	pl	Wielka Brytania				
+1555720	2635167	ps	برتانیه				
+1555721	2635167	pt	Reino Unido				
+1555722	2635167	ro	Marea Britanie				
+1555723	2635167	ru	Великобритания				
+1555724	2635167	sk	Spojené kráľovstvo				
+1555725	2635167	sl	Velika Britanija				
+1555726	2635167	so	United Kingdom				
+1555727	2635167	sq	Mbretëria e Bashkuar				
+1555728	2635167	sr	Велика Британија				
+1555729	2635167	sv	Storbritannien				
+1555730	2635167	sw	Uingereza				
+1555731	2635167	ta	பிரிடிஷ் கூட்டரசு				
+1555732	2635167	te	బ్రిటన్				
+1555733	2635167	th	สหราชอาณาจักร				
+1555734	2635167	tr	Birleşik Krallık				
+1555735	2635167	uk	Великобританія				
+1555736	2635167	uz	Бирлашган Қироллик				
+1555737	2635167	vi	Vương quốc Anh				
+1555738	2635167	zh	英国				
+1765754	2635167	de	Großbritannien				
+1972687	2635167	af	Verenigde Koninkryk				
+1972688	2635167	am	ዩናይትድ ኪንግደም				
+1972689	2635167	an	Reino Unito				
+1972690	2635167	ang	Geāned Cynerīce				
+1972691	2635167	arc	ܡܠܟܘܬܐ ܡܚܝܕܬܐ				
+1972692	2635167	ast	Reinu Uníu				
+1972693	2635167	ast	Reinu Xuníu				
+1972694	2635167	az	Böyük Britaniya				
+1972695	2635167	bar	Vaeinigts Kinireich				
+1972696	2635167	be	Вялікабрытанія				
+1972697	2635167	bg	Обединено кралство Великобритания и Северна Ирландия				
+1972698	2635167	bn	যুক্তরাজ্য				
+1972699	2635167	br	Rouantelezh Unanet Breizh-Veur ha Norzhiwerzhon				
+1972700	2635167	bs	Ujedinjeno Kraljevstvo				
+1972701	2635167	ca	Regne Unit de la Gran Bretanya i Irlanda del Nord	1			
+1972702	2635167	cdo	Ĭng-guók				
+1972703	2635167	co	Regnu Unitu				
+1972704	2635167	cs	Spojené království				
+1972705	2635167	cy	Y Deyrnas Unedig		1		
+1972706	2635167	da	Det Forenede Kongerige				
+1972707	2635167	da	Det Forenede Kongerige Storbritannien og Nordirland				
+1972708	2635167	et	Suurbritannia				
+1972709	2635167	eu	Erresuma Batua				
+1972710	2635167	fa	پادشاهی متحد بریتانیای کبیر و ایرلند شمالی				
+1972711	2635167	fa	پادشاهی متحده				
+1972712	2635167	fi	Yhdistynyt kuningaskunta				
+1972713	2635167	fo	Stóra Bretland				
+1972714	2635167	frp	Royômo-Uni				
+1972715	2635167	fy	Grut-Brittanje				
+1972716	2635167	gd	An Rìoghachd Aonaichte				
+1972717	2635167	gl	Reino Unido - United Kingdom				
+1972718	2635167	gv	Reeriaght Unnaneysit				
+1972719	2635167	he	הממלכה המאוחדת				
+1972720	2635167	hi	संयुक्त राजशाही				
+1972721	2635167	hr	Ujedinjeno Kraljevstvo				
+1972722	2635167	hsb	Zjednoćene kralestwo				
+1972723	2635167	ht	Wayòm Ini				
+1972724	2635167	hy	Միավորված Թագավորություն				
+1972725	2635167	ia	Regno Unite				
+1972726	2635167	id	Britania Raya				
+1972727	2635167	ilo	Nagkaykaysa a Pagarian				
+1972728	2635167	io	Unionita Rejio				
+1972729	2635167	ka	დიდი ბრიტანეთი				
+1972730	2635167	ka	გაერთიანებული სამეფო				
+1972731	2635167	ku	Keyatiya Yekbûyî ya Brîtaniya Mezin û Îrlanda				
+1972732	2635167	ku	Keyaniya Yekbûyî				
+1972733	2635167	la	Britanniarum Regnum				
+1972734	2635167	la	Regnum Unitum				
+1972735	2635167	lb	Groussbritannien				
+1972736	2635167	lb	Groussbritannien an Nordirland				
+1972737	2635167	li	Vereineg Keuninkriek				
+1972738	2635167	lij	Regno Unïo				
+1972739	2635167	lt	Jungtinė Karalystė	1	1		
+1972740	2635167	lv	Apvienotā Karaliste				
+1972741	2635167	mi	Kīngitanga Kotahi				
+1972742	2635167	mk	Обединето Кралство				
+1972743	2635167	mt	Renju Unit				
+1972744	2635167	nds	Vereenigt Königriek vun Grootbritannien un Noordirland				
+1972745	2635167	no	Det forente kongerike Storbritannia og Nord-Irland				
+1972746	2635167	nrm	Rouoyaume Unni				
+1972747	2635167	oc	Reialme Unit				
+1972748	2635167	os	Стыр Британи				
+1972749	2635167	pam	Pisanmetung a Ka-arian				
+1972750	2635167	pms	Regn Unì				
+1972751	2635167	ps	بريتانيا				
+1972752	2635167	qu	Hukllachasqa Qhapaq Suyu				
+1972753	2635167	rm	Reginavel Unì da la Gronda Britannia ed Irlanda dal Nord				
+1972754	2635167	rmy	Phandlo Thagaripen la Bare Britaniyako thai le Nordutne Irlandesko				
+1972755	2635167	ro	Regatul Unit al Marii Britanii și al Irlandei de Nord				
+1972756	2635167	scn	Regnu Unitu				
+1972757	2635167	sco	Unitit Kinrick				
+1972758	2635167	hbs	Ujedinjeno Kraljevstvo				
+1972759	2635167	sl	Združeno kraljestvo Velike Britanije in Severne Irske				
+1972760	2635167	sq	Mbretëria e Bashkuar e Britanisë së Madhe dhe Irlandës së Veriut				
+1972761	2635167	sr	Уједињено Краљевство				
+1972762	2635167	ta	ஐக்கிய இராச்சியம்				
+1972763	2635167	tet	Reinu Naklibur				
+1972764	2635167	tg	Подшоҳии Муттаҳида				
+1972765	2635167	tl	Nagkakaisang Kaharain				
+1972766	2635167	tl	Nagkakaisang Kaharian				
+1972767	2635167	ty	Paratāne				
+1972768	2635167	ug	بۈيۈك بېرىتانىيە				
+1972769	2635167	uk	Велика Британія				
+1972770	2635167	ur	برطانیہ				
+1972771	2635167	vi	Vương quốc Liên hiệp Anh và Bắc Ireland				
+1972772	2635167	yi	פאראייניגטע קעניגרייך				
+2254452	2635167	en	UK				
+2296433	2635167	fr	Grande-Bretagne				
+2418640	2635167	be	Вялікая Брытанія	1			
+2418641	2635167	bg	Великобритания	1			
+2418642	2635167	bo	དབྱིན་ཇི་	1			
+2418643	2635167	fa	انگلستان	1			
+2418644	2635167	gl	Reino Unido	1			
+2418645	2635167	hi	ब्रितन	1			
+2418646	2635167	hr	Velika Britanija	1			
+2418647	2635167	hy	Միացյալ Թագավորություն	1			
+2418648	2635167	id	Kerajaan Inggris	1			
+2418649	2635167	ii	ꑱꇩ	1			
+2418650	2635167	is	Stóra-Bretland	1			
+2418651	2635167	ln	Angɛlɛtɛ́lɛ	1			
+2418652	2635167	lv	Lielbritānijas un Ziemeļīrijas Apvienotā Karaliste	1			
+2418653	2635167	ml	ബ്രിട്ടന്‍	1			
+2418654	2635167	pl	Zjednoczone Królestwo Wielkiej Brytanii	1			
+2418655	2635167	se	Stuorra-Británnia	1			
+2418656	2635167	sl	Združeno kraljestvo (V. Britanija in S. Irska)	1			
+2418657	2635167	to	Pilitānia	1			
+2418658	2635167	tr	İngiltere	1			
+2418659	2635167	uk	Сполучене Королівство	1			
+2488029	2635167	de	Großbritannien und Nordirland				
+2730033	2635167	no	Storbritannia	1			
+3051585	2635167	link	http://ru.wikipedia.org/wiki/%D0%92%D0%B5%D0%BB%D0%B8%D0%BA%D0%BE%D0%B1%D1%80%D0%B8%D1%82%D0%B0%D0%BD%D0%B8%D1%8F				
+3059100	2635167	en	U.K.				
+4010214	2635167	en	United Kingdom of Great Britain and Northern Ireland				
+6103052	2635167		Britain				
+7086695	2635167	ak	Ahendiman Nkabom	1			
+7086696	2635167	as	সংযুক্ত ৰাজ্য	1			
+7086697	2635167	az	Birləşmiş Krallıq	1			
+7086698	2635167	bm	Angilɛtɛri	1			
+7086699	2635167	br	Rouantelezh-Unanet	1			
+7086700	2635167	bs	Velika Britanija	1			
+7086701	2635167	ee	United Kingdom nutome	1			
+7086702	2635167	ff	Laamateeri Rentundi	1			
+7086703	2635167	gu	યુનાઇટેડ કિંગડમ	1			
+7086704	2635167	ha	Birtaniya	1			
+7086705	2635167	ki	Ngeretha	1			
+7086706	2635167	kk	Ұлыбритания	1			
+7086707	2635167	kl	Tuluit Nunaat	1			
+7086708	2635167	kn	ಬ್ರಿಟನ್/ಇಂಗ್ಲೆಂಡ್	1			
+7086709	2635167	ku	شانشینی یەکگرتوو	1			
+7086710	2635167	lg	Bungereza	1			
+7086711	2635167	lu	Angeletele	1			
+7086712	2635167	mg	Angletera	1			
+7086713	2635167	mr	ब्रिटन	1			
+7086714	2635167	my	ယူနိုက်တက်ကင်းဒမ်း	1			
+7086715	2635167	nd	United Kingdom	1			
+7086716	2635167	ne	संयुक्त अधिराज्य	1			
+7086717	2635167	oc	Reiaume Unit	1			
+7086718	2635167	or	ବ୍ରିଟେନ୍	1			
+7086719	2635167	rm	Reginavel Unì	1			
+7086720	2635167	rn	Ubwongereza	1			
+7086721	2635167	sg	Ködörögbïä--Ôko	1			
+7086722	2635167	si	එක්සත් රාජධානිය	1			
+7086723	2635167	sn	United Kingdom	1			
+7086724	2635167	ti	እንግሊዝ	1			
+7086725	2635167	ur	سلطنت متحدہ	1			
+7086726	2635167	yo	Orílẹ́ède Omobabirin	1			
+7086727	2635167	zu	i-United Kingdom	1			
+7297556	2635167	link	http://en.wikipedia.org/wiki/United_Kingdom	1			
+10380085	2635167	lt	Jungtinė Didžiosios Britanijos ir Šiaurės Airijos Karalystė				
+11215019	2635167	olo	Yhtys Kuningaskundu				
+11262177	2635167	link	http://id.loc.gov/authorities/names/n79023147				
+11387162	2635167	nl	Groot-Brittannië				
+13901146	2635167	ru	Соединенное Королевство				
+1626655	2638360	en	Scotland				
+1626656	2638360	fr	Ecosse				
+1626657	2638360	eo	Skotlando				
+1626658	2638360	es	Escocia				
+1626659	2638360	la	Caledonia				
+1626660	2638360	gd	Alba				
+1626706	2638360	ca	Escòcia				
+2417639	2638360	no	Skottland				
+2728525	2638360	sv	Skottland				
+3074692	2638360	link	http://en.wikipedia.org/wiki/Scotland				
+3173123	2638360		Scotland				
+6533557	2638360	nl	Schotland	1			
+6990749	2638360	br	Skos				
+7624946	2638360	pt	Escócia				
+7847217	2638360	it	Scozia	1			
+8434580	2638360	fi	Skotlanti	1			
+10380082	2638360	lt	Škotija				
+10773356	2638360	zh-CN	苏格兰	1			
+11187006	2638360	ru	Шотландия	1			
+11286017	2638360	de	Schottland				
+13136104	2638360	ga	Albain				
+7071527	2641832	link	http://en.wikipedia.org/wiki/Nedd				
+7097232	2641832		Nedd				

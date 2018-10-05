@@ -1,1 +1,2 @@
 SU.29		Kuzbass	1503900
+GB.SCT	Scotland	Scotland	2638360
