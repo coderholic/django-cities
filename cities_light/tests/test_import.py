@@ -14,6 +14,7 @@ class TestImport(TestImportBase):
             fixture_dir,
             'angouleme_country',
             'angouleme_region',
+            'angouleme_subregion',
             'angouleme_city',
             'angouleme_translations'
         )
@@ -26,6 +27,7 @@ class TestImport(TestImportBase):
             fixture_dir,
             'angouleme_country',
             'angouleme_region',
+            'angouleme_subregion',
             'angouleme_city_wtz',
             'angouleme_translations'
         )

@@ -25,7 +25,7 @@ from django.conf.urls import url, include
 
 from ..loading import get_cities_models
 
-Country, Region, Subregion, City = get_cities_models()
+Country, Region, SubRegion, City = get_cities_models()
 
 
 class CitySerializer(HyperlinkedModelSerializer):
