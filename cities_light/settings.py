@@ -48,6 +48,12 @@ because it's probably project specific.
     admin1CodesASCII.txt from geonames download server. Overridable in
     ``settings.CITIES_LIGHT_REGION_SOURCES``.
 
+.. py:data:: SUBREGION_SOURCES
+
+    A list of urls to download region info from. Default is
+    admin2Codes.txt from geonames download server. Overridable in
+    ``settings.CITIES_LIGHT_SUBREGION_SOURCES``.
+
 .. py:data:: CITY_SOURCES
 
     A list of urls to download city info from. Default is cities15000.zip from

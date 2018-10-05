@@ -464,7 +464,6 @@ It is possible to force the import of files which weren't downloaded using the
                 force_update=force_update
             )
 
-
     def city_import(self, items):
         try:
             city_items_pre_import.send(sender=self, items=items)
@@ -497,7 +496,6 @@ It is possible to force the import of files which weren't downloaded using the
             )
         except Region.DoesNotExist:
             region_id = None
-
 
         try:
             subregion_id = self._get_subregion_id(
