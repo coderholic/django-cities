@@ -108,6 +108,7 @@ class CityAdmin(admin.ModelAdmin):
     """
     list_display = (
         'name',
+        'subregion',
         'region',
         'country',
         'geoname_id',
