@@ -6,6 +6,8 @@
 
 ----
 
+# CURRENTLY UNMAINTAINED - contact coderholic to take over maintainership of this project #
+
 django-cities provides you with place related models (eg. Country, Region, City) and data (from [GeoNames](http://www.geonames.org/)) that can be used in your django projects.
 
 This package officially supports all currently supported versions of Python/Django:
