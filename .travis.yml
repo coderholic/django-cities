@@ -58,14 +58,16 @@ matrix:
 
 before_install:
   # https://gis.stackexchange.com/a/252610
-  - sudo apt-get install --yes postgresql-9.6-postgis-2.3
+  - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  - sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" >> /etc/apt/sources.list.d/postgresql.list'
+  - sudo apt-get install --yes postgresql-9.6-postgis-2.4
 
 install:
   - pip install -q $DJANGO_VERSION
   - pip install -q django-model-utils flake8 psycopg2 six swapper tox tqdm
 
 before_script:
-  - psql -U postgres -c "CREATE EXTENSION postgis;"
+  # - psql -U postgres -c "CREATE EXTENSION postgis;"
   - psql -c 'create database django_cities;' -U postgres
   - psql -U postgres -c 'CREATE EXTENSION postgis;' -d django_cities
 
