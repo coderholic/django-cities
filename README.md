@@ -28,7 +28,6 @@ This package officially supports all currently supported versions of Python/Djan
 | :-------------------: | :------------------------------------------------------------------ |
 | :white_check_mark:    | Officially supported, tested, and passing                           |
 | :large_blue_circle:   | Tested and passing, but not officially supported                    |
-| :white_square_button: | Not officially supported, may break at any time, most tests passing |
 | :x:                   | Known incompatibilities                                             |
 
 Authored by [Ben Dowling](http://www.coderholic.com), and some great [contributors](https://github.com/coderholic/django-cities/contributors).
