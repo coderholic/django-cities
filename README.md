@@ -20,7 +20,7 @@ This package officially supports all currently supported versions of Python/Djan
 | Django 1.10   | :white_check_mark: | :white_check_mark:  | :white_check_mark: | :large_blue_circle: | :large_blue_circle:   |
 | Django 1.11   | :white_check_mark: | :white_check_mark:  | :white_check_mark: | :white_check_mark:  | :white_check_mark:    |
 | Django 2.0    | :x:                | :white_check_mark:  | :white_check_mark: | :white_check_mark:  | :white_check_mark:    |
-| Django 2.1    | :x:                | :large_blue_circle: | :white_check_mark: | :white_check_mark:  | :white_check_mark:    |
+| Django 2.1    | :x:                | :x:                 | :white_check_mark: | :white_check_mark:  | :white_check_mark:    |
 <!-- | Django [master](https://github.com/django/django/archive/master.tar.gz) | :x: | :x: | :x: | :x:     | :x:                   | -->
 <!--                                                                        2.7   3.4   3.5   3.6       3.7 -->
 
