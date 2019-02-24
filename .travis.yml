@@ -1,3 +1,6 @@
+# We need to use Ubuntu 16.04 (Xenial Xerus) to get Python 3.7
+dist: xenial
+
 language: python
 
 services:
