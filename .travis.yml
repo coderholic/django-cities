@@ -62,5 +62,5 @@ before_script:
   - psql -U postgres -c 'CREATE EXTENSION postgis;' -d django_cities
 
 script:
-  - flake8 --ignore=E501
+  - flake8
   - PYTHONPATH=. python test_project/manage.py test test_app --noinput
