@@ -8,9 +8,10 @@ services:
 
 addons:
   postgresql: "9.6"
-  apt:
-    packages:
-      - postgresql-9.6-postgis-2.3
+  # https://gis.stackexchange.com/a/252610
+  # apt:
+  #   packages:
+  #     - postgresql-9.6-postgis-2.3
 
 python:
   - "2.7"
@@ -54,6 +55,10 @@ matrix:
     - python: "3.4"
       env: DJANGO_VERSION='Django>=2.1,<2.2'
     - env: DJANGO_VERSION='https://github.com/django/django/archive/master.tar.gz'
+
+before_install:
+  # https://gis.stackexchange.com/a/252610
+  - sudo apt-get install --yes postgresql-9.6-postgis-2.3
 
 install:
   - pip install -q $DJANGO_VERSION
