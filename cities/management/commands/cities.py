@@ -118,7 +118,7 @@ class Command(BaseCommand):
             metavar="DATA_TYPES",
             default='all',
             dest="import",
-            help='Selectively import data. Comma separated list of data ' +
+            help='Selectively import data. Comma separated list of data '
                  'types: ' + str(import_opts).replace("'", '')
         )
         parser.add_argument(
@@ -752,7 +752,7 @@ class Command(BaseCommand):
                             geo_info['type'].__name__,
                             item['name']))
                     continue
-            alt.is_historic = True if ((item['isHistoric']and
+            alt.is_historic = True if ((item['isHistoric'] and
                                         item['isHistoric'] != '\n') or
                                        locale == 'fr_1793') else False
 
@@ -789,8 +789,8 @@ class Command(BaseCommand):
                 continue
 
             if hasattr(alt, 'kind'):
-                if (locale in ('abbr', 'link', 'name') or
-                   INCLUDE_AIRPORT_CODES and locale in ('iana', 'icao', 'faac')):
+                if locale in ('abbr', 'link', 'name') or \
+                   INCLUDE_AIRPORT_CODES and locale in ('iana', 'icao', 'faac'):
                     alt.kind = locale
                 elif locale not in settings.locales and 'all' not in settings.locales:
                     self.logger.debug("Unknown alternative name type: {} -- skipping".format(locale))
