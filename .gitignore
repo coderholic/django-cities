@@ -13,5 +13,3 @@ dist
 
 # Data files
 /cities/data/*
-# Common virtualenv directory name
-env
