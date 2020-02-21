@@ -31,6 +31,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.md'),
+    long_description_content_type="text/markdown",
     tests_require=[
         'flake8',
         'psycopg2',
