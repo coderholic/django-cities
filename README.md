@@ -12,17 +12,12 @@ django-cities provides you with place related models (eg. Country, Region, City)
 
 This package officially supports all currently supported versions of Python/Django:
 
-|      Python   | 2.7                | 3.4                 | 3.5                | 3.6                 | 3.7                   |
-| :------------ | ------------------ | ------------------- | ------------------ | ------------------- | --------------------- |
-| Django 1.7    | :x:                | :x:                 | :x:                | :x:                 | :x:                   |
-| Django 1.8    | :white_check_mark: | :white_check_mark:  | :white_check_mark: | :large_blue_circle: | :large_blue_circle:   |
-| Django 1.9    | :white_check_mark: | :white_check_mark:  | :white_check_mark: | :large_blue_circle: | :large_blue_circle:   |
-| Django 1.10   | :white_check_mark: | :white_check_mark:  | :white_check_mark: | :large_blue_circle: | :large_blue_circle:   |
-| Django 1.11   | :white_check_mark: | :white_check_mark:  | :white_check_mark: | :white_check_mark:  | :white_check_mark:    |
-| Django 2.0    | :x:                | :white_check_mark:  | :white_check_mark: | :white_check_mark:  | :white_check_mark:    |
-| Django 2.1    | :x:                | :x:                 | :white_check_mark: | :white_check_mark:  | :white_check_mark:    |
-<!-- | Django [master](https://github.com/django/django/archive/master.tar.gz) | :x: | :x: | :x: | :x:     | :x:                   | -->
-<!--                                                                        2.7   3.4   3.5   3.6       3.7 -->
+|      Python   | 3.6                 | 3.7                   | 3.8                   |
+| :------------ | ------------------- | --------------------- | --------------------- |
+| Django 1.11   | :white_check_mark:  | :white_check_mark:    | :large_blue_circle:   |
+| Django 2.2    | :white_check_mark:  | :white_check_mark:    | :white_check_mark:    |
+| Django 3.0    | :white_check_mark:  | :white_check_mark:    | :white_check_mark:    |
+| Django [master](https://github.com/django/django/archive/master.tar.gz) | :large_blue_circle: | :large_blue_circle: | :large_blue_circle: |
 
 | Key                   |                                                                     |
 | :-------------------: | :------------------------------------------------------------------ |
