@@ -1,3 +1,7 @@
+2019-04-14 3.5.1
+
+    Fix Django 3.0 and DRF 3.11+ support
+
 2018-05-27 3.5.0
 
     Fix lack of support of Django 2.0 by django_autoslug #174 by @wswld
