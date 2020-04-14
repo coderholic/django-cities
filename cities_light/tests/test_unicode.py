@@ -56,7 +56,7 @@ class TestUnicode(TestImportBase):
                 'kemerovo_translations'
             )
 
-            for w in warns:
+            for w in warns[:]:
                 warn = force_text(w.message)
                 self.assertTrue("not an unicode object" not in warn, warn)
 
