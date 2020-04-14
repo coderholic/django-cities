@@ -12,6 +12,7 @@ env:
   - TOXENV=py27-django111-sqlite
   - TOXENV=py37-django111-sqlite
   - TOXENV=py37-django20-sqlite
+  - TOXENV=py37-django30-sqlite
   - TOXENV=py37-djangodev-sqlite
   - TOXENV=py37-djangodev-mysql
   - TOXENV=py37-djangodev-postgresql
