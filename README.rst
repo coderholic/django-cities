@@ -6,6 +6,9 @@
     :target: https://crate.io/packages/django-cities-light
 .. image:: https://codecov.io/github/yourlabs/django-cities-light/coverage.svg?branch=stable/3.x.x
     :target: https://codecov.io/github/yourlabs/django-cities-light?branch=stable/3.x.x
+.. image:: https://jazzband.co/static/img/badge.svg
+   :target: https://jazzband.co/
+   :alt: Jazzband
 
 django-cities-light -- *Simple django-cities alternative*
 =========================================================
