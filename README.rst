@@ -1,11 +1,11 @@
-.. image:: https://secure.travis-ci.org/yourlabs/django-cities-light.png?branch=master
-    :target: http://travis-ci.org/yourlabs/django-cities-light
+.. image:: https://secure.travis-ci.org/jazzband/django-cities-light.png?branch=master
+    :target: http://travis-ci.org/jazzband/django-cities-light
 .. image:: https://pypip.in/d/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
 .. image:: https://pypip.in/v/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
-.. image:: https://codecov.io/github/yourlabs/django-cities-light/coverage.svg?branch=stable/3.x.x
-    :target: https://codecov.io/github/yourlabs/django-cities-light?branch=stable/3.x.x
+.. image:: https://codecov.io/github/jazzband/django-cities-light/coverage.svg?branch=stable/3.x.x
+    :target: https://codecov.io/github/jazzband/django-cities-light?branch=stable/3.x.x
 .. image:: https://jazzband.co/static/img/badge.svg
    :target: https://jazzband.co/
    :alt: Jazzband
@@ -51,7 +51,7 @@ Install django-cities-light::
 
 Or the development version::
 
-    pip install -e git+git@github.com:yourlabs/django-cities-light.git#egg=cities_light
+    pip install -e git+git@github.com:jazzband/django-cities-light.git#egg=cities_light
 
 Add `cities_light` to your `INSTALLED_APPS`.
 
@@ -139,7 +139,7 @@ If you want to build the docs, use the following steps::
     cd docs
     make html
 
-If you are ready to send a patch, please read YourLabs guidelines: https://github.com/yourlabs/community/blob/master/docs/guidelines.rst
+If you are ready to send a patch, please read YourLabs guidelines: https://github.com/jazzband/community/blob/master/docs/guidelines.rst
 
 Resources
 ---------
@@ -147,12 +147,8 @@ Resources
 You could subscribe to the mailing list ask questions or just be informed of
 package updates.
 
-- `Mailing list graciously hosted
-  <http://groups.google.com/group/yourlabs>`_ by `Google
-  <http://groups.google.com>`_
-- For **Security** issues, please contact yourlabs-security@googlegroups.com
 - `Git graciously hosted
-  <https://github.com/yourlabs/django-cities-light/>`_ by `GitHub
+  <https://github.com/jazzband/django-cities-light/>`_ by `GitHub
   <http://github.com>`_,
 - `Documentation graciously hosted
   <http://django-cities-light.rtfd.org>`_ by `RTFD
@@ -161,7 +157,5 @@ package updates.
   <http://pypi.python.org/pypi/django-cities-light/>`_ by `PyPi
   <http://pypi.python.org/pypi>`_,
 - `Continuous integration graciously hosted
-  <http://travis-ci.org/yourlabs/django-cities-light>`_ by `Travis-ci
+  <http://travis-ci.org/jazzband/django-cities-light>`_ by `Travis-ci
   <http://travis-ci.org>`_
-- `**Online paid support** provided via HackHands
-  <https://hackhands.com/jpic/>`_,
