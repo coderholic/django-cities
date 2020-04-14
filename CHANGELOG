@@ -1,3 +1,7 @@
+2019-04-14 3.6.0
+
+    Add Subregion support by @adamb70 and @Guts
+
 2019-04-14 3.5.1
 
     Fix Django 3.0 and DRF 3.11+ support
