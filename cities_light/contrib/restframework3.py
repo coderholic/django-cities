@@ -114,11 +114,11 @@ class CityModelViewSet(CitiesLightListModelViewSet):
 
 
 router = routers.SimpleRouter()
-router.register(r'cities', CityModelViewSet, base_name='cities-light-api-city')
+router.register(r'cities', CityModelViewSet, basename='cities-light-api-city')
 router.register(r'countries', CountryModelViewSet,
-                base_name='cities-light-api-country')
+                basename='cities-light-api-country')
 router.register(r'regions', RegionModelViewSet,
-                base_name='cities-light-api-region')
+                basename='cities-light-api-region')
 
 
 urlpatterns = [
