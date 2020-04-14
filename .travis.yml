@@ -1,21 +1,20 @@
 sudo: false
 language: python
 python:
-- '3.5'
+- '3.7'
 matrix:
   allow_failures:
-  - env: TOXENV=py35-djangodev-sqlite
-  - env: TOXENV=py35-djangodev-mysql
-  - env: TOXENV=py35-djangodev-postgresql
-  - env: TOXENV=py35-django110-mysql
+  - env: TOXENV=py37-djangodev-sqlite
+  - env: TOXENV=py37-djangodev-mysql
+  - env: TOXENV=py37-djangodev-postgresql
 env:
   matrix:
   - TOXENV=py27-django111-sqlite
-  - TOXENV=py35-django111-sqlite
-  - TOXENV=py35-django20-sqlite
-  - TOXENV=py35-djangodev-sqlite
-  - TOXENV=py35-djangodev-mysql
-  - TOXENV=py35-djangodev-postgresql
+  - TOXENV=py37-django111-sqlite
+  - TOXENV=py37-django20-sqlite
+  - TOXENV=py37-djangodev-sqlite
+  - TOXENV=py37-djangodev-mysql
+  - TOXENV=py37-djangodev-postgresql
   - TOXENV=checkqa
   - TOXENV=docs
 install:
