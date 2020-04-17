@@ -187,10 +187,11 @@ It is possible to force the import of files which weren't downloaded using the
                         force_import = True
 
             if not os.path.exists(install_file_path):
-                self.logger.info('Forced import of %s because data do not seem'
-                                 ' to have installed successfuly yet, note that'
-                                 ' this is equivalent to --force-import-all.' %
-                                 destination_file_name)
+                self.logger.info(
+                    'Forced import of %s because data do not seem'
+                    ' to have installed successfuly yet, note that'
+                    ' this is equivalent to --force-import-all.' %
+                    destination_file_name)
                 force_import = True
 
             if downloaded or force_import:
