@@ -72,30 +72,36 @@ It is possible to force the import of files which weren't downloaded using the
         return parser
 
     def add_arguments(self, parser):
-        parser.add_argument('--force-import-all', action='store_true',
-                            default=False, help='Import even if files are up-to-date.'
-                            ),
-        parser.add_argument('--force-all', action='store_true', default=False,
-                            help='Download and import if files are up-to-date.'
-                            ),
-        parser.add_argument('--force-import', action='append', default=[],
-                            help='Import even if files matching files are up-to-date'
-                            ),
-        parser.add_argument('--force', action='append', default=[],
-                            help='Download and import even if matching files are up-to-date'
-                            ),
+        parser.add_argument(
+            '--force-import-all', action='store_true',
+            default=False, help='Import even if files are up-to-date.'
+        ),
+        parser.add_argument(
+            '--force-all', action='store_true', default=False,
+            help='Download and import if files are up-to-date.'
+        ),
+        parser.add_argument(
+            '--force-import', action='append', default=[],
+            help='Import even if files matching files are up-to-date'
+        ),
+        parser.add_argument(
+            '--force', action='append', default=[],
+            help='Download and import even if matching files are up-to-date'
+        ),
         parser.add_argument('--noinsert', action='store_true',
                             default=False,
                             help='Update existing data only'
                             ),
-        parser.add_argument('--hack-translations', action='store_true',
-                            default=False,
-                            help='Set this if you intend to import translations a lot'
-                            ),
-        parser.add_argument('--keep-slugs', action='store_true',
-                            default=False,
-                            help='Do not update slugs'
-                            ),
+        parser.add_argument(
+            '--hack-translations', action='store_true',
+            default=False,
+            help='Set this if you intend to import translations a lot'
+        ),
+        parser.add_argument(
+            '--keep-slugs', action='store_true',
+            default=False,
+            help='Do not update slugs'
+        ),
         parser.add_argument('--progress', action='store_true',
                             default=False,
                             help='Show progress bar'
@@ -182,8 +188,8 @@ It is possible to force the import of files which weren't downloaded using the
 
             if not os.path.exists(install_file_path):
                 self.logger.info('Forced import of %s because data do not seem'
-                                 ' to have installed successfuly yet, note that this is'
-                                 ' equivalent to --force-import-all.' %
+                                 ' to have installed successfuly yet, note that'
+                                 ' this is equivalent to --force-import-all.' %
                                  destination_file_name)
                 force_import = True
 
