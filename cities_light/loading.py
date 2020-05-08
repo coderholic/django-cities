@@ -1,12 +1,6 @@
-import django
 from .settings import CITIES_LIGHT_APP_NAME
-
-
-if django.VERSION < (1, 7):
-    from django.db.models import get_model
-else:
-    from django.apps import apps
-    get_model = apps.get_model
+from django.apps import apps
+get_model = apps.get_model
 
 
 def get_cities_model(model_name, *args, **kwargs):

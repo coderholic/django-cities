@@ -43,7 +43,7 @@ class TestImportBase(test.TransactionTestCase):
     maxDiff = 100000
     reset_sequences = True
 
-    def import_data(self, srcdir, countries, regions, subregions, cities, trans, **options):
+    def import_data(self, srcdir, countries, regions, subregions, cities, trans, file_type="txt", **options):
         """Helper method to import Geonames data.
 
         Patch *_SOURCES settings and call 'cities_light' command with
@@ -58,18 +58,19 @@ class TestImportBase(test.TransactionTestCase):
         trans - values for TRANSLATION_SOURCES
         **options - passed to call_command() as is
         """
+
         def _s2l(param):
             return param if isinstance(param, list) else [param]
 
         def _patch(setting, *values):
             setting_to_patch = (
-                'cities_light.management.commands.cities_light.%s_SOURCES' %
-                setting.upper()
+                    'cities_light.management.commands.cities_light.%s_SOURCES' %
+                    setting.upper()
             )
 
             return mock.patch(
                 setting_to_patch,
-                ['file://%s.txt' % srcdir.get_file_path(v) for v in values]
+                ['file://%s.%s' % (srcdir.get_file_path(v), file_type) for v in values]
             )
 
         m_country = _patch('country', *_s2l(countries))
@@ -78,6 +79,6 @@ class TestImportBase(test.TransactionTestCase):
         m_city = _patch('city', *_s2l(cities))
         m_tr = _patch('translation', *_s2l(trans))
         with m_country, m_region, m_subregion, m_city, m_tr:
-            management.call_command('cities_light',
+            management.call_command('cities_light', progress=True,
                                     force_import_all=True,
                                     **options)

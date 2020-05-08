@@ -1,0 +1,300 @@
+1291074	3017382	fr	République Française						
+1291075	3017382		France	1					
+1556299	3017382	aa	France						
+1556300	3017382	af	Frankryk						
+1556301	3017382	am	ፈረንሳይ						
+1556302	3017382	ar	فرنسا						
+1556303	3017382	be	Францыя						
+1556304	3017382	bg	Франция						
+1556305	3017382	bn	ফ্রান্স						
+1556306	3017382	ca	França						
+1556307	3017382	cs	Francie						
+1556308	3017382	cy	Ffrainc						
+1556309	3017382	da	Frankrig						
+1556310	3017382	de	Frankreich						
+1556311	3017382	dz	ཕརཱནསི						
+1556312	3017382	el	Γαλλία						
+1556313	3017382	en	France						
+1556314	3017382	eo	Francujo						
+1556315	3017382	es	Francia	1	1				
+1556316	3017382	et	Prantsusmaa						
+1556317	3017382	eu	Frantzia						
+1556318	3017382	fa	فرانسه						
+1556319	3017382	fi	Ranska						
+1556320	3017382	fo	Frakland						
+1556321	3017382	fr	France	1					
+1556322	3017382	ga	An Fhrainc						
+1556323	3017382	he	צרפת						
+1556324	3017382	hi	फ्रांस						
+1556325	3017382	hr	Francuska						
+1556326	3017382	hu	Franciaország						
+1556327	3017382	hy	Ֆրանսիա						
+1556328	3017382	id	Perancis						
+1556329	3017382	is	Frakkland						
+1556330	3017382	it	Francia	1					
+1556331	3017382	ja	フランス						
+1556332	3017382	ka	საფრანგეთი						
+1556333	3017382	km	បារាំង						
+1556334	3017382	ko	프랑스						
+1556335	3017382	lo	ຝລັ່ງ						
+1556336	3017382	lt	Prancūzija						
+1556337	3017382	lv	Francija						
+1556338	3017382	mk	Франција						
+1556339	3017382	ms	Perancis						
+1556340	3017382	mt	Franza						
+1556341	3017382	nb	Frankrike						
+1556342	3017382	nl	Frankrijk						
+1556343	3017382	nn	Frankrike						
+1556344	3017382	om	France						
+1556345	3017382	pl	Francja						
+1556346	3017382	ps	فرانسه						
+1556347	3017382	pt	França						
+1556348	3017382	ro	Franța	1					
+1556349	3017382	ru	Франция						
+1556350	3017382	sk	Francúzsko						
+1556351	3017382	sl	Francija						
+1556352	3017382	so	Faransiis						
+1556353	3017382	sq	Francë						
+1556354	3017382	sr	Француска						
+1556355	3017382	sv	Frankrike						
+1556356	3017382	sw	Ufaransa						
+1556357	3017382	ta	பிரான்ஸ்						
+1556358	3017382	te	ఫ్రాన్స్‌						
+1556359	3017382	th	ฝรั่งเศส						
+1556360	3017382	tr	Fransa						
+1556361	3017382	uk	Франція						
+1556362	3017382	uz	Франция						
+1556363	3017382	vi	Pháp						
+1556364	3017382	zh	法国						
+1627022	3017382	eo	Francio						
+1627024	3017382	la	Francia						
+1627025	3017382	la	Francogallia						
+1972378	3017382	am	ፈረንሣይ						
+1972379	3017382	an	Franzia						
+1972380	3017382	ang	Francland						
+1972381	3017382	arc	ܦܪܢܣܐ						
+1972382	3017382	ast	Francia						
+1972383	3017382	bar	Frankreich						
+1972384	3017382	br	Bro-C'hall						
+1972385	3017382	bs	Francuska						
+1972386	3017382	cdo	Huák-guók						
+1972387	3017382	ceb	Pransiya						
+1972388	3017382	co	Francia						
+1972389	3017382	csb	Francëjô						
+1972390	3017382	cv	Франци						
+1972391	3017382	dv	ފަރަންސޭސިވިލާތް						
+1972392	3017382	frp	France						
+1972393	3017382	fur	France						
+1972394	3017382	fy	Frankryk						
+1972395	3017382	gd	An Fhraing						
+1972396	3017382	gl	Francia						
+1972397	3017382	gu	ફ્રાઁસ						
+1972398	3017382	gv	Yn Rank						
+1972399	3017382	hi	फ़्राँस						
+1972400	3017382	hsb	Francoska						
+1972401	3017382	ht	Frans						
+1972402	3017382	ia	Francia						
+1972403	3017382	ilo	Francia						
+1972404	3017382	io	Francia						
+1972405	3017382	jbo	fasygu'e						
+1972406	3017382	kn	ಫ್ರಾನ್ಸ್						
+1972407	3017382	ks	फ्रांस						
+1972408	3017382	ksh	Frankrish						
+1972409	3017382	ku	Fransa						
+1972410	3017382	kw	Pow Frynk						
+1972411	3017382	lad	Fransia						
+1972412	3017382	lb	Frankräich						
+1972413	3017382	li	Frankriek						
+1972414	3017382	lmo	Francja						
+1972415	3017382	ln	Falansia						
+1972416	3017382	mg	Frantsa						
+1972417	3017382	ml	ഫ്രാന്‍സ്						
+1972418	3017382	mn	Франц улс						
+1972419	3017382	mr	फ्रान्स						
+1972420	3017382	na	France						
+1972421	3017382	nds	Frankriek						
+1972422	3017382	ne	फ्रान्स						
+1972423	3017382	no	Frankrike						
+1972424	3017382	nov	Fransia						
+1972425	3017382	nrm	France						
+1972426	3017382	oc	França						
+1972427	3017382	os	Франц						
+1972428	3017382	pam	France						
+1972429	3017382	pms	Fransa						
+1972430	3017382	qu	Fransiya						
+1972431	3017382	qu	Fransya						
+1972432	3017382	rm	Frantscha						
+1972433	3017382	rmy	Franchiya						
+1972434	3017382	sa	फ्रांस						
+1972435	3017382	sc	Frantza						
+1972436	3017382	scn	Francia						
+1972437	3017382	sco	Fraunce						
+1972438	3017382	hbs	Francuska						
+1972439	3017382	so	Faransiiska						
+1972440	3017382	sq	Franca						
+1972441	3017382	st	France						
+1972442	3017382	tet	Fransa						
+1972443	3017382	tg	Фаронса						
+1972444	3017382	th	ประเทศฝรั่งเศส						
+1972445	3017382	tl	Pransya						
+1972446	3017382	tpi	Pranis						
+1972447	3017382	ty	Farāni						
+1972448	3017382	udm	Франция						
+1972449	3017382	ug	فرانسىيە						
+1972450	3017382	ur	فرانس						
+1972451	3017382	vec	Franzsa						
+1972452	3017382	vls	Vrankriek						
+1972453	3017382	vo	Fransän						
+1972454	3017382	war	Fransya						
+2212584	3017382		Republic of France						
+2418892	3017382	az	Fransa	1					
+2418893	3017382	bo	ཕ་རཱན་སི།	1					
+2418894	3017382	hi	फ़्रांस	1					
+2418895	3017382	id	Prancis	1					
+2418896	3017382	ii	ꃔꇩ	1					
+2418897	3017382	ja	フランス共和国	1					
+2418898	3017382	mn	Франц	1					
+2418899	3017382	se	Frankriika	1					
+2418900	3017382	to	Falanisē	1					
+2919871	3017382	link	http://en.wikipedia.org/wiki/France						
+3054858	3017382	link	http://ru.wikipedia.org/wiki/%D0%A4%D1%80%D0%B0%D0%BD%D1%86%D0%B8%D1%8F						
+7084284	3017382	ak	Frɛnkyeman	1					
+7084285	3017382	as	ফ্ৰান্স	1					
+7084286	3017382	bm	Faransi	1					
+7084287	3017382	br	Frañs	1					
+7084288	3017382	ee	Frans nutome	1					
+7084289	3017382	ff	Farayse	1					
+7084290	3017382	gu	ફ્રાંસ	1					
+7084291	3017382	ha	Faransa	1					
+7084292	3017382	ki	Ubaranja	1					
+7084293	3017382	kk	Франция	1					
+7084294	3017382	kl	Frankrigi	1					
+7084295	3017382	ku	فەڕەنسا	1					
+7084296	3017382	kw	Pow Frenk	1					
+7084297	3017382	lg	Bufalansa	1					
+7084298	3017382	ln	Falánsɛ	1					
+7084299	3017382	lu	Nfalanse	1					
+7084300	3017382	my	ပြင်သစ်	1					
+7084301	3017382	nd	Furansi	1					
+7084302	3017382	or	ଫ୍ରାନ୍ସ	1					
+7084303	3017382	rn	Ubufaransa	1					
+7084304	3017382	sg	Farânzi	1					
+7084305	3017382	si	ප්‍රංශය	1					
+7084306	3017382	sn	France	1					
+7084307	3017382	ti	ፈረንሳይ	1					
+7084308	3017382	yo	Orílẹ́ède Faranse	1					
+7084309	3017382	zu	i-France	1					
+10305461	3017382	link	http://id.loc.gov/authorities/names/n79006404					
+1629680	3037598	en	Angoulême						
+1629681	3037598	de	Angoulême						
+1629682	3037598	ca	Angulema						
+1629683	3037598	cs	Angoulême						
+1629684	3037598	el	Ανγκουλέμ						
+1629685	3037598	eo	Angulemo						
+1629686	3037598	fi	Angoulême						
+1629687	3037598	fr	Angoulême						
+1629688	3037598	gl	Angulema						
+1629689	3037598	it	Angoulême						
+1629690	3037598	ja	アングレーム						
+1629691	3037598	nl	Angoulême						
+1629692	3037598	no	Angoulême						
+1629693	3037598	oc	Engoleime						
+1629694	3037598	pl	Angoulême						
+1629695	3037598	pt	Angoulême						
+1629696	3037598	ro	Angoulême						
+1629697	3037598	sr	Angoulême						
+1629698	3037598	sv	Angoulême						
+1635889	3037598	sr	Онгулем						
+1900383	3037598	es	Angulema						
+1900384	3037598	eo	Angoulême						
+1900385	3037598	lmo	Angulema						
+1900386	3037598	sr	Ангулем						
+1987230	3037598	eu	Angulema						
+1987231	3037598	ru	Ангулем						
+1987232	3037598	sl	Angoulême						
+1987233	3037598	vi	Angoulême						
+2090074	3037598	post	16000	1					
+2259837	3037598	fr_1793	Montagne-Charente						
+2968315	3037598	link	http://en.wikipedia.org/wiki/Angoul%C3%AAme						
+3055014	3037598	link	http://ru.wikipedia.org/wiki/%D0%90%D0%BD%D0%B3%D1%83%D0%BB%D0%B5%D0%BC						
+3061385	3037598	post	16001 CEDEX						
+3061386	3037598	post	16002 CEDEX						
+3061387	3037598	post	16003 CEDEX						
+3061388	3037598	post	16004 CEDEX						
+3061389	3037598	post	16005 CEDEX						
+3061390	3037598	post	16006 CEDEX						
+3061391	3037598	post	16007 CEDEX						
+3061392	3037598	post	16008 CEDEX						
+3061393	3037598	post	16010 CEDEX						
+3061394	3037598	post	16011 CEDEX						
+3061395	3037598	post	16012 CEDEX						
+3061396	3037598	post	16013 CEDEX						
+3061397	3037598	post	16014 CEDEX						
+3061398	3037598	post	16015 CEDEX						
+3061399	3037598	post	16016 CEDEX						
+3061400	3037598	post	16017 CEDEX						
+3061401	3037598	post	16018 CEDEX						
+3061402	3037598	post	16019 CEDEX						
+3061403	3037598	post	16020 CEDEX						
+3061404	3037598	post	16021 CEDEX						
+3061405	3037598	post	16022 CEDEX						
+3061406	3037598	post	16023 CEDEX						
+3061407	3037598	post	16024 CEDEX						
+3061408	3037598	post	16025 CEDEX						
+3061421	3037598	post	16901 CEDEX 9						
+3061422	3037598	post	16902 CEDEX 9						
+3061423	3037598	post	16903 CEDEX 9						
+3061424	3037598	post	16904 CEDEX 9						
+3061425	3037598	post	16905 CEDEX 9						
+3061426	3037598	post	16906 CEDEX 9						
+3061427	3037598	post	16907 CEDEX 9						
+3061428	3037598	post	16908 CEDEX 9						
+3061429	3037598	post	16909 CEDEX 9						
+3061430	3037598	post	16910 CEDEX 9						
+3061431	3037598	post	16911 CEDEX 9						
+3061432	3037598	post	16912 CEDEX 9						
+3061433	3037598	post	16913 CEDEX 9						
+3061434	3037598	post	16914 CEDEX 9						
+3061435	3037598	post	16915 CEDEX 9						
+3061436	3037598	post	16916 CEDEX 9						
+3061437	3037598	post	16917 CEDEX 9						
+3061438	3037598	post	16918 CEDEX 9						
+3061439	3037598	post	16919 CEDEX 9						
+3061440	3037598	post	16920 CEDEX 9						
+3061441	3037598	post	16929 CEDEX 9						
+3061442	3037598	post	16950 CEDEX 9						
+3061443	3037598	post	16951 CEDEX 9						
+3061444	3037598	post	16952 CEDEX 9						
+3061445	3037598	post	16953 CEDEX 9						
+3061446	3037598	post	16954 CEDEX 9						
+3061447	3037598	post	16999 CEDEX 9						
+7003298	3037598	post	16026 CEDEX						
+7003299	3037598	post	16955 CEDEX 9						
+7003300	3037598	post	16959 CEDEX 9						
+8065992	3037598	iata	ANG						
+8190897	3037598	la	Engolisma						
+8190898	3037598	uk	Ангулем						
+8190899	3037598	mzn	آنگولم						
+8190900	3037598	lt	Angulemas						
+8190901	3037598	ar	أنغوليم						
+8190902	3037598	an	Engolesme						
+8190903	3037598	fa	آنگولم						
+8190904	3037598	be	Горад Ангулем						
+8190905	3037598	ko	앙굴렘						
+8190906	3037598	zh	昂古莱姆						
+8698362	3037598	he	אנגולם						
+13756278	3037598	unlc	FRANG						
+11285033	11071620	link	http://en.wikipedia.org/wiki/Nouvelle-Aquitaine						
+11712761	11071620	fr	Aquitaine-Limousin-Poitou-Charentes						
+11763931	11071620	it	Aquitania-Limosino-Poitou-Charentes	1					
+11995119	11071620		Nouvelle-Aquitaine		1				
+12791523	11071620	fr	Nouvelle-Aquitaine		1				
+13287856	11071620	ko	누벨아키텐						
+2080372	3026646	fr	Département de la Charente	1					
+2080373	3026646	es	Charenta	1	1				
+2187147	3026646	fr	Charente	1	1				
+2703010	3026646	en	Charente	1	1				
+2703011	3026646	de	Charente	1	1				
+2967034	3026646	link	http://en.wikipedia.org/wiki/Charente						
+3054927	3026646	link	http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D1%80%D0%B0%D0%BD%D1%82%D0%B0						
+4295691	3026646		Département de la Charente						

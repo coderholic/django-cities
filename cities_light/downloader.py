@@ -6,12 +6,9 @@ import logging
 import time
 import os
 
-try:
-    from urllib.request import urlopen
-    from urllib.parse import urlparse
-except ImportError:
-    from urllib import urlopen
-    from urlparse import urlparse
+from urllib.request import urlopen
+from urllib.parse import urlparse
+
 
 from .exceptions import SourceFileDoesNotExist
 

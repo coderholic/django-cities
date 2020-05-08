@@ -5,9 +5,8 @@ from copy import copy
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 
-from .forms import *
-from .settings import *
 from .abstract_models import to_search
+from . import forms
 from .loading import get_cities_models
 
 Country, Region, SubRegion, City = get_cities_models()
@@ -38,7 +37,7 @@ class CountryAdmin(admin.ModelAdmin):
     list_filter = (
         'continent',
     )
-    form = CountryForm
+    form = forms.CountryForm
 
 
 admin.site.register(Country, CountryAdmin)
@@ -62,7 +61,7 @@ class RegionAdmin(admin.ModelAdmin):
         'country',
         'geoname_id',
     )
-    form = RegionForm
+    form = forms.RegionForm
 
 
 admin.site.register(Region, RegionAdmin)
@@ -89,7 +88,7 @@ class SubRegionAdmin(admin.ModelAdmin):
         'region',
         'geoname_id',
     )
-    form = SubRegionForm
+    form = forms.SubRegionForm
 
 
 admin.site.register(SubRegion, SubRegionAdmin)
@@ -126,7 +125,7 @@ class CityAdmin(admin.ModelAdmin):
         'country',
         'timezone'
     )
-    form = CityForm
+    form = forms.CityForm
 
     def get_changelist(self, request, **kwargs):
         return CityChangeList

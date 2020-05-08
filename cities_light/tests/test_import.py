@@ -1,7 +1,11 @@
 from __future__ import unicode_literals
 
+import glob
+import os
+
 from dbdiff.fixture import Fixture
 from .base import TestImportBase, FixtureDir
+from ..settings import DATA_DIR
 
 
 class TestImport(TestImportBase):
@@ -19,6 +23,24 @@ class TestImport(TestImportBase):
             'angouleme_translations'
         )
         Fixture(fixture_dir.get_file_path('angouleme.json')).assertNoDiff()
+
+    def test_single_city_zip(self):
+        """Load single city."""
+        filelist = glob.glob(os.path.join(DATA_DIR, "angouleme_*.txt"))
+        for f in filelist:
+            os.remove(f)
+
+        fixture_dir = FixtureDir('import_zip')
+        self.import_data(
+            fixture_dir,
+            'angouleme_country',
+            'angouleme_region',
+            'angouleme_subregion',
+            'angouleme_city',
+            'angouleme_translations',
+            file_type="zip"
+        )
+        Fixture(FixtureDir('import').get_file_path('angouleme.json')).assertNoDiff()
 
     def test_city_wrong_timezone(self):
         """Load single city with wrong timezone."""
