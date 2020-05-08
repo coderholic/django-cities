@@ -72,6 +72,7 @@ class SubRegionAdmin(admin.ModelAdmin):
     """
     ModelAdmin for SubRegion.
     """
+    raw_id_fields = ["region"]
     list_filter = (
         'country__continent',
         'country',
@@ -99,13 +100,14 @@ class CityChangeList(ChangeList):
         if 'q' in list(request.GET.keys()):
             request.GET = copy(request.GET)
             request.GET['q'] = to_search(request.GET['q'])
-        return super(CityChangeList, self).get_query_set(request)
+        return super(CityChangeList, self).get_queryset(request)
 
 
 class CityAdmin(admin.ModelAdmin):
     """
     ModelAdmin for City.
     """
+    raw_id_fields = ["subregion", "region"]
     list_display = (
         'name',
         'subregion',
