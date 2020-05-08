@@ -199,7 +199,8 @@ class AbstractCity(Base):
                                 db_index=True, validators=[timezone_validator])
 
     class Meta(Base.Meta):
-        unique_together = (('region', 'subregion', 'name'), ('region', 'subregion', 'slug'))
+        unique_together = (('region', 'subregion', 'name'),
+                           ('region', 'subregion', 'slug'))
         verbose_name_plural = _('cities')
         abstract = True
 
