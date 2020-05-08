@@ -143,7 +143,7 @@ It is possible to force the import of files which weren't downloaded using the
         self._clear_identity_maps()
 
         if not os.path.exists(DATA_DIR):
-            self.logger.info('Creating %s' % DATA_DIR)
+            self.logger.info('Creating %s', DATA_DIR)
             os.mkdir(DATA_DIR)
 
         install_file_path = os.path.join(DATA_DIR, 'install_datetime')
@@ -189,19 +189,19 @@ It is possible to force the import of files which weren't downloaded using the
             if not os.path.exists(install_file_path):
                 self.logger.info(
                     'Forced import of %s because data do not seem'
-                    ' to have installed successfuly yet, note that'
-                    ' this is equivalent to --force-import-all.' %
+                    ' to have installed successfuly yet, note that this is'
+                    ' equivalent to --force-import-all.',
                     destination_file_name)
                 force_import = True
 
             if downloaded or force_import:
-                self.logger.info('Importing %s' % destination_file_name)
+                self.logger.info('Importing %s', destination_file_name)
 
                 if url in TRANSLATION_SOURCES:
                     if options.get('hack_translations', False):
                         if os.path.exists(translation_hack_path):
                             self.logger.debug(
-                                'Using translation parsed data: %s' %
+                                'Using translation parsed data: %s',
                                 translation_hack_path)
                             continue
 
@@ -588,12 +588,12 @@ It is possible to force the import of files which weren't downloaded using the
 
     def translation_parse(self, items):
         if not hasattr(self, 'translation_data'):
-            self.country_ids = set(Country.objects.values_list('geoname_id',
-                                                               flat=True))
-            self.region_ids = set(Region.objects.values_list('geoname_id',
-                                                             flat=True))
-            self.city_ids = set(City.objects.values_list('geoname_id',
-                                                         flat=True))
+            self.country_ids = set(Country.objects.values_list(
+                'geoname_id', flat=True))
+            self.region_ids = set(Region.objects.values_list(
+                'geoname_id', flat=True))
+            self.city_ids = set(City.objects.values_list(
+                'geoname_id', flat=True))
 
             self.translation_data = collections.OrderedDict((
                 (Country, {}),
@@ -694,7 +694,7 @@ It is possible to force the import of files which weren't downloaded using the
     def save(self, model, force_insert=False, force_update=False):
         try:
             with transaction.atomic():
-                self.logger.debug('Saving %s' % model.name)
+                self.logger.debug('Saving %s', model.name)
                 model.save(
                     force_insert=force_insert,
                     force_update=force_update
@@ -702,4 +702,4 @@ It is possible to force the import of files which weren't downloaded using the
         except IntegrityError as e:
             # Regarding %r see the https://code.djangoproject.com/ticket/20572
             # Also related to http://bugs.python.org/issue2517
-            self.logger.warning('Saving %s failed: %r' % (model, e))
+            self.logger.warning('Saving %s failed: %r', model, e)
