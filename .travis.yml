@@ -1,24 +1,29 @@
 sudo: false
 language: python
-python:
-- '3.7'
-- "3.8"
 matrix:
   allow_failures:
   - env: TOXENV=py37-djangodev-sqlite
   - env: TOXENV=py37-djangodev-mysql
   - env: TOXENV=py37-djangodev-postgresql
-env:
-  matrix:
-  - TOXENV=py37-django111-sqlite
-  - TOXENV=py37-django20-sqlite
-  - TOXENV=py37-django30-sqlite
-  - TOXENV=py38-django30-sqlite
-  - TOXENV=py37-djangodev-sqlite
-  - TOXENV=py37-djangodev-mysql
-  - TOXENV=py37-djangodev-postgresql
-  - TOXENV=checkqa
-  - TOXENV=docs
+  include:
+  - python: 3.7
+    env: TOX_ENV=py37-django111-sqlite
+  - python: 3.7
+    env: TOX_ENV=py37-django20-sqlite
+  - python: 3.7
+    env: TOX_ENV=py37-django30-sqlite
+  - python: 3.8
+    env: TOX_ENV=py38-django30-sqlite
+  - python: 3.7
+    env: TOX_ENV=py37-djangodev-sqlite
+  - python: 3.7
+    env: TOX_ENV=py37-djangodev-mysql
+  - python: 3.7
+    env: TOX_ENV=py37-djangodev-postgresql
+  - python: 3.7
+    env: TOX_ENV=checkqa
+  - python: 3.7
+    env: TOX_ENV=docs
 install:
 - pip install -U pip
 - pip install tox codecov
