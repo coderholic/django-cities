@@ -9,7 +9,7 @@ from six import python_2_unicode_compatible
 
 from django.db import models
 from django.db.models import lookups
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
@@ -43,7 +43,7 @@ def to_ascii(value):
 
     For example, 'République Françaisen' would become 'Republique Francaisen'
     """
-    return force_text(unidecode(value))
+    return force_str(unidecode(value))
 
 
 def to_search(value):
