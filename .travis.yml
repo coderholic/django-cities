@@ -7,23 +7,23 @@ matrix:
   - env: TOXENV=py37-djangodev-postgresql
   include:
   - python: 3.7
-    env: TOX_ENV=py37-django111-sqlite
+    env: TOXENV=py37-django111-sqlite
   - python: 3.7
-    env: TOX_ENV=py37-django20-sqlite
+    env: TOXENV=py37-django20-sqlite
   - python: 3.7
-    env: TOX_ENV=py37-django30-sqlite
+    env: TOXENV=py37-django30-sqlite
   - python: 3.8
-    env: TOX_ENV=py38-django30-sqlite
+    env: TOXENV=py38-django30-sqlite
   - python: 3.7
-    env: TOX_ENV=py37-djangodev-sqlite
+    env: TOXENV=py37-djangodev-sqlite
   - python: 3.7
-    env: TOX_ENV=py37-djangodev-mysql
+    env: TOXENV=py37-djangodev-mysql
   - python: 3.7
-    env: TOX_ENV=py37-djangodev-postgresql
+    env: TOXENV=py37-djangodev-postgresql
   - python: 3.7
-    env: TOX_ENV=checkqa
+    env: TOXENV=checkqa
   - python: 3.7
-    env: TOX_ENV=docs
+    env: TOXENV=docs
 install:
 - pip install -U pip
 - pip install tox codecov
