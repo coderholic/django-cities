@@ -148,6 +148,7 @@ class AbstractSubRegion(Base):
     country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country',
                                 on_delete=models.CASCADE)
     region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region',
+                               null=True, blank=True,
                                on_delete=models.CASCADE)
 
     class Meta(Base.Meta):
@@ -198,7 +199,7 @@ class AbstractCity(Base):
                                 db_index=True, validators=[timezone_validator])
 
     class Meta(Base.Meta):
-        unique_together = (('region', 'name'), ('region', 'slug'))
+        unique_together = (('region', 'subregion', 'name'), ('region', 'subregion', 'slug'))
         verbose_name_plural = _('cities')
         abstract = True
 
