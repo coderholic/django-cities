@@ -96,7 +96,7 @@ admin.site.register(SubRegion, SubRegionAdmin)
 
 
 class CityChangeList(ChangeList):
-    def get_query_set(self, request):
+    def get_queryset(self, request):
         if 'q' in list(request.GET.keys()):
             request.GET = copy(request.GET)
             request.GET['q'] = to_search(request.GET['q'])
