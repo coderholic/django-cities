@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import six
 import os.path
 import zipfile
 import logging
@@ -61,16 +60,10 @@ class Geonames(object):
             zip_file.extract(file_name, DATA_DIR)
 
     def parse(self):
-        if not six.PY3:
-            file = open(self.file_path, 'r')
-        else:
-            file = open(self.file_path, encoding='utf-8', mode='r')
+        file = open(self.file_path, encoding='utf-8', mode='r')
         line = True
 
         for line in file:
-            if not six.PY3:
-                # In python3 this is already an unicode
-                line = line.decode('utf8')
 
             line = line.strip()
             # If the line is blank/empty or a comment, skip it and continue
@@ -80,7 +73,4 @@ class Geonames(object):
             yield [e.strip() for e in line.split('\t')]
 
     def num_lines(self):
-        if not six.PY3:
-            return sum(1 for line in open(self.file_path))
-        else:
-            return sum(1 for line in open(self.file_path, encoding='utf-8'))
+        return sum(1 for line in open(self.file_path, encoding='utf-8'))

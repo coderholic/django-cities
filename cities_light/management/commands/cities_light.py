@@ -7,6 +7,7 @@ import datetime
 import logging
 from argparse import RawTextHelpFormatter
 import sys
+
 if sys.platform != 'win32':
     import resource
 
@@ -71,34 +72,40 @@ It is possible to force the import of files which weren't downloaded using the
         return parser
 
     def add_arguments(self, parser):
-        parser.add_argument('--force-import-all', action='store_true',
+        parser.add_argument(
+            '--force-import-all', action='store_true',
             default=False, help='Import even if files are up-to-date.'
         ),
-        parser.add_argument('--force-all', action='store_true', default=False,
+        parser.add_argument(
+            '--force-all', action='store_true', default=False,
             help='Download and import if files are up-to-date.'
         ),
-        parser.add_argument('--force-import', action='append', default=[],
+        parser.add_argument(
+            '--force-import', action='append', default=[],
             help='Import even if files matching files are up-to-date'
         ),
-        parser.add_argument('--force', action='append', default=[],
+        parser.add_argument(
+            '--force', action='append', default=[],
             help='Download and import even if matching files are up-to-date'
         ),
         parser.add_argument('--noinsert', action='store_true',
-            default=False,
-            help='Update existing data only'
-        ),
-        parser.add_argument('--hack-translations', action='store_true',
+                            default=False,
+                            help='Update existing data only'
+                            ),
+        parser.add_argument(
+            '--hack-translations', action='store_true',
             default=False,
             help='Set this if you intend to import translations a lot'
         ),
-        parser.add_argument('--keep-slugs', action='store_true',
+        parser.add_argument(
+            '--keep-slugs', action='store_true',
             default=False,
             help='Do not update slugs'
         ),
         parser.add_argument('--progress', action='store_true',
-            default=False,
-            help='Show progress bar'
-        ),
+                            default=False,
+                            help='Show progress bar'
+                            ),
 
     def progress_init(self):
         """Initialize progress bar."""
@@ -281,10 +288,12 @@ It is possible to force the import of files which weren't downloaded using the
         if region_id not in self._region_codes[country_id]:
             self._region_codes[country_id][region_id] = Region.objects.get(
                 country_id=country_id, geoname_code=region_id).pk
+
         if subregion_id not in self._subregion_codes[country_id]:
             self._subregion_codes[country_id][subregion_id] = \
                 SubRegion.objects.get(
-                country_id=country_id, geoname_code=subregion_id).pk
+                    region_id=self._region_codes[country_id][region_id],
+                    geoname_code=subregion_id).pk
         return self._subregion_codes[country_id][subregion_id]
 
     def country_import(self, items):
@@ -293,9 +302,10 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
+        force_insert = False
+        force_update = False
         try:
-            force_insert = False
-            force_update = False
+
             country = Country.objects.get(geoname_id=items[ICountry.geonameid])
             force_update = True
         except Country.DoesNotExist:
@@ -336,9 +346,9 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
+        force_insert = False
+        force_update = False
         try:
-            force_insert = False
-            force_update = False
             region = Region.objects.get(geoname_id=items[IRegion.geonameid])
             force_update = True
         except Region.DoesNotExist:
@@ -393,8 +403,8 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
+        force_insert = force_update = False
         try:
-            force_insert = force_update = False
             subregion = SubRegion.objects.filter(
                 geoname_id=items[ISubRegion.geonameid]).first()
             if subregion:
@@ -471,9 +481,9 @@ It is possible to force the import of files which weren't downloaded using the
         except InvalidItems:
             return
 
+        force_insert = False
+        force_update = False
         try:
-            force_insert = False
-            force_update = False
             city = City.objects.get(geoname_id=items[ICity.geonameid])
             force_update = True
         except City.DoesNotExist:
@@ -504,7 +514,7 @@ It is possible to force the import of files which weren't downloaded using the
                 items[ICity.admin1Code],
                 items[ICity.admin2Code]
             )
-        except SubRegion.DoesNotExist:
+        except (SubRegion.DoesNotExist, Region.DoesNotExist):
             subregion_id = None
 
         save = False

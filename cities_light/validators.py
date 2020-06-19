@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import pytz
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 def timezone_validator(value):

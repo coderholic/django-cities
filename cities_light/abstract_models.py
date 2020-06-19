@@ -9,7 +9,7 @@ from six import python_2_unicode_compatible
 
 from django.db import models
 from django.db.models import lookups
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
@@ -43,7 +43,7 @@ def to_ascii(value):
 
     For example, 'République Françaisen' would become 'Republique Francaisen'
     """
-    return force_text(unidecode(value))
+    return force_str(unidecode(value))
 
 
 def to_search(value):
@@ -148,6 +148,7 @@ class AbstractSubRegion(Base):
     country = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Country',
                                 on_delete=models.CASCADE)
     region = models.ForeignKey(CITIES_LIGHT_APP_NAME + '.Region',
+                               null=True, blank=True,
                                on_delete=models.CASCADE)
 
     class Meta(Base.Meta):
@@ -198,7 +199,8 @@ class AbstractCity(Base):
                                 db_index=True, validators=[timezone_validator])
 
     class Meta(Base.Meta):
-        unique_together = (('region', 'name'), ('region', 'slug'))
+        unique_together = (('region', 'subregion', 'name'),
+                           ('region', 'subregion', 'slug'))
         verbose_name_plural = _('cities')
         abstract = True
 
