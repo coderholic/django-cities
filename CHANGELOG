@@ -1,3 +1,9 @@
+2020-08-06 3.7.0
+    Fix for subregion
+    Drop support for python 2
+    Changes dependency from django-autoslug-iplweb to django-autoslug, that
+    works with Django 3.1
+
 2019-04-14 3.6.0
 
     Add Subregion support by @adamb70 and @Guts

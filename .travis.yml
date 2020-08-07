@@ -14,8 +14,10 @@ matrix:
     env: TOXENV=py37-django22-sqlite
   - python: 3.7
     env: TOXENV=py37-django30-sqlite
+  - python: 3.7
+    env: TOXENV=py37-django31-sqlite
   - python: 3.8
-    env: TOXENV=py38-django30-sqlite
+    env: TOXENV=py38-django31-sqlite
   - python: 3.7
     env: TOXENV=py37-djangodev-sqlite
   - python: 3.7

@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 import warnings
 
-import six
 import unidecode
 
 from django.utils.encoding import force_text
@@ -66,5 +65,4 @@ class TestUnicode(TestImportBase):
         """Test to_ascii behavior."""
         self.assertEqual(to_ascii('République Françaisen'), 'Republique Francaisen')
         self.assertEqual(to_ascii('Кемерово'), 'Kemerovo')
-        # Check that return value is unicode on python 2.7 or str on python 3
-        self.assertTrue(isinstance(to_ascii('Кемерово'), six.text_type))
+        self.assertTrue(isinstance(to_ascii('Кемерово'), str))

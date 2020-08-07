@@ -29,8 +29,8 @@ database, you should use
 
 Requirements:
 
-- Python 2.7 or 3.3,
-- Django >= 1.8
+- Python >= 3.6
+- Django >= 1.11
 - MySQL or PostgreSQL or SQLite.
 
 Yes, for some reason, code that used to work on MySQL (not without pain xD)
@@ -122,11 +122,11 @@ Running the full test suite::
 
 To run the tests in specific environment use the following command::
 
-    tox -e py27-django18-sqlite
+    tox -e py37-django31-sqlite
 
 And to run one specific test use this one::
 
-    tox -e py27-django18-sqlite -- cities_light/tests/test_form.py::FormTestCase::testCountryFormNameAndContinentAlone
+    tox -e py37-django31-sqlite -- cities_light/tests/test_form.py::FormTestCase::testCountryFormNameAndContinentAlone
 
 To run it even faster, you can switch to specific tox virtualenv::
 

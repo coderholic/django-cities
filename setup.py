@@ -15,7 +15,7 @@ def read(fname):
 
 setup(
     name='django-cities-light',
-    version='3.6.0',
+    version='3.7.0',
     description='Simple alternative to django-cities',
     author='James Pic,Dominick Rivard,Alexey Evseev',
     author_email='jamespic@gmail.com, dominick.rivard@gmail.com, myhappydo@gmail.com',
@@ -27,11 +27,10 @@ setup(
     license='MIT',
     keywords='django cities countries postal codes',
     install_requires=[
-        'six',
         'pytz',
         'unidecode>=0.04.13',
-        'django-autoslug-iplweb>=1.9.4',
-        'progressbar2>=3.6.0'
+        'django-autoslug>=1.9.8',
+        'progressbar2>=3.51.4'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -41,7 +40,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules',

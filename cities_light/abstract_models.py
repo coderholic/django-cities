@@ -5,8 +5,6 @@ import re
 import autoslug
 import pytz
 
-from six import python_2_unicode_compatible
-
 from django.db import models
 from django.db.models import lookups
 from django.utils.encoding import force_str
@@ -18,11 +16,9 @@ from unidecode import unidecode
 from .validators import timezone_validator
 from .settings import INDEX_SEARCH_NAMES, CITIES_LIGHT_APP_NAME
 
-
 __all__ = ['AbstractCountry', 'AbstractRegion',
            'AbstractSubRegion', 'AbstractCity',
            'CONTINENT_CHOICES']
-
 
 CONTINENT_CHOICES = (
     ('OC', _('Oceania')),
@@ -71,10 +67,11 @@ class ToSearchTextField(models.TextField):
     Trivial TextField subclass that passes values through to_search
     automatically.
     """
+
+
 ToSearchTextField.register_lookup(ToSearchIContainsLookup)
 
 
-@python_2_unicode_compatible
 class Base(models.Model):
     """
     Base model with boilerplate for all models.
