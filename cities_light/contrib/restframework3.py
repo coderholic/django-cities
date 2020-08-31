@@ -13,15 +13,16 @@ It defines a urlpatterns variables, with the following urls:
 If rest_framework (v3) is installed, all you have to do is add this url
 include::
 
-    url(r'^cities_light/api/', include('cities_light.contrib.restframework3')),
+    path(r'^cities_light/api/',
+         include('cities_light.contrib.restframework3')),
 
 And that's all !
 """
+from django.urls import include, path
 from rest_framework import viewsets, relations
 from rest_framework.serializers import HyperlinkedModelSerializer
 from rest_framework import routers
 
-from django.conf.urls import url, include
 
 from ..loading import get_cities_models
 
@@ -127,7 +128,7 @@ class CityModelViewSet(CitiesLightListModelViewSet):
         """
         Allows a GET param, 'q', to be used against search_names.
         """
-        queryset = super(CitiesLightListModelViewSet, self).get_queryset()
+        queryset = self.queryset
 
         if self.request.GET.get('q', None):
             return queryset.filter(
@@ -146,5 +147,5 @@ router.register(r'subregions', SubRegionModelViewSet,
                 basename='cities-light-api-subregion')
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    path('', include(router.urls)),
 ]

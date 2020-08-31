@@ -42,7 +42,8 @@ class Downloader(object):
 
         return True
 
-    def source_matches_destination(self, source, destination):
+    @staticmethod
+    def source_matches_destination(source, destination):
         """Return True if source and destination point to the same file."""
         parsed_source = urlparse(source)
         if parsed_source.scheme == 'file':
@@ -56,7 +57,8 @@ class Downloader(object):
                 return True
         return False
 
-    def needs_downloading(self, source, destination, force):
+    @staticmethod
+    def needs_downloading(source, destination, force):
         """Return True if source should be downloaded to destination."""
         src_file = urlopen(source)
         src_size = int(src_file.headers['content-length'])

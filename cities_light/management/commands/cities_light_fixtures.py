@@ -59,8 +59,7 @@ It is possible to force fixture download by using the --force-fetch option:
         parser.formatter_class = RawTextHelpFormatter
         return parser
 
-    @staticmethod
-    def add_arguments(parser):
+    def add_arguments(self, parser):
         parser.add_argument(
             'subcommand',
             type=str,

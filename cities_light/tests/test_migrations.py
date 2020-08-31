@@ -1,15 +1,12 @@
 from __future__ import unicode_literals
-import pytest
-import io
+
 from django import test
 from django.apps import apps
-from django.db.migrations.state import ProjectState
-from django.db.migrations import Migration
+from django.db.migrations.autodetector import MigrationAutodetector
 from django.db.migrations.loader import MigrationLoader
 from django.db.migrations.questioner import (
-    InteractiveMigrationQuestioner, MigrationQuestioner,
-)
-from django.db.migrations.autodetector import MigrationAutodetector
+    InteractiveMigrationQuestioner, )
+from django.db.migrations.state import ProjectState
 
 
 class TestNoMigrationLeft(test.TestCase):

@@ -14,7 +14,7 @@ class Geonames(object):
     def __init__(self, url, force=False):
         # Creating a directory if not exist
         if not os.path.exists(DATA_DIR):
-            self.logger.info('Creating %s' % DATA_DIR)
+            self.logger.info('Creating %s', DATA_DIR)
             os.mkdir(DATA_DIR)
 
         destination_file_name = url.split('/')[-1]
@@ -39,10 +39,11 @@ class Geonames(object):
         self.file_path = os.path.join(
             DATA_DIR, destination_file_name)
 
-    def download(self, url, path, force=False):
+    @staticmethod
+    def download(url, path, force=False):
         downloader = Downloader()
-        # Returns true or false(either downloded or not based on
-        # the condition in downloader.py)
+        # Returns true or false(either downloaded or not based on
+        # the condition in downloader.py
         return downloader.download(
             source=url,
             destination=path,
@@ -52,8 +53,8 @@ class Geonames(object):
     def extract(self, zip_path, file_name):
         destination = os.path.join(DATA_DIR, file_name)
 
-        self.logger.info('Extracting %s from %s into %s' % (
-            file_name, zip_path, destination))
+        self.logger.info('Extracting %s from %s into %s',
+                         file_name, zip_path, destination)
         # Extracting the file in the data directory
         zip_file = zipfile.ZipFile(zip_path)
         if zip_file:
@@ -61,10 +62,8 @@ class Geonames(object):
 
     def parse(self):
         file = open(self.file_path, encoding='utf-8', mode='r')
-        line = True
 
         for line in file:
-
             line = line.strip()
             # If the line is blank/empty or a comment, skip it and continue
             if len(line) < 1 or line[0] == '#':

@@ -33,18 +33,18 @@ def city_country(sender, instance, **kwargs):
 def city_search_names(sender, instance, **kwargs):
     search_names = set()
 
-    country_names = set((instance.country.name,))
+    country_names = {instance.country.name, }
     if instance.country.alternate_names:
         for n in instance.country.alternate_names.split(';'):
             country_names.add(n)
 
-    city_names = set((instance.name,))
+    city_names = {instance.name, }
     if instance.alternate_names:
         for n in instance.alternate_names.split(';'):
             city_names.add(n)
 
     if instance.region_id:
-        region_names = set((instance.region.name,))
+        region_names = {instance.region.name, }
         if instance.region.alternate_names:
             for n in instance.region.alternate_names.split(';'):
                 region_names.add(n)
@@ -94,6 +94,8 @@ def filter_non_cities(sender, items, **kwargs):
     """
     if items[7] not in INCLUDE_CITY_TYPES:
         raise InvalidItems()
+
+
 city_items_pre_import.connect(filter_non_cities)
 
 
@@ -110,6 +112,8 @@ def filter_non_included_countries_country(sender, items, **kwargs):
 
     if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
         raise InvalidItems()
+
+
 country_items_pre_import.connect(filter_non_included_countries_country)
 
 
@@ -126,6 +130,8 @@ def filter_non_included_countries_region(sender, items, **kwargs):
 
     if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
         raise InvalidItems()
+
+
 region_items_pre_import.connect(filter_non_included_countries_region)
 
 
@@ -142,6 +148,8 @@ def filter_non_included_countries_subregion(sender, items, **kwargs):
 
     if items[0].split('.')[0] not in INCLUDE_COUNTRIES:
         raise InvalidItems()
+
+
 subregion_items_pre_import.connect(filter_non_included_countries_subregion)
 
 
@@ -158,4 +166,6 @@ def filter_non_included_countries_city(sender, items, **kwargs):
 
     if items[8].split('.')[0] not in INCLUDE_COUNTRIES:
         raise InvalidItems()
+
+
 city_items_pre_import.connect(filter_non_included_countries_city)

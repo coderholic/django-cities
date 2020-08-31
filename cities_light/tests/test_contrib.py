@@ -11,7 +11,6 @@ from .base import TestImportBase, FixtureDir
 from ..contrib.ajax_selects_lookups import (
     CountryLookup,
     RegionLookup,
-    SubRegionLookup,
     CityLookup
 )
 

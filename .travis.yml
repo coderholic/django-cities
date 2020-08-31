@@ -7,8 +7,6 @@ matrix:
   - env: TOXENV=py37-djangodev-postgresql
   include:
   - python: 3.7
-    env: TOXENV=py37-django111-sqlite
-  - python: 3.7
     env: TOXENV=py37-django20-sqlite
   - python: 3.7
     env: TOXENV=py37-django22-sqlite
@@ -28,6 +26,21 @@ matrix:
     env: TOXENV=checkqa
   - python: 3.7
     env: TOXENV=docs
+  - stage: deploy
+    python: 3.7
+    script: skip
+    deploy:
+      provider: pypi
+      user: jazzband
+      server: https://jazzband.co/projects/django-cities-light/upload
+      distributions: sdist bdist_wheel
+      password:
+        secure: TCH5tGIggL2wsWce2svMwpEpPiwVOYqq1R3uSBTexszleP0OafNq/wZk2KZEReR5w1Aq68qp5F5Eeh2ZjJTq4f9M4LtTvqQzrmyNP55DYk/uB1rBJm9b4gBgMtAknxdI2g7unkhQEDo4suuPCVofM7rrDughySNpmvlUQYDttHQ=
+      skip_existing: true
+      on:
+        tags: true
+        repo: jazzband/django-cities-light
+        python: 3.7
 install:
 - pip install -U pip
 - pip install tox codecov

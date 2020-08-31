@@ -30,7 +30,7 @@ database, you should use
 Requirements:
 
 - Python >= 3.6
-- Django >= 1.11
+- Django >= 2.0
 - MySQL or PostgreSQL or SQLite.
 
 Yes, for some reason, code that used to work on MySQL (not without pain xD)
@@ -80,6 +80,16 @@ This command is well documented, consult the help with::
 By default, update procedure attempts to update all fields, including Country/Region/Subregion/City slugs. But there is an option to keep them intact::
 
     ./manage.py cities_light --keep-slugs
+
+
+Get more cities
+---------------
+
+The configuration parameter CITIES_LIGHT_CITY_SOURCES, comes with the default value
+http://download.geonames.org/export/dump/cities15000.zip that has cities with a population
+over 15000, if you need to load cities with less population please use another source. For the list
+of available source please check here: http://download.geonames.org/export/dump/readme.txt
+
 
 
 Using fixtures

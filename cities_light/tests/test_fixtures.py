@@ -143,7 +143,7 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
             # --base-url not specified
             with mock.patch(func) as _mock:
                 exc = 'Please specify --base-url or settings'
-                with self.assertRaisesRegexp(CommandError, exc):
+                with self.assertRaisesRegex(CommandError, exc):
                     call_command('cities_light_fixtures', 'load')
             _mock.assert_not_called()
 
