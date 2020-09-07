@@ -8,7 +8,7 @@ from .settings import *
 from .downloader import Downloader
 
 
-class Geonames(object):
+class Geonames:
     logger = logging.getLogger('cities_light')
 
     def __init__(self, url, force=False):

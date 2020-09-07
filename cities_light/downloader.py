@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 from .exceptions import SourceFileDoesNotExist
 
 
-class Downloader(object):
+class Downloader:
 
     """Geonames data downloader class."""
 

@@ -9,7 +9,7 @@ from django.core import management
 from django.conf import settings
 
 
-class FixtureDir(object):
+class FixtureDir:
     """Helper class to construct fixture paths."""
 
     def __init__(self, rel_path='', base_dir=None):
