@@ -691,14 +691,14 @@ python manage.py migrate cities 0001 --fake
 ** **This release of django-cities is not backwards compatible with previous versions** **
 
 The country model has some new fields:
- - elevation
- - area
- - currency
- - currency_name
- - languages
- - neighbours
- - capital
- - phone
+ - Elevation
+ - Area
+ - Currency
+ - Currency_name
+ - Languages
+ - Neighbours
+ - Capital
+ - Phone
 
 Alternative name support has been completely overhauled. The code and usage should now be much simpler. See the updated examples below.
 
