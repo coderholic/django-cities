@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 """Basic tests for contrib modules."""
 import json
 

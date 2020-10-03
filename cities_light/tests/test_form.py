@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 from django import test
 
 from ..forms import CountryForm, CityForm

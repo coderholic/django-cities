@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 """Test for models methods."""
 from django import test
 from django.conf import settings
