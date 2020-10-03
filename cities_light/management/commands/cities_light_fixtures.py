@@ -1,7 +1,5 @@
 """Management command to dump or load fixtures with geonames data."""
 
-from __future__ import unicode_literals
-
 import os
 import bz2
 import logging

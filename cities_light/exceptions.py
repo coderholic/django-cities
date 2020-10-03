@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 
 class CitiesLightException(Exception):
     """ Base exception class for this app's exceptions. """

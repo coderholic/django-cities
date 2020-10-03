@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # django-cities-light documentation build configuration file, created by
 # sphinx-quickstart on Sat May 19 19:32:33 2012.

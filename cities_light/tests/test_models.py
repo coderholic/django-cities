@@ -1,7 +1,4 @@
-# -*- encoding: utf-8 -*-
 """Test for models methods."""
-from __future__ import unicode_literals
-
 from django import test
 from django.conf import settings
 from django.core.exceptions import ValidationError
