@@ -1,4 +1,3 @@
-# encoding: utf8
 from django.db import models, migrations
 import autoslug.fields
 import cities_light.models

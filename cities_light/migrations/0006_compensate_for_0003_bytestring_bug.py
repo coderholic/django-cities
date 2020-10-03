@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.db import migrations, models
 import cities_light.abstract_models
 
