@@ -14,3 +14,5 @@ dist/
 
 # Ignore the downloaded data.
 cities_light/data/
+.vscode/settings.json
+pythonenv3.8/
