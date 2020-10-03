@@ -98,8 +98,6 @@ because it's probably project specific.
     Note: you can't define one custom model, you have to define all of
     cities_light models, even if you want to modify only one.
 """
-from __future__ import unicode_literals
-
 import os.path
 
 from django.conf import settings

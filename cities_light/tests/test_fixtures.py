@@ -1,6 +1,4 @@
 """Test for cities_light_fixtures management command."""
-from __future__ import unicode_literals
-
 import bz2
 import os
 import mock

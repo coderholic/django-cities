@@ -62,8 +62,6 @@ Signals for this application.
     Same as :py:data:`~cities_light.signals.region_items_post_import` and
     :py:data:`cities_light.signals.city_items_post_import`.
 """
-from __future__ import unicode_literals
-
 import django.dispatch
 
 __all__ = [

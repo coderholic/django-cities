@@ -1,6 +1,4 @@
 """Downloader class tests."""
-from __future__ import unicode_literals
-
 import tempfile
 import time
 import mock

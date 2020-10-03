@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django import test
 from django.apps import apps
 from django.db.migrations.autodetector import MigrationAutodetector
