@@ -14,5 +14,15 @@ dist/
 
 # Ignore the downloaded data.
 cities_light/data/
-.vscode/settings.json
+
+# vscode & codespaces
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
 pythonenv3.8/
+
+# Local History for Visual Studio Code
+.history/
