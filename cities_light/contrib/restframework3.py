@@ -13,7 +13,7 @@ It defines a urlpatterns variables, with the following urls:
 If rest_framework (v3) is installed, all you have to do is add this url
 include::
 
-    path(r'^cities_light/api/',
+    path('cities_light/api/',
          include('cities_light.contrib.restframework3')),
 
 And that's all !
