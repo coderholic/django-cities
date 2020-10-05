@@ -71,17 +71,15 @@ __all__ = [
     'city_items_pre_import', 'city_items_post_import',
     'translation_items_pre_import']
 
-city_items_pre_import = django.dispatch.Signal(providing_args=['items'])
-subregion_items_pre_import = django.dispatch.Signal(providing_args=['items'])
-region_items_pre_import = django.dispatch.Signal(providing_args=['items'])
-country_items_pre_import = django.dispatch.Signal(providing_args=['items'])
-translation_items_pre_import = django.dispatch.Signal(providing_args=['items'])
+# providing_args=['items'] for signals below
+city_items_pre_import = django.dispatch.Signal()
+subregion_items_pre_import = django.dispatch.Signal()
+region_items_pre_import = django.dispatch.Signal()
+country_items_pre_import = django.dispatch.Signal()
+translation_items_pre_import = django.dispatch.Signal()
 
-city_items_post_import = django.dispatch.Signal(
-    providing_args=['instance', 'items'])
-subregion_items_post_import = django.dispatch.Signal(
-    providing_args=['instance', 'items'])
-region_items_post_import = django.dispatch.Signal(
-    providing_args=['instance', 'items'])
-country_items_post_import = django.dispatch.Signal(
-    providing_args=['instance', 'items'])
+# providing_args=['instance', 'items'] for all signals below
+city_items_post_import = django.dispatch.Signal()
+subregion_items_post_import = django.dispatch.Signal()
+region_items_post_import = django.dispatch.Signal()
+country_items_post_import = django.dispatch.Signal()
