@@ -7,8 +7,6 @@ matrix:
   - env: TOXENV=py37-djangodev-postgresql
   include:
   - python: 3.7
-    env: TOXENV=py37-django20-sqlite
-  - python: 3.7
     env: TOXENV=py37-django22-sqlite
   - python: 3.7
     env: TOXENV=py37-django30-sqlite

@@ -1,3 +1,6 @@
+TBD -- Next release
+    Drop support of Django 2.0 and 2.1
+
 2020-08-28 3.8.0
     Fix for subregion #229
     Documentation improvement #221 #189

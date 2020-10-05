@@ -30,7 +30,7 @@ database, you should use
 Requirements:
 
 - Python >= 3.6
-- Django >= 2.0
+- Django >= 2.2
 - MySQL or PostgreSQL or SQLite.
 
 Yes, for some reason, code that used to work on MySQL (not without pain xD)
