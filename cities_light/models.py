@@ -14,7 +14,7 @@ Steps to customise cities_light models
         # yourapp/models.py
 
         from cities_light.abstract_models import (AbstractCity, AbstractRegion,
-            AbstractCountry)
+            AbstractSubRegion, AbstractCountry)
         from cities_light.receivers import connect_default_signals
 
 
