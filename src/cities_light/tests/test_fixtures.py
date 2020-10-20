@@ -45,7 +45,7 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
         call_command('loaddata', destination)
         # Dump
         try:
-            fixture_path = 'cities_light/tests/fixtures/test_dump_fixture.json'
+            fixture_path = os.path.join(os.path.dirname(__file__), "fixtures", "test_dump_fixture.json")
             cmd = Command()
             cmd.dump_fixture('cities_light.City', fixture_path)
             with bz2.BZ2File(fixture_path, mode='r') as bzfile:

@@ -165,7 +165,7 @@ if os.environ.get('CI', False):
     CITIES_LIGHT_TRANSLATION_LANGUAGES = ['fr', 'ru']
 
     FIXTURE_DIR = os.path.abspath(
-        os.path.join(BASE_DIR, 'cities_light', 'tests', 'fixtures')
+        os.path.join(BASE_DIR, 'src', 'cities_light', 'tests', 'fixtures')
     )
 
     FIXTURE_DIRS = [FIXTURE_DIR]
