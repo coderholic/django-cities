@@ -1,4 +1,4 @@
-.. image:: https://secure.travis-ci.org/jazzband/django-cities-light.png?branch=master
+.. image:: https://secure.travis-ci.org/jazzband/django-cities-light.svg?branch=master
     :target: http://travis-ci.org/jazzband/django-cities-light
 .. image:: https://pypip.in/d/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
