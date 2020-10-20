@@ -12,9 +12,10 @@
 build/
 dist/
 *.egg/
+src/cities_light/version.py
 
 # Ignore the downloaded data.
-cities_light/data/
+src/cities_light/data/
 
 # vscode & codespaces
 .vscode/*
