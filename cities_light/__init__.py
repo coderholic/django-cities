@@ -1,5 +1,6 @@
 from .signals import *
 from .exceptions import *
 from .settings import *
+from . import version
 
-__version__ = '3.6.0'
+__version__ = version.__version__

@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 import os.path
 
@@ -13,12 +13,16 @@ def read(fname):
 
 setup(
     name='django-cities-light',
-    version='3.7.0',
+    use_scm_version={
+        "version_scheme": "post-release",
+        "write_to": "cities_light/version.py",
+    },
+    setup_requires=["setuptools_scm"],
     description='Simple alternative to django-cities',
     author='James Pic,Dominick Rivard,Alexey Evseev',
     author_email='jamespic@gmail.com, dominick.rivard@gmail.com, myhappydo@gmail.com',
     url='https://github.com/yourlabs/django-cities-light',
-    packages=['cities_light'],
+    packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     long_description=read('README.rst'),
