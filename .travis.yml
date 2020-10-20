@@ -15,6 +15,7 @@ jobs:
   - env: TOXENV=py37-djangodev-postgresql
   include:
   - stage: deploy
+    if: tag IS present
     python: 3.7
     script: skip
     deploy:
@@ -28,7 +29,6 @@ jobs:
       on:
         tags: true
         repo: jazzband/django-cities-light
-        python: 3.7
 install:
 - travis_retry pip install -U pip
 - travis_retry pip install tox-travis codecov
