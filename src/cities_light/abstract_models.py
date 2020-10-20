@@ -27,7 +27,7 @@ CONTINENT_CHOICES = (
     ('AS', _('Asia')),
 )
 
-ALPHA_REGEXP = re.compile('[\W_]+', re.UNICODE)
+ALPHA_REGEXP = re.compile(r'[\W_]+', re.UNICODE)
 
 
 def to_ascii(value):
