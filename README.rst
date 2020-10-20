@@ -149,7 +149,7 @@ If you want to build the docs, use the following steps::
     cd docs
     make html
 
-If you are ready to send a patch, please read YourLabs guidelines: https://github.com/jazzband/community/blob/master/docs/guidelines.rst
+If you are ready to send a patch, please read the `Jazzband guidelines <https://jazzband.co/about/guidelines>`_.
 
 Resources
 ---------
