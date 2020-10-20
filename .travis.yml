@@ -1,29 +1,17 @@
-sudo: false
 language: python
-matrix:
+cache:
+  pip: true
+python:
+  - 3.5
+  - 3.6
+  - 3.7
+  - 3.8
+jobs:
   allow_failures:
   - env: TOXENV=py37-djangodev-sqlite
   - env: TOXENV=py37-djangodev-mysql
   - env: TOXENV=py37-djangodev-postgresql
   include:
-  - python: 3.7
-    env: TOXENV=py37-django22-sqlite
-  - python: 3.7
-    env: TOXENV=py37-django30-sqlite
-  - python: 3.7
-    env: TOXENV=py37-django31-sqlite
-  - python: 3.8
-    env: TOXENV=py38-django31-sqlite
-  - python: 3.7
-    env: TOXENV=py37-djangodev-sqlite
-  - python: 3.7
-    env: TOXENV=py37-djangodev-mysql
-  - python: 3.7
-    env: TOXENV=py37-djangodev-postgresql
-  - python: 3.7
-    env: TOXENV=checkqa
-  - python: 3.7
-    env: TOXENV=docs
   - stage: deploy
     python: 3.7
     script: skip
@@ -33,24 +21,19 @@ matrix:
       server: https://jazzband.co/projects/django-cities-light/upload
       distributions: sdist bdist_wheel
       password:
-        secure: TCH5tGIggL2wsWce2svMwpEpPiwVOYqq1R3uSBTexszleP0OafNq/wZk2KZEReR5w1Aq68qp5F5Eeh2ZjJTq4f9M4LtTvqQzrmyNP55DYk/uB1rBJm9b4gBgMtAknxdI2g7unkhQEDo4suuPCVofM7rrDughySNpmvlUQYDttHQ=
+        secure: POps88GX3PHO2xb+XaX/5IlnpQGWwWI+vw/BFPoiJABOqwcOms3vpFT7XKYxYG40e7WSIifndzn8rS2hYr2C4tlZvyCf1+BMfLtNMzGLQAOJAPn+qO4BwEdBdwUBdkGmpHVaO9wndjLHKuimQ8HM4qmdKJU74zp39Kpulo3hBQM=
       skip_existing: true
       on:
         tags: true
         repo: jazzband/django-cities-light
         python: 3.7
 install:
-- pip install -U pip
-- pip install tox codecov
+- travis_retry pip install -U pip
+- travis_retry pip install tox-travis codecov
 script:
-- tox
+- tox -v
 after_success:
 - codecov
-cache:
-  directories:
-  - "$HOME/.cache/pip"
-before_cache:
-- rm -f $HOME/.cache/pip/log/debug.log
 notifications:
   irc:
     channels:
