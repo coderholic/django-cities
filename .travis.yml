@@ -1,4 +1,7 @@
 language: python
+services:
+  - mysql
+  - postgresql
 cache:
   pip: true
 python:
