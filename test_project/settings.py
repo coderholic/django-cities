@@ -79,13 +79,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.' + os.environ.get('DB_ENGINE', 'sqlite3'),
         'NAME': os.environ.get('DB_NAME', 'db.sqlite'),
         'USER': os.environ.get('DB_USER', ''),
+        'OPTIONS': {},
     }
 }
 
 if sys.version_info[0] < 3 and 'mysql' in DATABASES['default']['ENGINE']:
-    DATABASES['default']['OPTIONS'] = {
-        'autocommit': True,
-    }
+    DATABASES['default']['OPTIONS']['autocommit'] = True
+if 'mysql' in DATABASES['default']['ENGINE']:
+    DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
