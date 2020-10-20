@@ -4,8 +4,8 @@
     :target: https://crate.io/packages/django-cities-light
 .. image:: https://pypip.in/v/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
-.. image:: https://codecov.io/github/jazzband/django-cities-light/coverage.svg?branch=stable/3.x.x
-    :target: https://codecov.io/github/jazzband/django-cities-light?branch=stable/3.x.x
+.. image:: https://codecov.io/github/jazzband/django-cities-light/coverage.svg
+    :target: https://codecov.io/github/jazzband/django-cities-light
 .. image:: https://jazzband.co/static/img/badge.svg
    :target: https://jazzband.co/
    :alt: Jazzband
