@@ -1,7 +1,7 @@
 """Test for cities_light_fixtures management command."""
 import bz2
 import os
-import mock
+from unittest import mock
 
 from django import test
 from django.core.management import call_command

@@ -55,7 +55,7 @@ class ToSearchIContainsLookup(lookups.IContains):
 
     def get_prep_lookup(self):
         """Return the value passed through to_search()."""
-        value = super(ToSearchIContainsLookup, self).get_prep_lookup()
+        value = super().get_prep_lookup()
         return to_search(value)
 
 

@@ -94,7 +94,7 @@ class CitiesLightListModelViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Allows a GET param, 'q', to be used against name_ascii.
         """
-        queryset = super(CitiesLightListModelViewSet, self).get_queryset()
+        queryset = super().get_queryset()
 
         if self.request.GET.get('q', None):
             return queryset.filter(name_ascii__icontains=self.request.GET['q'])

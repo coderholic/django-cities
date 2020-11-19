@@ -97,7 +97,7 @@ class CityChangeList(ChangeList):
         if 'q' in list(request.GET.keys()):
             request.GET = copy(request.GET)
             request.GET['q'] = to_search(request.GET['q'])
-        return super(CityChangeList, self).get_queryset(request)
+        return super().get_queryset(request)
 
 
 class CityAdmin(admin.ModelAdmin):

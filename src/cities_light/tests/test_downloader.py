@@ -1,7 +1,7 @@
 """Downloader class tests."""
 import tempfile
 import time
-import mock
+from unittest import mock
 import logging
 
 from django import test
