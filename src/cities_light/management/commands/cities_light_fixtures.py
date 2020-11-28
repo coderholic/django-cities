@@ -43,6 +43,12 @@ by specifying --base-url argument (do not forget the trailing slash):
 It is possible to force fixture download by using the --force-fetch option:
 
     ./manage.py cities_light_fixtures load --force-fetch
+
+It is possible to export using natural foreign keys by using the
+--natural-foreign option (Take in consideration that this option will
+going to take more time):
+
+    ./manage.py cities_light_fixtures load --natural-foreign
     """.strip()
 
     logger = logging.getLogger('cities_light')
@@ -64,10 +70,16 @@ It is possible to force fixture download by using the --force-fetch option:
             help='Subcommand (load/dump)'
         )
         parser.add_argument(
+            '--natural-foreign',
+            action='store_true',
+            default=False,
+            help='Export using natural foreign key'
+        )
+        parser.add_argument(
             '--force-fetch',
             action='store_true',
             default=False,
-            help='Force fetch'
+            help='Force fixture download'
         )
         parser.add_argument(
             '--base-url',
@@ -79,6 +91,8 @@ It is possible to force fixture download by using the --force-fetch option:
 
     def handle(self, *args, **options):
         """Management command handler."""
+        self.natural_foreign = options.get('natural_foreign')
+
         if not os.path.exists(DATA_DIR):
             self.logger.info('Creating %s', DATA_DIR)
             os.mkdir(DATA_DIR)
@@ -118,13 +132,17 @@ It is possible to force fixture download by using the --force-fetch option:
         elif subcommand == 'dump':
             self.dump_fixtures()
 
-    def dump_fixture(self, fixture, fixture_path):
+    def dump_fixture(self, fixture, fixture_path,
+                     natural_foreign: bool = False):
         """Dump single fixture."""
         self.logger.info('Dumping %s', fixture_path)
+
         out = StringIO()
         call_command('dumpdata',
                      fixture,
                      format="json",
+                     natural_foreign=getattr(self, "natural_foreign",
+                                             natural_foreign),
                      indent=1,
                      stdout=out)
         out.seek(0)

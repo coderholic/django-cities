@@ -11,6 +11,7 @@
 *.egg-info
 build/
 dist/
+venv/
 *.egg/
 src/cities_light/version.py
 

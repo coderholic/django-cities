@@ -1,3 +1,6 @@
+TBR
+    Feature Allow to use natural primary/foreing keys for geoname objects #217
+
 2020-10-22 3.8.1
     Drop support of Django 2.0 and 2.1
     Small improvements on documentation, codebase and CI

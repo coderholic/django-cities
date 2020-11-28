@@ -7,15 +7,13 @@ import os
 from urllib.request import urlopen
 from urllib.parse import urlparse
 
-
 from .exceptions import SourceFileDoesNotExist
 
 
 class Downloader:
-
     """Geonames data downloader class."""
 
-    def download(self, source, destination, force=False):
+    def download(self, source: str, destination: str, force: bool = False):
         """Download source file/url to destination."""
         logger = logging.getLogger('cities_light')
 
@@ -31,7 +29,7 @@ class Downloader:
             logger.warning(
                 'Assuming local download is up to date for %s', source)
             return False
-        # If the files are diffrent, download/copy happens
+        # If the files are different, download/copy happens
         logger.info('Downloading %s into %s', source, destination)
         source_stream = urlopen(source)
         # wb: open as write and binary mode
@@ -41,7 +39,7 @@ class Downloader:
         return True
 
     @staticmethod
-    def source_matches_destination(source, destination):
+    def source_matches_destination(source: str, destination: str):
         """Return True if source and destination point to the same file."""
         parsed_source = urlparse(source)
         if parsed_source.scheme == 'file':
@@ -56,7 +54,7 @@ class Downloader:
         return False
 
     @staticmethod
-    def needs_downloading(source, destination, force):
+    def needs_downloading(source: str, destination: str, force: bool):
         """Return True if source should be downloaded to destination."""
         src_file = urlopen(source)
         src_size = int(src_file.headers['content-length'])

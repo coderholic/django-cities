@@ -18,7 +18,7 @@
 {
     "fields": {
         "alternate_names": "Oblast de Kemerovo;\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u0441\u043a\u0430\u044f \u041e\u0431\u043b\u0430\u0441\u0442\u044c;\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u0441\u043a\u0430\u044f \u043e\u0431\u043b\u0430\u0441\u0442\u044c",
-        "country": 1,
+        "country": [2017370],
         "display_name": "Kemerovo, Russia",
         "geoname_code": "29",
         "geoname_id": 1503900,
@@ -32,7 +32,7 @@
 {
     "fields": {
         "alternate_names": "\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u043e",
-        "country": 1,
+        "country": [2017370],
         "display_name": "Kemerovo, Kemerovo, Russia",
         "feature_code": "PPLA",
         "geoname_id": 1503901,
@@ -41,7 +41,7 @@
         "name": "Kemerovo",
         "name_ascii": "Kemerovo",
         "population": 477090,
-        "region": 1,
+        "region": [1503900],
         "search_names": "kemerovokemerovorossiiskaiafederatsiia kemerovokemerovorussia kemerovokemerovorussie kemerovokemerovskaiaoblastrossiiskaiafederatsiia kemerovokemerovskaiaoblastrussia kemerovokemerovskaiaoblastrussie kemerovooblastdekemerovorossiiskaiafederatsiia kemerovooblastdekemerovorussia kemerovooblastdekemerovorussie kemerovorossiiskaiafederatsiia kemerovorussia kemerovorussie",
         "slug": "kemerovo",
         "subregion": null,
@@ -53,7 +53,7 @@
 {
     "fields": {
         "alternate_names": "Novokouznetsk;\u041d\u043e\u0432\u043e\u043a\u0443\u0437\u043d\u0435\u0446\u043a;\u0421\u0442\u0430\u043b\u0438\u043d\u0441\u043a",
-        "country": 1,
+        "country": [2017370],
         "display_name": "Novokuznetsk, Kemerovo, Russia",
         "feature_code": "PPL",
         "geoname_id": 1496990,
@@ -62,7 +62,7 @@
         "name": "Novokuznetsk",
         "name_ascii": "Novokuznetsk",
         "population": 539616,
-        "region": 1,
+        "region": [1503900],
         "search_names": "novokouznetskkemerovorossiiskaiafederatsiia novokouznetskkemerovorussia novokouznetskkemerovorussie novokouznetskkemerovskaiaoblastrossiiskaiafederatsiia novokouznetskkemerovskaiaoblastrussia novokouznetskkemerovskaiaoblastrussie novokouznetskoblastdekemerovorossiiskaiafederatsiia novokouznetskoblastdekemerovorussia novokouznetskoblastdekemerovorussie novokouznetskrossiiskaiafederatsiia novokouznetskrussia novokouznetskrussie novokuznetskkemerovorossiiskaiafederatsiia novokuznetskkemerovorussia novokuznetskkemerovorussie novokuznetskkemerovskaiaoblastrossiiskaiafederatsiia novokuznetskkemerovskaiaoblastrussia novokuznetskkemerovskaiaoblastrussie novokuznetskoblastdekemerovorossiiskaiafederatsiia novokuznetskoblastdekemerovorussia novokuznetskoblastdekemerovorussie novokuznetskrossiiskaiafederatsiia novokuznetskrussia novokuznetskrussie stalinskkemerovorossiiskaiafederatsiia stalinskkemerovorussia stalinskkemerovorussie stalinskkemerovskaiaoblastrossiiskaiafederatsiia stalinskkemerovskaiaoblastrussia stalinskkemerovskaiaoblastrussie stalinskoblastdekemerovorossiiskaiafederatsiia stalinskoblastdekemerovorussia stalinskoblastdekemerovorussie stalinskrossiiskaiafederatsiia stalinskrussia stalinskrussie",
         "slug": "novokuznetsk",
         "subregion": null,

@@ -9,7 +9,7 @@ from .downloader import Downloader
 class Geonames:
     logger = logging.getLogger('cities_light')
 
-    def __init__(self, url, force=False):
+    def __init__(self, url: str, force: bool = False):
         # Creating a directory if not exist
         if not os.path.exists(DATA_DIR):
             self.logger.info('Creating %s', DATA_DIR)

@@ -47,7 +47,7 @@ class TestCitiesLigthFixtures(test.TransactionTestCase):
         try:
             fixture_path = os.path.join(os.path.dirname(__file__), "fixtures", "test_dump_fixture.json")
             cmd = Command()
-            cmd.dump_fixture('cities_light.City', fixture_path)
+            cmd.dump_fixture('cities_light.City', fixture_path, True)
             with bz2.BZ2File(fixture_path, mode='r') as bzfile:
                 data = bzfile.read()
             with open(fixture_path, mode='wb') as file:

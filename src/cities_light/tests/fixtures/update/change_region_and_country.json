@@ -50,7 +50,7 @@
 {
     "fields": {
         "alternate_names": "Province de Kuzbass;\u041a\u0443\u0437\u0431\u0430\u0441\u0441",
-        "country": 1,
+        "country": [2017370],
         "display_name": "Kemerovo, Russia",
         "geoname_code": "29",
         "geoname_id": 1503900,
@@ -64,7 +64,7 @@
 {
     "fields": {
         "alternate_names": "",
-        "country": 2,
+        "country": [2017371],
         "display_name": "Kuzbass, USSR",
         "geoname_code": "29",
         "geoname_id": 1503999,
@@ -78,7 +78,7 @@
 {
     "fields": {
         "alternate_names": "Ecosse;\u0428\u043e\u0442\u043b\u0430\u043d\u0434\u0438\u044f",
-        "country": 3,
+        "country": [2635167],
         "display_name": "Scotland, United Kingdom",
         "geoname_code": "SCT",
         "geoname_id": 2638360,
@@ -92,13 +92,13 @@
 {
     "fields": {
         "alternate_names": "",
-        "country": 1,
+        "country": [2017370],
         "display_name": "Yurginskiy Rayon, Russia",
         "geoname_code": "1485714",
         "geoname_id": 1485714,
         "name": "Yurginskiy Rayon",
         "name_ascii": "Yurginskiy Rayon",
-        "region": 1,
+        "region": [1503900],
         "slug": "yurginskiy-rayon"
     },
     "model": "cities_light.subregion",
@@ -107,13 +107,13 @@
 {
     "fields": {
         "alternate_names": "",
-        "country": 3,
+        "country": [2635167],
         "display_name": "Highland, United Kingdom",
         "geoname_code": "V3",
         "geoname_id": 2646944,
         "name": "Highland",
         "name_ascii": "Highland",
-        "region": 3,
+        "region": [2638360],
         "slug": "highland"
     },
     "model": "cities_light.subregion",
@@ -122,7 +122,7 @@
 {
     "fields": {
         "alternate_names": "\u041b\u0435\u0441\u043d\u0430\u044f \u043f\u043e\u043b\u044f\u043d\u0430",
-        "country": 2,
+        "country": [2017371],
         "display_name": "Forest Glade, Kuzbass, USSR",
         "feature_code": "PPLA",
         "geoname_id": 1503901,
@@ -131,7 +131,7 @@
         "name": "Forest Glade",
         "name_ascii": "Forest Glade",
         "population": 477090,
-        "region": 2,
+        "region": [1503999],
         "search_names": "forestgladekuzbassussr forestgladeussr lesnaiapolianakuzbassussr lesnaiapolianaussr",
         "slug": "forest-glade",
         "subregion": null,
@@ -143,7 +143,7 @@
 {
     "fields": {
         "alternate_names": "Garden;\u0413\u043e\u0440\u043e\u0434 \u0421\u0430\u0434;\u0421\u0430\u0434 \u0421\u0442\u0430\u043b\u0438\u043d\u0430",
-        "country": 2,
+        "country": [2017371],
         "display_name": "Gorod Sad, Kuzbass, USSR",
         "feature_code": "PPL",
         "geoname_id": 1496990,
@@ -152,7 +152,7 @@
         "name": "Gorod Sad",
         "name_ascii": "Gorod Sad",
         "population": 539616,
-        "region": 2,
+        "region": [1503999],
         "search_names": "gardenkuzbassussr gardenussr gorodsadkuzbassussr gorodsadussr sadstalinakuzbassussr sadstalinaussr",
         "slug": "gorod-sad",
         "subregion": null,
@@ -164,7 +164,7 @@
 {
     "fields": {
         "alternate_names": "",
-        "country": 3,
+        "country": [2635167],
         "display_name": "Nedd, Scotland, United Kingdom",
         "feature_code": "PPL",
         "geoname_id": 2641832,
@@ -173,10 +173,10 @@
         "name": "Nedd",
         "name_ascii": "Nedd",
         "population": 0,
-        "region": 3,
+        "region": [2638360],
         "search_names": "neddscotlandunitedkingdom neddunitedkingdom",
         "slug": "nedd",
-        "subregion": 2,
+        "subregion": [2646944],
         "timezone": "Europe/London"
     },
     "model": "cities_light.city",

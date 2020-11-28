@@ -69,6 +69,11 @@ class ToSearchTextField(models.TextField):
 ToSearchTextField.register_lookup(ToSearchIContainsLookup)
 
 
+class BaseManager(models.Manager):
+    def get_by_natural_key(self, geoname_id):
+        return self.get(geoname_id=geoname_id)
+
+
 class Base(models.Model):
     """
     Base model with boilerplate for all models.
@@ -80,9 +85,14 @@ class Base(models.Model):
     geoname_id = models.IntegerField(null=True, blank=True, unique=True)
     alternate_names = models.TextField(null=True, blank=True, default='')
 
+    objects = BaseManager()
+
     class Meta:
         abstract = True
         ordering = ['name']
+
+    def natural_key(self):
+        return (self.geoname_id, )
 
     def __str__(self):
         display_name = getattr(self, 'display_name', None)
