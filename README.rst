@@ -1,14 +1,12 @@
-.. image:: https://secure.travis-ci.org/jazzband/django-cities-light.svg?branch=master
-    :target: http://travis-ci.org/jazzband/django-cities-light
+.. image:: https://secure.travis-ci.org/yourlabs/django-cities-light.svg?branch=master
+    :target: http://travis-ci.org/yourlabs/django-cities-light
 .. image:: https://pypip.in/d/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
 .. image:: https://pypip.in/v/django-cities-light/badge.png
     :target: https://crate.io/packages/django-cities-light
-.. image:: https://codecov.io/github/jazzband/django-cities-light/coverage.svg
-    :target: https://codecov.io/github/jazzband/django-cities-light
-.. image:: https://jazzband.co/static/img/badge.svg
-   :target: https://jazzband.co/
-   :alt: Jazzband
+.. image:: https://codecov.io/github/yourlabs/django-cities-light/coverage.svg
+    :target: https://codecov.io/github/yourlabs/django-cities-light
+
 
 django-cities-light -- *Simple django-cities alternative*
 =========================================================
@@ -51,7 +49,7 @@ Install django-cities-light::
 
 Or the development version::
 
-    pip install -e git+git@github.com:jazzband/django-cities-light.git#egg=cities_light
+    pip install -e git+git@github.com:yourlabs/django-cities-light.git#egg=cities_light
 
 Add `cities_light` to your `INSTALLED_APPS`.
 
@@ -149,8 +147,6 @@ If you want to build the docs, use the following steps::
     cd docs
     make html
 
-If you are ready to send a patch, please read the `Jazzband guidelines <https://jazzband.co/about/guidelines>`_.
-
 Resources
 ---------
 
@@ -158,7 +154,7 @@ You could subscribe to the mailing list ask questions or just be informed of
 package updates.
 
 - `Git graciously hosted
-  <https://github.com/jazzband/django-cities-light/>`_ by `GitHub
+  <https://github.com/yourlabs/django-cities-light/>`_ by `GitHub
   <http://github.com>`_,
 - `Documentation graciously hosted
   <http://django-cities-light.rtfd.org>`_ by `RTFD
@@ -167,5 +163,5 @@ package updates.
   <http://pypi.python.org/pypi/django-cities-light/>`_ by `PyPi
   <http://pypi.python.org/pypi>`_,
 - `Continuous integration graciously hosted
-  <http://travis-ci.org/jazzband/django-cities-light>`_ by `Travis-ci
+  <http://travis-ci.org/yourlabs/django-cities-light>`_ by `Travis-ci
   <http://travis-ci.org>`_
