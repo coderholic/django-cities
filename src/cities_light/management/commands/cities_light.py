@@ -300,11 +300,11 @@ It is possible to force the import of files which weren't downloaded using the
             country_items_pre_import.send(sender=self, items=items)
         except InvalidItems:
             return
-
         force_insert = False
         force_update = False
+        if items[ICountry.geonameid] == '':
+            return
         try:
-
             country = Country.objects.get(geoname_id=items[ICountry.geonameid])
             force_update = True
         except Country.DoesNotExist:

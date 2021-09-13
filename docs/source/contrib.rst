@@ -19,7 +19,7 @@ This contrib package defines list and detail endpoints for City, SubRegion, Regi
 Country. If rest_framework (v3) is installed, all you have to do is add this url
 include::
 
-    url(r'^cities_light/api/', include('cities_light.contrib.restframework3')),
+    path('cities_light/api/', include('cities_light.contrib.restframework3')),
 
 This will configure six endpoints::
 
