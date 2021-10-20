@@ -33,5 +33,8 @@ jobs:
         pip install tox tox-gh-actions codecov
     - name: Test with tox
       run: tox -v
+      env:
+        DB_HOST: postgres
+        DB_PORT: ${{ job.services.postgres.ports[5432] }}
     - name: Codecov
       run: codecov
