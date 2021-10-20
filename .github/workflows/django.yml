@@ -19,8 +19,11 @@ jobs:
           POSTGRES_DB: postgres
         ports:
         - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
@@ -34,7 +37,7 @@ jobs:
     - name: Test with tox
       run: tox -v
       env:
-        DB_HOST: postgres
+        DB_HOST: localhost
         DB_PORT: ${{ job.services.postgres.ports[5432] }}
     - name: Codecov
       run: codecov
