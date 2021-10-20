@@ -13,6 +13,9 @@ jobs:
     services:
       postgres:
         image: postgres:13-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
         ports:
         - 5432:5432
         options: >-
