@@ -22,6 +22,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions codecov
     - name: Test with tox
-      run: tox
+      run: tox -v
     - name: Codecov
       run: codecov
