@@ -9,10 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6,3.7]
+        python-version: [3.6,3.7, 3.8]
     services:
       postgres:
         image: postgres:13-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: cities_light
         ports:
         - 5432:5432
         options: >-
@@ -23,7 +27,9 @@ jobs:
       mysql:
         image: mysql
         ports:
-        - 3256:3256
+        - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: cities_light
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
@@ -37,6 +43,8 @@ jobs:
     - name: Test with tox
       run: tox -v
       env:
-        DB_HOST: localhost
+        DB_HOST: 127.0.0.1
+        DB_PASSWORD: cities_light
+        PGPASSWORD: cities_light
     - name: Codecov
       run: codecov
