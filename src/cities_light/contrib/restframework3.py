@@ -52,7 +52,7 @@ class SubRegionSerializer(HyperlinkedModelSerializer):
     HyperlinkedModelSerializer for SubRegion.
     """
     url = relations.HyperlinkedIdentityField(
-        view_name='cities-light-api-city-detail')
+        view_name='cities-light-api-subregion-detail')
     country = relations.HyperlinkedRelatedField(
         view_name='cities-light-api-country-detail', read_only=True)
     region = relations.HyperlinkedRelatedField(
