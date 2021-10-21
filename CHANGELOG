@@ -1,4 +1,13 @@
 TBR
+  
+
+2021-10-22 3.9.0
+    Removed Tracis CI
+    Fix SubRegionSerializer URL #257
+    Support for django 3.2 and python 3.9, 3.10
+    Upaded the version of all the libraries
+    Fix/import error #255
+    Python 2 tidy ups and removed mock dependency #249
     Feature Allow to use natural primary/foreing keys for geoname objects #217
 
 2020-10-22 3.8.1

@@ -18,15 +18,14 @@ Recommended RDBMS
 The recommended RDBMS is PostgreSQL, it's faster, safer, saner, more robust and
 simpler than MySQL.
 
-You can see on travis that build jobs with MySQL take twice as long as build
+You can see on github-actions that build jobs with MySQL take twice as long as build
 jobs on PostgreSQL and SQLite.
 
 MySQL errors with special characters, how to fix it ?
 -----------------------------------------------------
 
-The ``cities_light`` command is `continuously tested on travis-ci
-<http://travis-ci.org/yourlabs/django-cities-light>`_ on all supported
-databases: if it works there then it should work for you.
+The ``cities_light`` command is `continuously tested on github-actions
+ on all supported databases: if it works there then it should work for you.
 
 If you're new to development in general, you might not be familiar with the
 concept of encodings and collations. Unless you have a good reason, you
