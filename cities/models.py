@@ -3,13 +3,14 @@ from string import ascii_uppercase, digits
 
 from .conf import (ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION, DJANGO_VERSION)
 
-try:
-    if DJANGO_VERSION < 4:
-        from django.utils.encoding import force_unicode as force_text
-    else:
+
+if DJANGO_VERSION < 4:
+    from django.utils.encoding import force_unicode as force_text
+else:
+    try:
         from django.utils.encoding import force_str as force_text
-except (NameError, ImportError):
-    from django.utils.encoding import force_text
+    except (NameError, ImportError):
+        from django.utils.encoding import force_text
 
 from django.db import transaction
 from django.contrib.gis.db.models import PointField
