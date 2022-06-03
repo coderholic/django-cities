@@ -1,10 +1,16 @@
 from random import choice
 from string import ascii_uppercase, digits
 
-try:
-    from django.utils.encoding import force_unicode as force_text
-except (NameError, ImportError):
-    from django.utils.encoding import force_text
+from .conf import (ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION, DJANGO_VERSION)
+
+
+if DJANGO_VERSION < 4:
+    try:
+        from django.utils.encoding import force_unicode as force_text
+    except (NameError, ImportError):
+        from django.utils.encoding import force_text
+else:
+    from django.utils.encoding import force_str as force_text
 
 from django.db import transaction
 from django.contrib.gis.db.models import PointField
@@ -14,7 +20,6 @@ from django.contrib.gis.geos import Point
 from model_utils import Choices
 import swapper
 
-from .conf import (ALTERNATIVE_NAME_TYPES, SLUGIFY_FUNCTION, DJANGO_VERSION)
 from .managers import AlternativeNameManager
 from .util import unicode_func
 
