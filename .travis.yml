@@ -6,34 +6,37 @@ services:
   - postgresql
 
 addons:
-  postgresql: "9.6"
-  # https://gis.stackexchange.com/a/252610
-  # apt:
-  #   packages:
-  #     - postgresql-9.6-postgis-2.3
+  postgresql: "10"
+  apt:
+    packages:
+    - postgresql-10-postgis-2.4
 
 python:
   - "3.6"
   - "3.7"
   - "3.8"
+  - "3.9"
+  - "3.10"
 
 env:
-  - DJANGO_VERSION='Django>=1.11,<1.12'
+  global:
+  - PGPORT=5432
+  - PGUSER=postgres
+  jobs:
   - DJANGO_VERSION='Django>=2.2,<2.3'
-  - DJANGO_VERSION='Django>=3.0,<3.1'
-  - DJANGO_VERSION='https://github.com/django/django/archive/master.tar.gz'
+  - DJANGO_VERSION='Django>=3.1,<3.2'
+  - DJANGO_VERSION='Django>=3.2,<4.0'
+  - DJANGO_VERSION='Django>=4.0,<4.1'
 
-matrix:
-  allow_failures:
-    - python: "3.8"
-      env: DJANGO_VERSION='Django>=1.11,<1.12'
-    - env: DJANGO_VERSION='https://github.com/django/django/archive/master.tar.gz'
-
-before_install:
-  # https://gis.stackexchange.com/a/252610
-  - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-  - sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" >> /etc/apt/sources.list.d/postgresql.list'
-  - sudo apt-get install --yes postgresql-9.6-postgis-2.4
+jobs:
+  exclude:
+    - python: "3.6"
+      env: DJANGO_VERSION='Django>=4.0,<4.1'
+    - python: "3.7"
+      env: DJANGO_VERSION='Django>=4.0,<4.1'
+    - python: "3.10"
+      env: DJANGO_VERSION='Django>=2.2,<2.3'
+      env: DJANGO_VERSION='Django>=3.1,<3.2'
 
 install:
   - pip install $DJANGO_VERSION

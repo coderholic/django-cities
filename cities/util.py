@@ -4,10 +4,15 @@ import sys
 import unicodedata
 from math import radians, sin, cos, acos
 from django import VERSION as DJANGO_VERSION
-try:
-    from django.utils.encoding import force_unicode as force_text
-except (NameError, ImportError):
-    from django.utils.encoding import force_text
+
+if DJANGO_VERSION < (4, 0):
+    try:
+        from django.utils.encoding import force_unicode as force_text
+    except (NameError, ImportError):
+        from django.utils.encoding import force_text
+else:
+    from django.utils.encoding import force_str as force_text
+
 from django.utils.safestring import mark_safe, SafeText
 
 from .conf import CONTINENT_DATA
