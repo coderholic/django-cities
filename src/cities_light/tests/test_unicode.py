@@ -2,7 +2,7 @@ import warnings
 
 import unidecode
 
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from ..abstract_models import to_ascii
 from .base import TestImportBase, FixtureDir
@@ -55,7 +55,7 @@ class TestUnicode(TestImportBase):
             )
 
             for w in warns[:]:
-                warn = force_text(w.message)
+                warn = force_str(w.message)
                 self.assertTrue("not an unicode object" not in warn, warn)
 
     def test_to_ascii(self):
