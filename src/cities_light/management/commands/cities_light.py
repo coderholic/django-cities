@@ -54,12 +54,12 @@ Same goes for CITIES_LIGHT_CITY_SOURCES.
 It is possible to force the download of some files which have not been updated
 on the server:
 
-    manage.py --force cities15000 --force countryInfo
+    manage.py cities_light --force cities15000 --force countryInfo
 
 It is possible to force the import of files which weren't downloaded using the
 --force-import option:
 
-    manage.py --force-import cities15000 --force-import country
+    manage.py cities_light --force-import cities15000 --force-import country
     """.strip()
 
     logger = logging.getLogger('cities_light')
