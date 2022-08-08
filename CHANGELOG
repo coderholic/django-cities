@@ -1,5 +1,9 @@
-TBR
+2022-08-7
+    Default apps.py file to define the default primary key field
+
+2022-06-10
     Django 4.0 support
+
 
 2021-10-22 3.9.0
     Removed Tracis CI
