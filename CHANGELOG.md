@@ -1,5 +1,11 @@
 # Changelog #
 
+## v0.6.1 ##
+
+### Added ###
+
+- Added support for Django 4.0
+
 ## v0.6 ##
 
 ### Added ###
