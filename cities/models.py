@@ -140,7 +140,7 @@ class BaseCountry(Place, SlugModel):
     postal_code_format = models.CharField(max_length=127)
     postal_code_regex = models.CharField(max_length=255)
     capital = models.CharField(max_length=100)
-    neighbours = models.ManyToManyField("self")
+    neighbours = models.ManyToManyField("self", related_name='_cities_country_neighbours_+')
 
     class Meta:
         abstract = True
