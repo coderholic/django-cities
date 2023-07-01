@@ -1,3 +1,6 @@
+2023-7-1
+    Django 4.2 support
+
 2022-08-7
     Default apps.py file to define the default primary key field
 
