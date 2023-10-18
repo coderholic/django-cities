@@ -187,7 +187,7 @@ It is possible to force the import of files which weren't downloaded using the
             if not os.path.exists(install_file_path):
                 self.logger.info(
                     'Forced import of %s because data do not seem'
-                    ' to have installed successfuly yet, note that this is'
+                    ' to have installed successfully yet, note that this is'
                     ' equivalent to --force-import-all.',
                     destination_file_name)
                 force_import = True
@@ -231,12 +231,17 @@ It is possible to force the import of files which weren't downloaded using the
 
                 if url in TRANSLATION_SOURCES and options.get(
                         'hack_translations', False):
-                    with open(translation_hack_path, 'w+') as f:
+                    with open(translation_hack_path, 'wb+') as f:
                         pickle.dump(self.translation_data, f)
 
         if options.get('hack_translations', False):
-            with open(translation_hack_path, 'r') as f:
-                self.translation_data = pickle.load(f)
+            if os.path.getsize(translation_hack_path) > 0:
+                with open(translation_hack_path, 'rb') as f:
+                    self.translation_data = pickle.load(f)
+            else:
+                self.logger.debug(
+                    'The translation file that you are trying to'
+                    ' load is empty: %s', translation_hack_path)
 
         self.logger.info('Importing parsed translation in the database')
         self.translation_import()
@@ -319,7 +324,7 @@ It is possible to force the import of files which weren't downloaded using the
         country.continent = items[ICountry.continent]
         country.tld = items[ICountry.tld][1:]  # strip the leading dot
         # Strip + prefix for consistency. Note that some countries have several
-        # prefixes ie. Puerto Rico
+        # prefixes i.e. Puerto Rico
         country.phone = items[ICountry.phone].replace('+', '')
         # Clear name_ascii to always update it by set_name_ascii() signal
         country.name_ascii = ''
@@ -397,6 +402,7 @@ It is possible to force the import of files which weren't downloaded using the
             )
 
     def subregion_import(self, items):
+
         try:
             subregion_items_pre_import.send(sender=self, items=items)
         except InvalidItems:
@@ -593,11 +599,14 @@ It is possible to force the import of files which weren't downloaded using the
                 'geoname_id', flat=True))
             self.city_ids = set(City.objects.values_list(
                 'geoname_id', flat=True))
+            self.subregion_ids = set(SubRegion.objects.values_list(
+                'geoname_id', flat=True))
 
             self.translation_data = collections.OrderedDict((
                 (Country, {}),
                 (Region, {}),
                 (City, {}),
+                (SubRegion, {}),
             ))
 
         # https://code.djangoproject.com/ticket/21597#comment:29
@@ -631,6 +640,8 @@ It is possible to force the import of files which weren't downloaded using the
             model_class = Region
         elif item_geoid in self.city_ids:
             model_class = City
+        elif item_geoid in self.subregion_ids:
+            model_class = SubRegion
         else:
             return
 
