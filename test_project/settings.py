@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cities_light',
+    'cities_light.tests',
 ]
 
 # Rename to MIDDLEWARE on Django 1.10

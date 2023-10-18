@@ -28,12 +28,19 @@ database, you should use
 Requirements:
 
 - Python >= 3.8
-- Django >= 3.0
+- Django >= 3.2
 - MySQL or PostgreSQL or SQLite.
 
 Yes, for some reason, code that used to work on MySQL (not without pain xD)
 does not work anymore. So we're now using django.db.transaction.atomic which
 comes from Django 1.6 just to support MySQL quacks.
+
+Features
+--------
+- GraphQL support
+- Built-in admin support
+- Rest-Framework support
+- Ajax Select Lookup support
 
 Upgrade
 -------
