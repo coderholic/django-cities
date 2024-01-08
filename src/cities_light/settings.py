@@ -83,10 +83,17 @@ because it's probably project specific.
 
 .. py:data:: INDEX_SEARCH_NAMES
 
-    If your database engine for cities_light supports indexing TextFields (ie.
-    it is **not** MySQL), then this should be set to True. You might have to
+    If your database engine for cities_light supports indexing TextFields,
+    then this should be set to True. You might have to
     override this setting with ``settings.CITIES_LIGHT_INDEX_SEARCH_NAMES`` if
     using several databases for your project.
+
+    Notes:
+    - MySQL doesn't support indexing TextFields.
+    - PostgreSQL supports indexing TextFields, but it is not enabled by default
+      in cities_light because the lenght of the field can be too long for btree
+      for more information please visit #273
+
 
 .. py:data:: CITIES_LIGHT_APP_NAME
 
@@ -147,7 +154,9 @@ INDEX_SEARCH_NAMES = getattr(settings, 'CITIES_LIGHT_INDEX_SEARCH_NAMES', None)
 if INDEX_SEARCH_NAMES is None:
     INDEX_SEARCH_NAMES = True
     for database in list(settings.DATABASES.values()):
-        if "ENGINE" in database and 'mysql' in database.get('ENGINE').lower():
+        if "ENGINE" in database and (
+                'mysql' in database.get('ENGINE').lower() or
+                'postgresql' in database.get('ENGINE').lower()):
             INDEX_SEARCH_NAMES = False
 
 DEFAULT_APP_NAME = 'cities_light'

@@ -168,6 +168,13 @@ If you want to build the docs, use the following steps::
     cd docs
     make html
 
+TODOS
+-----
+
+- Add ruff for formatting
+- Improve the performance of the import command
+- Improve the local development environment with https://tox.wiki/en/legacy/example/devenv.html
+
 Resources
 ---------
 
