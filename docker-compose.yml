@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: example
+  app:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    links:
+      - db

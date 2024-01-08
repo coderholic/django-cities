@@ -122,12 +122,26 @@ Create development virtualenv (you need to have tox installed in your base syste
     tox -e dev
     source .tox/dev/bin/activate
 
+To run the test project, with the folder of the project as the current directory, run::
+    
+    export PYTHONPATH="${PYTHONPATH}:/app/src"
+    docker run  -d postgres -p 5432:5432
+
+
 Then run the full import::
 
     test_project/manage.py migrate
     test_project/manage.py cities_light
 
 There are several environment variables which affect project settings (like DB_ENGINE and CI), you can find them all in test_project/settings.py.
+
+For example to change the database engine, you can run::
+
+    export DB_ENGINE=postgresql
+    export DB_HOST=192.168.0.118
+    export DB_NAME=app
+    export DB_USER=postgres
+    export DB_PORT=5432
 
 To run the test suite you need to have postgresql or mysql installed with passwordless login, or just use sqlite. Otherwise the tests which try to create/drop database will fail.
 

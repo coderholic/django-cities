@@ -1,0 +1,22 @@
+# Ignore common Python files and directories
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Ignore development and testing files
+*.env
+*.log
+*.sqlite3
+
+# Ignore virtual environment files
+venv/
+.env
+
+# vscode & codespaces
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
