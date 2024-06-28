@@ -1,5 +1,10 @@
 # Changelog #
 
+## v0.6.2 ##
+
+- Fix Django missing migration, thanks @RafaPinzon93
+- Updated Python version classifiers, thanks @leogregianin
+
 ## v0.6.1 ##
 
 ### Added ###

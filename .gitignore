@@ -11,5 +11,10 @@ dist
 .DAV/
 .env
 
+# Environments
+.venv
+venv/
+ENV/
+
 # Data files
 /cities/data/*
