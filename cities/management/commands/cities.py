@@ -203,7 +203,7 @@ class Command(BaseCommand):
                 file.write(web_file.read())
                 file.close()
             elif not os.path.exists(os.path.join(self.data_dir, filename)):
-                raise Exception("File not found and download failed: {} [{}]".format(filename, url))
+                raise Exception("File not found and download failed: {} [{}]".format(filename, urls))
 
     def get_data(self, filekey):
         if 'filename' in settings.files[filekey]:
