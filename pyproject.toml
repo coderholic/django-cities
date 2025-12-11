@@ -38,7 +38,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/coderholic/django-cities"
+Homepage = "https://github.com/arthanson/django-cities-xtd"
 
 [project.optional-dependencies]
 test = [
