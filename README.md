@@ -6,6 +6,9 @@
 
 ----
 
+[!NOTE]
+This repository has moved to [django-cities-xtd](https://github.com/arthanson/django-cities-xtd) as currently can't release new packages from this repository. django-cities-xtd is completely drop-in replacement and is just a more modern fork of this repository.
+
 django-cities provides you with place related models (eg. Country, Region, City) and data (from [GeoNames](http://www.geonames.org/)) that can be used in your django projects.
 
 This package officially supports all currently supported versions of Python/Django:
@@ -608,7 +611,7 @@ This repository contains an example project which lets you browse the place hier
 
 
 
-##  Third-party Apps / Extensions
+## Third-party Apps / Extensions
 
 These are apps that build on top of the `django-cities`. Useful for essentially extending what `django-cities` can do.
 
@@ -671,6 +674,9 @@ docker run --rm -p 127.0.0.1:5432:5432 mdillon/postgis
 
 
 ## Release Notes
+
+[!NOTE]
+This repository has moved to [django-cities-xtd](https://github.com/arthanson/django-cities-xtd) as currently can't release new packages from this repository. django-cities-xtd is completely drop-in replacement and is just a more modern fork of this repository.
 
 ### 0.4.1
 
