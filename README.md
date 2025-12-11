@@ -6,7 +6,7 @@
 
 ----
 
-**Note:** This repository has moved to [django-cities-xtd](https://github.com/arthanson/django-cities-xtd) as currently can't release new packages from this repository. django-cities-xtd is completely drop-in replacement and is just a more modern fork of this repository.
+**Note:** This repository has moved to [django-cities-xtd](https://github.com/arthanson/django-cities-xtd) as currently can't release new packages from this repository. django-cities-xtd is completely drop-in replacement and is just a more modern fork of this repository with Django 6.0 compatability, performance enhancements and bugfixes.
 
 ----
 
@@ -676,7 +676,7 @@ docker run --rm -p 127.0.0.1:5432:5432 mdillon/postgis
 
 ## Release Notes
 
-**Note:** This repository has moved to [django-cities-xtd](https://github.com/arthanson/django-cities-xtd) as currently can't release new packages from this repository. django-cities-xtd is completely drop-in replacement and is just a more modern fork of this repository.
+**Note:** This repository has moved to [django-cities-xtd](https://github.com/arthanson/django-cities-xtd) as currently can't release new packages from this repository. django-cities-xtd is completely drop-in replacement and is just a more modern fork of this repository with Django 6.0 compatability, performance enhancements and bugfixes.
 
 ### 0.4.1
 
